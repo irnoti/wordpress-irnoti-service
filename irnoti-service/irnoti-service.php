@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       IRNoti Service (ایران ناتیفیکیشن)
  * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل و VoIP/سافت‌فون IRNoti روی وردپرس.
- * Version:           0.1.0
+ * Version:           1.1.3
  * Requires at least: 6.2
  * Requires PHP:      8.0
  * Author:            IRNoti
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'IRNOTI_VERSION', '0.1.0' );
+define( 'IRNOTI_VERSION', '1.1.3' );
 define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
