@@ -6,7 +6,7 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 
 | Area | What it does | IRNoti API |
 |---|---|---|
-| SMS | Send plain or pattern (template) messages; automatic customer SMS on every WooCommerce order status (editable templates); new-order alert to admins; test send and a log of the last 50 messages | `POST /sms/send`, `POST /sms/pattern` |
+| SMS | Rule engine (events → text or pattern → customer/admin/custom number, with conditions and live preview); pattern manager; test send and log | `POST /sms/send`, `POST /sms/pattern` |
 | Bot – products | Mirrors WooCommerce products and categories into the shop bot: price, sale price, stock, image, active flag, deletion. Auto-sync on save (debounced via WP-Cron) plus a manual "sync all" | `PUT/DELETE /botbuilder/bots/:id/shop/*` |
 | Bot – orders | Pulls bot orders into WooCommerce every 5 minutes and syncs statuses both ways (`confirmed` / `done` / `canceled`) | `GET …/shop/orders`, `POST …/shop/orders/:id/status` |
 | Email | Routes every `wp_mail()` through IRNoti; falls back to the normal WordPress transport if the API fails. Test email included | `POST /email/send` |
@@ -38,18 +38,38 @@ Note: the VoIP endpoints use `sms.read` / `sms.send`.
 
 ## Configuration guide
 
-### SMS
-- **Line ID** – leave empty for your default line; `sandbox` for testing.
-- **Order templates** – one textarea per WooCommerce status. Variables: `{order_id}` `{name}` `{total}` `{status}` `{site}`. An empty template means no SMS for that status.
-- **SMS login** – tick the option, place `[irnoti_login]` on a page, and have each user save their mobile number on their profile page. Administrators cannot log in this way unless a filter allows it:
-  `add_filter( 'irnoti_otp_allow_admins', '__return_true' );`
-  Optionally set a pattern code (it receives a `code` parameter); otherwise a plain SMS is sent.
+### SMS rules, patterns and templates
+**IRNoti → SMS** has four sections:
+
+- **Rules** – "when *event* happens (and *conditions* hold), send *text or pattern* to *recipient*".
+  - Events: order status changes (every WooCommerce status), new order, order from the bot, note to customer, refund, low stock, out of stock, new customer, WordPress user registration.
+  - Recipients: customer/user, admin (from Settings) or custom numbers.
+  - Conditions (orders): minimum total, payment method, source (site / bot / any).
+  - Text rules: click variable chips (`{order_id}`, `{first_name}`, `{total}`, `{items}`, `{order_url}` …) to insert them; live preview with sample data and a character/part counter (70 chars per Persian part, 67 when multi-part).
+  - Pattern rules: pick an approved pattern; its `{placeholders}` become fields that are auto-mapped to matching variables (e.g. `{name}` → `{first_name}`, `{price}` → `{total}`), and you can edit each mapping. Values are cut to the API's 200-character limit.
+  - Every send is idempotent (rule + order + event), so repeated WooCommerce hooks never double-send.
+- **Patterns** – list your patterns with review status and create new ones (they go to review; once approved they appear in the rule editor).
+- **Settings** – default line (picked from your lines), admin mobile, SMS login.
+- **Send & log** – test send and the last 50 messages.
+
+Rules from v0.1 (per-status templates and the admin new-order number) are migrated automatically.
+
+SMS login: tick the option, place `[irnoti_login]` on a page, and have each user save their mobile number on their profile page. Administrators cannot log in this way unless a filter allows it:
+`add_filter( 'irnoti_otp_allow_admins', '__return_true' );`
 
 ### Bot (products and orders)
 1. In the IRNoti panel create a **shop bot** and connect it to Bale/Telegram.
 2. In **IRNoti → Bot**, pick the bot and enable auto-sync.
 3. Click **Sync all products** for the initial import.
-4. Optionally enable **order pulling** to create WooCommerce orders from bot orders.
+4. Enable **order pulling** to create WooCommerce orders from bot orders.
+
+How the bot and WooCommerce stay in sync:
+
+- **WooCommerce is the source of truth for the catalog and stock.** Any product save, and any stock movement (web order, refund, manual edit, bot order), is pushed to the bot, so the bot never sells what the store no longer has.
+- **Bot orders become real WooCommerce orders** (every 5 minutes, or on demand): items are matched to your products, the customer is linked by mobile number when a matching user exists (no accounts are created), and WooCommerce's own order hooks reduce stock. Orders the bot marks as paid are completed with `payment_complete()`.
+- If stock would go negative a warning order note is added.
+- Status changes flow both ways. The "SMS rules" can react to bot orders (event "order from the bot", or the *source* condition).
+- The Bot tab shows recent bot orders with a link to the matching WooCommerce order.
 
 Prices are stored as integer Rials on the server. WooCommerce currency `IRR` is sent as is, `IRT` (Toman) is multiplied by 10. Any other currency is rejected rather than guessed.
 

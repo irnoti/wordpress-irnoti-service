@@ -45,6 +45,10 @@ class IRNoti_Admin {
 			'voipNonce' => wp_create_nonce( 'irnoti_voip' ),
 			'voipFrom'  => (string) IRNoti_Settings::get( 'voip_from' ),
 		) );
+		if ( 'sms' === $tab && isset( $_GET['rule'] ) ) {
+			wp_enqueue_script( 'irnoti-sms-rules', IRNOTI_URL . 'assets/js/sms-rules.js', array(), IRNOTI_VERSION, true );
+			wp_localize_script( 'irnoti-sms-rules', 'IRNOTI_SMS', IRNoti_Admin_SMS::script_data() );
+		}
 		if ( 'voip' === $tab && IRNoti_VoIP::jssip_url() ) {
 			wp_enqueue_script( 'irnoti-jssip', IRNoti_VoIP::jssip_url(), array(), null, true );
 		}
@@ -140,32 +144,7 @@ class IRNoti_Admin {
 	}
 
 	public static function tab_sms(): void {
-		self::form_open( 'sms' );
-		echo '<table class="form-table">';
-		self::row( __( 'شناسه خط ارسال', 'irnoti-service' ), self::input( 'sms_line_id', (string) IRNoti_Settings::get( 'sms_line_id' ) ), __( 'خالی = خط پیش‌فرض حساب. «sandbox» برای تست.', 'irnoti-service' ) );
-		self::row( __( 'موبایل مدیر (اعلان سفارش جدید)', 'irnoti-service' ), self::input( 'sms_admin_to', (string) IRNoti_Settings::get( 'sms_admin_to' ) ), __( 'چند شماره با ویرگول.', 'irnoti-service' ) );
-		if ( function_exists( 'wc_get_order_statuses' ) ) {
-			$tpl = (array) IRNoti_Settings::get( 'sms_events' );
-			foreach ( wc_get_order_statuses() as $slug => $name ) {
-				$s = preg_replace( '/^wc-/', '', $slug );
-				self::row( sprintf( __( 'پیامک مشتری: %s', 'irnoti-service' ), $name ), '<textarea class="large-text" rows="2" name="sms_events[' . esc_attr( $s ) . ']">' . esc_textarea( $tpl[ $s ] ?? '' ) . '</textarea>', $slug === 'wc-processing' ? __( 'متغیرها: {order_id} {name} {total} {status} {site}. خالی = ارسال نشود.', 'irnoti-service' ) : '' );
-			}
-		} else {
-			echo '<tr><td colspan="2"><em>' . esc_html__( 'برای پیامک وضعیت سفارش، ووکامرس را فعال کنید.', 'irnoti-service' ) . '</em></td></tr>';
-		}
-		self::row( __( 'ورود با کد پیامکی', 'irnoti-service' ), '<label><input type="checkbox" name="otp_login" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'otp_login' ), false ) . '> ' . esc_html__( 'فعال (شورت‌کد [irnoti_login])', 'irnoti-service' ) . '</label>', __( 'موبایل هر کاربر در پروفایلش ثبت می‌شود. ورود مدیران پیش‌فرض بسته است.', 'irnoti-service' ) );
-		self::row( __( 'کد الگوی OTP (اختیاری)', 'irnoti-service' ), self::input( 'otp_pattern', (string) IRNoti_Settings::get( 'otp_pattern' ) ), __( 'پارامتر code به الگو داده می‌شود. خالی = پیامک متنی.', 'irnoti-service' ) );
-		echo '</table>';
-		submit_button();
-		echo '</form><h2>' . esc_html__( 'ارسال آزمایشی', 'irnoti-service' ) . '</h2><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( 'irnoti_sms_test' );
-		echo '<input type="hidden" name="action" value="irnoti_sms_test">' . self::input( 'to', '', 'text', 'placeholder="09…"' ) . ' ' . self::input( 'text', 'تست IRNoti' );
-		submit_button( __( 'ارسال', 'irnoti-service' ), 'secondary', 'submit', false );
-		echo '</form><h2>' . esc_html__( 'ارسال‌های اخیر', 'irnoti-service' ) . '</h2><table class="widefat striped"><tbody>';
-		foreach ( (array) get_option( IRNoti_SMS::LOG, array() ) as $row ) {
-			printf( '<tr><td>%s</td><td dir="ltr">%s</td><td>%s</td><td>%s</td></tr>', esc_html( wp_date( 'Y/m/d H:i', $row['time'] ) ), esc_html( $row['to'] ), esc_html( $row['text'] ), $row['ok'] ? '<span class="irn-badge ok">' . esc_html__( 'ارسال شد', 'irnoti-service' ) . '</span>' : '<span class="irn-badge bad">' . esc_html( $row['error'] ?: __( 'ناموفق', 'irnoti-service' ) ) . '</span>' );
-		}
-		echo '</tbody></table>';
+		IRNoti_Admin_SMS::render();
 	}
 
 	public static function tab_bot(): void {
@@ -184,15 +163,36 @@ class IRNoti_Admin {
 			$sel .= sprintf( '<option value="%s" %s>%s</option>', esc_attr( $b['id'] ), selected( (string) IRNoti_Settings::get( 'bot_id' ), (string) $b['id'], false ), esc_html( ( $b['name'] ?? $b['username'] ?? '' ) . ' #' . $b['id'] ) );
 		}
 		self::row( __( 'ربات فروشگاهی', 'irnoti-service' ), $sel . '</select>', __( 'ربات باید از نوع فروشگاهی باشد. ابتدا در پنل IRNoti ربات را بسازید و به بله/تلگرام وصل کنید.', 'irnoti-service' ) );
-		self::row( __( 'همگام‌سازی خودکار', 'irnoti-service' ), '<label><input type="checkbox" name="bot_auto_sync" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'bot_auto_sync' ), false ) . '> ' . esc_html__( 'با هر ذخیره/حذف محصول ووکامرس', 'irnoti-service' ) . '</label>', sprintf( __( 'واحد پول فروشگاه: %s (فقط IRT و IRR پشتیبانی می‌شود).', 'irnoti-service' ), function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '—' ) );
+		self::row( __( 'همگام‌سازی خودکار', 'irnoti-service' ), '<label><input type="checkbox" name="bot_auto_sync" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'bot_auto_sync' ), false ) . '> ' . esc_html__( 'با هر ذخیره/حذف محصول و هر تغییر موجودی در ووکامرس', 'irnoti-service' ) . '</label>', sprintf( __( 'واحد پول فروشگاه: %s (فقط IRT و IRR پشتیبانی می‌شود).', 'irnoti-service' ), function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '—' ) );
 		self::row( __( 'دریافت سفارش‌های ربات', 'irnoti-service' ), '<label><input type="checkbox" name="bot_pull_orders" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'bot_pull_orders' ), false ) . '> ' . esc_html__( 'هر ۵ دقیقه سفارش‌های ربات در ووکامرس ساخته شود و وضعیت‌ها دوطرفه همگام شود', 'irnoti-service' ) . '</label>' );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
 		if ( class_exists( 'WooCommerce' ) && IRNoti_Bot_Sync::enabled() ) {
+			self::bot_orders_table();
 			echo '<p><button class="button" id="irnoti-pull-orders">' . esc_html__( 'دریافت سفارش‌ها همین حالا', 'irnoti-service' ) . '</button> <span id="irnoti-pull-status"></span></p>';
 			echo '<p><button class="button button-primary" id="irnoti-sync-all">' . esc_html__( 'همگام‌سازی همهٔ محصولات', 'irnoti-service' ) . '</button> <span id="irnoti-sync-status"></span></p><ul id="irnoti-sync-errors"></ul>';
 		}
+	}
+
+	private static function bot_orders_table(): void {
+		$rows = IRNoti_Bot_Orders::recent( 15 );
+		echo '<h2>' . esc_html__( 'آخرین سفارش‌های ربات', 'irnoti-service' ) . '</h2>';
+		if ( is_wp_error( $rows ) ) {
+			echo '<p style="color:#C0260B">' . esc_html( $rows->get_error_message() ) . '</p>';
+			return;
+		}
+		$b = array( 'new' => array( 'brand', 'جدید' ), 'confirmed' => array( 'warn', 'تأیید شده' ), 'shipped' => array( 'warn', 'ارسال شده' ), 'done' => array( 'ok', 'تحویل شده' ), 'canceled' => array( 'bad', 'لغو شده' ) );
+		echo '<table class="widefat striped"><thead><tr><th>#</th><th>' . esc_html__( 'مشتری', 'irnoti-service' ) . '</th><th>' . esc_html__( 'مبلغ (ریال)', 'irnoti-service' ) . '</th><th>' . esc_html__( 'وضعیت ربات', 'irnoti-service' ) . '</th><th>' . esc_html__( 'سفارش ووکامرس', 'irnoti-service' ) . '</th></tr></thead><tbody>';
+		foreach ( $rows as $o ) {
+			$st = $b[ $o['status'] ?? '' ] ?? array( '', (string) ( $o['status'] ?? '' ) );
+			$wc = ! empty( $o['wc'] ) ? '<a href="' . esc_url( get_edit_post_link( (int) $o['wc'], 'raw' ) ?: admin_url( 'admin.php?page=wc-orders&action=edit&id=' . (int) $o['wc'] ) ) . '">#' . (int) $o['wc'] . '</a>' : '<span class="irn-badge warn">' . esc_html__( 'هنوز وارد نشده', 'irnoti-service' ) . '</span>';
+			printf( '<tr><td>%s</td><td>%s<br><small dir="ltr">%s</small></td><td>%s</td><td><span class="irn-badge %s">%s</span></td><td>%s</td></tr>', esc_html( (string) ( $o['number'] ?? $o['id'] ?? '' ) ), esc_html( (string) ( $o['customerName'] ?? '' ) ), esc_html( (string) ( $o['phone'] ?? '' ) ), esc_html( number_format_i18n( (float) ( $o['total'] ?? 0 ) ) ), esc_attr( $st[0] ), esc_html( $st[1] ), $wc ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		if ( ! $rows ) {
+			echo '<tr><td colspan="5" class="irn-empty">—</td></tr>';
+		}
+		echo '</tbody></table>';
 	}
 
 	public static function tab_email(): void {
@@ -288,16 +288,9 @@ class IRNoti_Admin {
 				}
 				break;
 			case 'sms':
-				$events = array();
-				foreach ( (array) ( $p['sms_events'] ?? array() ) as $s => $t ) {
-					if ( '' !== trim( (string) $t ) ) {
-						$events[ sanitize_key( $s ) ] = sanitize_textarea_field( $t );
-					}
-				}
 				IRNoti_Settings::update( array(
 					'sms_line_id'  => sanitize_text_field( $p['sms_line_id'] ?? '' ),
 					'sms_admin_to' => sanitize_text_field( $p['sms_admin_to'] ?? '' ),
-					'sms_events'   => $events,
 					'otp_login'    => empty( $p['otp_login'] ) ? 0 : 1,
 					'otp_pattern'  => sanitize_text_field( $p['otp_pattern'] ?? '' ),
 				) );

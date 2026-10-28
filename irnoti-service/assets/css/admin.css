@@ -107,3 +107,19 @@
 
 .irn #irnoti-voip ul:not(.irnoti-cards){list-style:none;padding:0;margin:0}.irn #irnoti-voip ul:not(.irnoti-cards) li{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:0 0 6px}
 .irn form+form{margin-top:8px}
+
+/* sms rules editor */
+.irnoti-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.irnoti-chip{font-family:inherit;font-size:12px;border:1px dashed var(--line-2);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:2px 12px;cursor:pointer;transition:.15s}
+.irnoti-chip:hover{border-color:var(--brand);color:var(--brand-hover);background:var(--brand-soft)}
+.irnoti-count{color:var(--faint);font-size:12px;margin:4px 0 0}
+.irnoti-preview{background:var(--ink);color:#fff;border-radius:18px 18px 18px 4px;padding:12px 16px;max-width:380px;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.9;position:relative}
+.irnoti-patbody{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:10px 0}
+#irnoti-r-params p{margin:6px 0}
+#irnoti-r-params input{min-width:260px}
+.irn tr[hidden],.irn #irnoti-r-custom[hidden]{display:none}
+a.button.is-active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.irnoti-subnav a.button{border:0;background:transparent;border-radius:9px;min-height:34px;line-height:34px;color:var(--muted);text-decoration:none}
+.irnoti-subnav a.button:hover{background:#fff;color:var(--ink)}
+.irnoti-subnav a.button.is-active{background:var(--ink);color:#fff}
+.irn a.button,.irn a.button-primary{text-decoration:none}.irn a.button-primary{color:#fff}

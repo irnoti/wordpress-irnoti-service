@@ -80,6 +80,9 @@ class IRNoti_Bot_Orders {
 			$order = self::find_order( (string) $o['id'] );
 			if ( $order ) {
 				self::apply_remote_status( $order, (string) ( $o['status'] ?? '' ) );
+				if ( 'paid' === ( $o['paymentStatus'] ?? '' ) && ! $order->is_paid() && ! in_array( $order->get_status(), array( 'cancelled', 'refunded' ), true ) ) {
+					$order->payment_complete();
+				}
 				continue;
 			}
 			if ( self::create( $o ) ) {
@@ -88,6 +91,33 @@ class IRNoti_Bot_Orders {
 		}
 		self::$pulling = false;
 		return $new;
+	}
+
+	/** Links the order to an existing customer by mobile; never creates accounts with made-up e-mails. */
+	private static function find_customer( string $phone ): int {
+		$n = IRNoti_SMS::normalize( $phone );
+		if ( '' === $n ) {
+			return 0;
+		}
+		foreach ( array( 'irnoti_mobile', 'billing_phone' ) as $key ) {
+			$users = get_users( array( 'meta_key' => $key, 'meta_value' => $n, 'number' => 2, 'fields' => 'ID' ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
+			if ( 1 === count( $users ) ) {
+				return (int) $users[0];
+			}
+		}
+		return 0;
+	}
+
+	private static function note_stock_shortage( WC_Order $order ): void {
+		foreach ( $order->get_items() as $it ) {
+			$p = $it->get_product();
+			if ( $p && $p->managing_stock() && (int) $p->get_stock_quantity() < 0 ) {
+				$order->add_order_note( sprintf( __( 'هشدار: موجودی «%s» منفی شد؛ موجودی را بررسی کنید.', 'irnoti-service' ), $p->get_name() ) );
+			}
+			if ( $p ) {
+				IRNoti_Bot_Sync::queue( $p->is_type( 'variation' ) ? $p->get_parent_id() : $p->get_id() );
+			}
+		}
 	}
 
 	private static function apply_remote_status( WC_Order $order, string $status ): void {
@@ -120,7 +150,12 @@ class IRNoti_Bot_Orders {
 		}
 		$name = sanitize_text_field( (string) ( $o['customerName'] ?? '' ) );
 		$order->set_billing_first_name( $name );
-		$order->set_billing_phone( sanitize_text_field( (string) ( $o['phone'] ?? '' ) ) );
+		$phone = sanitize_text_field( (string) ( $o['phone'] ?? '' ) );
+		$order->set_billing_phone( $phone );
+		$uid = self::find_customer( $phone );
+		if ( $uid ) {
+			$order->set_customer_id( $uid );
+		}
 		$order->set_billing_address_1( sanitize_textarea_field( (string) ( $o['address'] ?? '' ) ) );
 		$order->set_payment_method_title( sanitize_text_field( sprintf( 'ربات (%s) %s', (string) ( $o['channel'] ?? '' ), (string) ( $o['paymentMethod'] ?? '' ) ) ) );
 		$order->set_created_via( 'irnoti-bot' );
@@ -131,9 +166,31 @@ class IRNoti_Bot_Orders {
 		if ( ! empty( $o['note'] ) ) {
 			$order->add_order_note( sanitize_textarea_field( (string) $o['note'] ) );
 		}
-		$order->set_status( self::TO_WOO[ $status ] ?? 'on-hold', sprintf( __( 'سفارش ربات #%s', 'irnoti-service' ), (string) ( $o['number'] ?? $o['id'] ) ) );
+		$note = sprintf( __( 'سفارش ربات #%s', 'irnoti-service' ), (string) ( $o['number'] ?? $o['id'] ) );
+		$order->set_status( self::TO_WOO[ $status ] ?? 'on-hold', $note );
 		$order->save();
+		// Moving to on-hold/processing reduces stock through WooCommerce's own hooks; payment_complete() is only for orders the bot marks paid.
+		if ( 'paid' === ( $o['paymentStatus'] ?? '' ) && ! $order->is_paid() && 'cancelled' !== $order->get_status() ) {
+			$order->payment_complete();
+		}
+		self::note_stock_shortage( $order );
+		do_action( 'irnoti_bot_order_created', $order );
 		return true;
+	}
+
+	/** Recent bot orders with the matching Woo order id (0 if not imported yet), for the admin screen. */
+	public static function recent( int $limit = 15 ) {
+		$rows = IRNoti_API::get( 'botbuilder/bots/' . rawurlencode( (string) IRNoti_Settings::get( 'bot_id' ) ) . '/shop/orders' );
+		if ( is_wp_error( $rows ) ) {
+			return $rows;
+		}
+		$out = array();
+		foreach ( array_slice( (array) $rows, 0, $limit ) as $o ) {
+			$w     = is_array( $o ) && isset( $o['id'] ) ? self::find_order( (string) $o['id'] ) : null;
+			$o['wc'] = $w ? $w->get_id() : 0;
+			$out[]   = $o;
+		}
+		return $out;
 	}
 
 	public static function push_status( $order_id, $from, $to ): void {
