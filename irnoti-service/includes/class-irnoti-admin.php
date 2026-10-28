@@ -15,18 +15,18 @@ class IRNoti_Admin {
 	}
 
 	public static function menu(): void {
-		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), self::menu_icon(), 58 );
+		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), 'none', 58 );
 		add_action( 'admin_head', array( __CLASS__, 'menu_css' ) );
 	}
 
-	/** Monochrome SVG so WordPress recolors it with the admin color scheme (a full-size PNG breaks the 20px menu slot). */
-	private static function menu_icon(): string {
-		$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="black" d="M3 14.5 12.8 4.7a1.6 1.6 0 0 1 2.3 0l.2.2a1.6 1.6 0 0 1 0 2.3L5.5 17H3z"/></svg>';
-		return 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
-	}
-
+	/**
+	 * The menu icon is drawn by CSS (a mask filled with currentColor) instead of an <img>/background URL, so it always takes the
+	 * admin colour scheme (normal, hover, current) and can never overflow the 20px menu slot.
+	 */
 	public static function menu_css(): void {
-		echo '<style>#adminmenu .toplevel_page_irnoti .wp-menu-image img{width:20px;height:20px;padding:7px 0;box-sizing:content-box}</style>';
+		$svg = rawurlencode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M3 14.5 12.8 4.7a1.6 1.6 0 0 1 2.3 0l.2.2a1.6 1.6 0 0 1 0 2.3L5.5 17H3z"/></svg>' );
+		$url = 'url("data:image/svg+xml,' . $svg . '")';
+		echo '<style>#adminmenu .toplevel_page_irnoti div.wp-menu-image{background:none}#adminmenu .toplevel_page_irnoti div.wp-menu-image:before{content:"";display:block;width:20px;height:20px;margin:7px auto 0;padding:0;background-color:currentColor;-webkit-mask:' . $url . ' center/contain no-repeat;mask:' . $url . ' center/contain no-repeat}</style>'; // phpcs:ignore WordPress.Security.EscapeOutput -- static, rawurlencoded.
 	}
 
 	private static function tabs(): array {
