@@ -8,6 +8,7 @@
  * Author:            IRNoti
  * License:           GPL-2.0-or-later
  * Text Domain:       irnoti-service
+ * Domain Path:       /languages
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -17,16 +18,24 @@ define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
 
-foreach ( array( 'settings', 'api-client', 'sms', 'email', 'bot-sync', 'voip', 'admin' ) as $irnoti_part ) {
+foreach ( array( 'settings', 'api-client', 'sms', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'admin' ) as $irnoti_part ) {
 	require_once IRNOTI_DIR . 'includes/class-irnoti-' . $irnoti_part . '.php';
 }
 
 add_action( 'plugins_loaded', static function () {
+	load_plugin_textdomain( 'irnoti-service', false, dirname( plugin_basename( IRNOTI_FILE ) ) . '/languages' );
 	IRNoti_SMS::init();
 	IRNoti_Email::init();
 	IRNoti_Bot_Sync::init();
 	IRNoti_VoIP::init();
+	IRNoti_Webhooks::init();
+	IRNoti_Bot_Orders::init();
+	IRNoti_OTP_Login::init();
 	if ( is_admin() ) {
 		IRNoti_Admin::init();
 	}
+} );
+
+register_deactivation_hook( __FILE__, static function () {
+	wp_clear_scheduled_hook( 'irnoti_pull_orders' );
 } );

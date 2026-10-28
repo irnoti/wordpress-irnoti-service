@@ -19,6 +19,10 @@ class IRNoti_Settings {
 			'voip_from'      => '',
 			'voip_sip_id'    => '',
 			'jssip_url'      => '',
+			'webhook_secret_enc' => '',
+			'bot_pull_orders' => 0,
+			'otp_login'      => 0,
+			'otp_pattern'    => '',
 		);
 	}
 
@@ -38,6 +42,15 @@ class IRNoti_Settings {
 	public static function api_key(): string {
 		$enc = (string) self::get( 'api_key_enc' );
 		return $enc === '' ? '' : self::decrypt( $enc );
+	}
+
+	public static function webhook_secret(): string {
+		$enc = (string) self::get( 'webhook_secret_enc' );
+		return $enc === '' ? '' : self::decrypt( $enc );
+	}
+
+	public static function set_webhook_secret( string $secret ): void {
+		self::update( array( 'webhook_secret_enc' => $secret === '' ? '' : self::encrypt( $secret ) ) );
 	}
 
 	public static function set_api_key( string $key ): void {

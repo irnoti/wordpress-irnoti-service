@@ -10,6 +10,7 @@ class IRNoti_Admin {
 		add_action( 'admin_post_irnoti_sms_test', array( __CLASS__, 'sms_test' ) );
 		add_action( 'admin_post_irnoti_email_test', array( __CLASS__, 'email_test' ) );
 		add_action( 'wp_ajax_irnoti_sync_batch', array( __CLASS__, 'ajax_sync_batch' ) );
+		add_action( 'wp_ajax_irnoti_pull_orders', array( __CLASS__, 'ajax_pull_orders' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
 	}
 
@@ -43,6 +44,7 @@ class IRNoti_Admin {
 			'voipNonce' => wp_create_nonce( 'irnoti_voip' ),
 			'voipFrom'  => (string) IRNoti_Settings::get( 'voip_from' ),
 		) );
+		wp_add_inline_style( 'wp-admin', '.irnoti-cards{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none}.irnoti-cards li{background:#fff;border:1px solid #dcdcde;padding:8px 12px;border-radius:4px}' );
 		if ( 'voip' === $tab && IRNoti_VoIP::jssip_url() ) {
 			wp_enqueue_script( 'irnoti-jssip', IRNoti_VoIP::jssip_url(), array(), null, true );
 		}
@@ -98,6 +100,22 @@ class IRNoti_Admin {
 		echo '</table>';
 		submit_button();
 		echo '</form>';
+		echo '<h2>' . esc_html__( 'وب‌هوک (رویدادهای تحویل پیامک، ایمیل، تماس)', 'irnoti-service' ) . '</h2>';
+		echo '<p>' . esc_html__( 'در پنل IRNoti ← وب‌هوک‌ها یک وب‌هوک با این آدرس بسازید و راز امضا را اینجا وارد کنید:', 'irnoti-service' ) . '</p><p><code dir="ltr">' . esc_html( IRNoti_Webhooks::endpoint() ) . '</code></p>';
+		self::form_open( 'connection' );
+		echo '<table class="form-table">';
+		self::row( __( 'راز امضای وب‌هوک', 'irnoti-service' ), self::input( 'webhook_secret', '', 'password', 'autocomplete="new-password" placeholder="' . ( IRNoti_Settings::webhook_secret() ? '••••••' : '' ) . '"' ) );
+		echo '</table>';
+		submit_button();
+		echo '</form>';
+		$events = (array) get_option( IRNoti_Webhooks::LOG, array() );
+		if ( $events ) {
+			echo '<table class="widefat striped"><tbody>';
+			foreach ( $events as $e ) {
+				printf( '<tr><td>%s</td><td dir="ltr">%s</td><td dir="ltr">%s</td></tr>', esc_html( wp_date( 'Y/m/d H:i:s', $e['time'] ) ), esc_html( $e['event'] ), esc_html( $e['brief'] ) );
+			}
+			echo '</tbody></table>';
+		}
 		if ( $has ) {
 			$me = IRNoti_API::get( 'email/me' );
 			$tx = is_wp_error( $me ) && 401 === ( $me->get_error_data()['status'] ?? 0 ) ? __( 'کلید نامعتبر است.', 'irnoti-service' ) : __( 'کلید ذخیره شده است.', 'irnoti-service' );
@@ -119,6 +137,8 @@ class IRNoti_Admin {
 		} else {
 			echo '<tr><td colspan="2"><em>' . esc_html__( 'برای پیامک وضعیت سفارش، ووکامرس را فعال کنید.', 'irnoti-service' ) . '</em></td></tr>';
 		}
+		self::row( __( 'ورود با کد پیامکی', 'irnoti-service' ), '<label><input type="checkbox" name="otp_login" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'otp_login' ), false ) . '> ' . esc_html__( 'فعال (شورت‌کد [irnoti_login])', 'irnoti-service' ) . '</label>', __( 'موبایل هر کاربر در پروفایلش ثبت می‌شود. ورود مدیران پیش‌فرض بسته است.', 'irnoti-service' ) );
+		self::row( __( 'کد الگوی OTP (اختیاری)', 'irnoti-service' ), self::input( 'otp_pattern', (string) IRNoti_Settings::get( 'otp_pattern' ) ), __( 'پارامتر code به الگو داده می‌شود. خالی = پیامک متنی.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
 		echo '</form><h2>' . esc_html__( 'ارسال آزمایشی', 'irnoti-service' ) . '</h2><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
@@ -149,10 +169,12 @@ class IRNoti_Admin {
 		}
 		self::row( __( 'ربات فروشگاهی', 'irnoti-service' ), $sel . '</select>', __( 'ربات باید از نوع فروشگاهی باشد. ابتدا در پنل IRNoti ربات را بسازید و به بله/تلگرام وصل کنید.', 'irnoti-service' ) );
 		self::row( __( 'همگام‌سازی خودکار', 'irnoti-service' ), '<label><input type="checkbox" name="bot_auto_sync" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'bot_auto_sync' ), false ) . '> ' . esc_html__( 'با هر ذخیره/حذف محصول ووکامرس', 'irnoti-service' ) . '</label>', sprintf( __( 'واحد پول فروشگاه: %s (فقط IRT و IRR پشتیبانی می‌شود).', 'irnoti-service' ), function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '—' ) );
+		self::row( __( 'دریافت سفارش‌های ربات', 'irnoti-service' ), '<label><input type="checkbox" name="bot_pull_orders" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'bot_pull_orders' ), false ) . '> ' . esc_html__( 'هر ۵ دقیقه سفارش‌های ربات در ووکامرس ساخته شود و وضعیت‌ها دوطرفه همگام شود', 'irnoti-service' ) . '</label>' );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
 		if ( class_exists( 'WooCommerce' ) && IRNoti_Bot_Sync::enabled() ) {
+			echo '<p><button class="button" id="irnoti-pull-orders">' . esc_html__( 'دریافت سفارش‌ها همین حالا', 'irnoti-service' ) . '</button> <span id="irnoti-pull-status"></span></p>';
 			echo '<p><button class="button button-primary" id="irnoti-sync-all">' . esc_html__( 'همگام‌سازی همهٔ محصولات', 'irnoti-service' ) . '</button> <span id="irnoti-sync-status"></span></p><ul id="irnoti-sync-errors"></ul>';
 		}
 	}
@@ -172,20 +194,60 @@ class IRNoti_Admin {
 	}
 
 	public static function tab_voip(): void {
+		$sections = array(
+			'phone'      => __( 'تلفن', 'irnoti-service' ),
+			'live'       => __( 'تماس‌های زنده', 'irnoti-service' ),
+			'reports'    => __( 'گزارش تماس', 'irnoti-service' ),
+			'recordings' => __( 'ضبط‌ها و پیام‌گیر', 'irnoti-service' ),
+			'blocklist'  => __( 'لیست مسدود', 'irnoti-service' ),
+			'accounts'   => __( 'حساب‌های SIP', 'irnoti-service' ),
+			'settings'   => __( 'تنظیمات', 'irnoti-service' ),
+		);
+		echo '<div id="irnoti-voip"><p class="irnoti-subnav">';
+		foreach ( $sections as $k => $label ) {
+			printf( '<button type="button" class="button" data-sec="%s">%s</button> ', esc_attr( $k ), esc_html( $label ) );
+		}
+		echo '</p>';
+
+		echo '<section data-panel="phone"><h2>' . esc_html__( 'کلیک‌تو‌کال (تماس دوطرفه از سرور)', 'irnoti-service' ) . '</h2><p>' . self::input( 'irnoti-ctc-to', '', 'text', 'id="irnoti-ctc-to" placeholder="09…"' ) . ' <button class="button" id="irnoti-ctc">' . esc_html__( 'تماس', 'irnoti-service' ) . '</button> <span id="irnoti-ctc-status"></span></p>';
+		echo '<h2>' . esc_html__( 'سافت‌فون', 'irnoti-service' ) . '</h2>';
+		if ( ! IRNoti_VoIP::jssip_url() ) {
+			echo '<p style="color:#b32d2e">' . esc_html__( 'کتابخانهٔ JsSIP یافت نشد (bin/vendor-jssip.sh یا آدرس در «تنظیمات»).', 'irnoti-service' ) . '</p>';
+		} else {
+			echo '<p><select id="irnoti-sip-acc"></select> <button class="button button-primary" id="irnoti-sip-connect">' . esc_html__( 'اتصال', 'irnoti-service' ) . '</button> <span id="irnoti-sip-status"></span></p>';
+			echo '<p>' . self::input( 'irnoti-sip-dial', '', 'text', 'id="irnoti-sip-dial" placeholder="09…"' ) . ' <button class="button" id="irnoti-sip-call" disabled>' . esc_html__( 'تماس', 'irnoti-service' ) . '</button> <button class="button" id="irnoti-sip-hangup" disabled>' . esc_html__( 'قطع', 'irnoti-service' ) . '</button></p><audio id="irnoti-sip-audio" autoplay></audio>';
+		}
+		$inbound = array_filter( (array) get_transient( 'irnoti_inbound' ) );
+		if ( $inbound ) {
+			echo '<h3>' . esc_html__( 'آخرین تماس‌های ورودی (وب‌هوک)', 'irnoti-service' ) . '</h3><ul>';
+			foreach ( $inbound as $c ) {
+				printf( '<li dir="ltr">%s — %s → %s</li>', esc_html( wp_date( 'Y/m/d H:i', $c['time'] ) ), esc_html( $c['from'] ), esc_html( $c['to'] ) );
+			}
+			echo '</ul>';
+		}
+		echo '</section>';
+
+		echo '<section data-panel="live" hidden><p><button class="button" id="irnoti-live-refresh">' . esc_html__( 'بروزرسانی', 'irnoti-service' ) . '</button> <label><input type="checkbox" id="irnoti-live-auto" checked> ' . esc_html__( 'خودکار هر ۵ ثانیه', 'irnoti-service' ) . '</label></p><div id="irnoti-live"></div></section>';
+
+		echo '<section data-panel="reports" hidden><p><label>' . esc_html__( 'از', 'irnoti-service' ) . ' <input type="date" id="irnoti-rep-from"></label> <label>' . esc_html__( 'تا', 'irnoti-service' ) . ' <input type="date" id="irnoti-rep-to"></label> ';
+		echo '<select id="irnoti-rep-dir"><option value="">' . esc_html__( 'همه جهت‌ها', 'irnoti-service' ) . '</option><option value="in">' . esc_html__( 'ورودی', 'irnoti-service' ) . '</option><option value="out">' . esc_html__( 'خروجی', 'irnoti-service' ) . '</option></select> ';
+		echo '<select id="irnoti-rep-status"><option value="">' . esc_html__( 'همه وضعیت‌ها', 'irnoti-service' ) . '</option><option value="answered">answered</option><option value="missed">missed</option><option value="failed">failed</option></select> ';
+		echo self::input( 'irnoti-rep-q', '', 'text', 'id="irnoti-rep-q" placeholder="شماره" style="width:120px"' ) . ' <button class="button button-primary" id="irnoti-rep-go">' . esc_html__( 'نمایش', 'irnoti-service' ) . '</button> <a class="button" id="irnoti-rep-csv" href="#" data-base="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=irnoti_voip_csv' ), 'irnoti_voip' ) ) . '">CSV</a></p><div id="irnoti-rep-summary"></div><div id="irnoti-rep-table"></div><p><button class="button" id="irnoti-rep-more" hidden>' . esc_html__( 'بیشتر', 'irnoti-service' ) . '</button></p></section>';
+
+		echo '<section data-panel="recordings" hidden><p><select id="irnoti-rec-kind"><option value="">' . esc_html__( 'همه', 'irnoti-service' ) . '</option><option value="call">' . esc_html__( 'ضبط تماس', 'irnoti-service' ) . '</option><option value="voicemail">' . esc_html__( 'پیام‌گیر', 'irnoti-service' ) . '</option></select> <button class="button" id="irnoti-rec-go">' . esc_html__( 'نمایش', 'irnoti-service' ) . '</button></p><div id="irnoti-rec"></div><audio id="irnoti-rec-audio" controls hidden></audio></section>';
+
+		echo '<section data-panel="blocklist" hidden><p>' . self::input( 'irnoti-block-number', '', 'text', 'id="irnoti-block-number" placeholder="09…"' ) . ' ' . self::input( 'irnoti-block-reason', '', 'text', 'id="irnoti-block-reason" placeholder="دلیل (اختیاری)"' ) . ' <button class="button" id="irnoti-block-add">' . esc_html__( 'مسدود کن', 'irnoti-service' ) . '</button></p><div id="irnoti-block"></div></section>';
+
+		echo '<section data-panel="accounts" hidden><p><button class="button" id="irnoti-sip-new">' . esc_html__( 'ساخت حساب SIP', 'irnoti-service' ) . '</button></p><div id="irnoti-accounts"></div></section>';
+
+		echo '<section data-panel="settings" hidden>';
 		self::form_open( 'voip' );
 		echo '<table class="form-table">';
 		self::row( __( 'شمارهٔ خط شما (from)', 'irnoti-service' ), self::input( 'voip_from', (string) IRNoti_Settings::get( 'voip_from' ) ), __( 'شمارهٔ تماس‌گیرندهٔ دوطرفه (کلیک‌تو‌کال).', 'irnoti-service' ) );
-		self::row( __( 'آدرس JsSIP (اختیاری)', 'irnoti-service' ), self::input( 'jssip_url', (string) IRNoti_Settings::get( 'jssip_url' ), 'url' ), __( 'اگر فایل assets/js/jssip.min.js را با bin/vendor-jssip.sh نساخته‌اید، آدرس https یک نسخهٔ JsSIP ۳٫x را بدهید.', 'irnoti-service' ) );
+		self::row( __( 'آدرس JsSIP (اختیاری)', 'irnoti-service' ), self::input( 'jssip_url', (string) IRNoti_Settings::get( 'jssip_url' ), 'url' ), __( 'اگر assets/js/jssip.min.js را با bin/vendor-jssip.sh نساخته‌اید، آدرس https یک JsSIP ۳٫x را بدهید.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
-		echo '</form><h2>' . esc_html__( 'کلیک‌تو‌کال', 'irnoti-service' ) . '</h2><p>' . self::input( 'irnoti-ctc-to', '', 'text', 'id="irnoti-ctc-to" placeholder="09…"' ) . ' <button class="button" id="irnoti-ctc">' . esc_html__( 'تماس', 'irnoti-service' ) . '</button> <span id="irnoti-ctc-status"></span></p>';
-		echo '<h2>' . esc_html__( 'سافت‌فون', 'irnoti-service' ) . '</h2>';
-		if ( ! IRNoti_VoIP::jssip_url() ) {
-			echo '<p style="color:#b32d2e">' . esc_html__( 'کتابخانهٔ JsSIP یافت نشد (bin/vendor-jssip.sh یا آدرس بالا).', 'irnoti-service' ) . '</p>';
-			return;
-		}
-		echo '<p><select id="irnoti-sip-acc"></select> <button class="button" id="irnoti-sip-new">' . esc_html__( 'ساخت حساب SIP', 'irnoti-service' ) . '</button> <button class="button button-primary" id="irnoti-sip-connect">' . esc_html__( 'اتصال', 'irnoti-service' ) . '</button> <span id="irnoti-sip-status"></span></p>';
-		echo '<p>' . self::input( 'irnoti-sip-dial', '', 'text', 'id="irnoti-sip-dial" placeholder="09…"' ) . ' <button class="button" id="irnoti-sip-call" disabled>' . esc_html__( 'تماس', 'irnoti-service' ) . '</button> <button class="button" id="irnoti-sip-hangup" disabled>' . esc_html__( 'قطع', 'irnoti-service' ) . '</button></p><audio id="irnoti-sip-audio" autoplay></audio>';
+		echo '</form></section></div>';
 	}
 
 	public static function save(): void {
@@ -197,10 +259,16 @@ class IRNoti_Admin {
 		$p   = wp_unslash( $_POST );
 		switch ( $tab ) {
 			case 'connection':
-				IRNoti_Settings::update( array( 'base_url' => IRNoti_Settings::clean_base_url( (string) ( $p['base_url'] ?? '' ) ) ) );
+				if ( isset( $p['base_url'] ) ) {
+					IRNoti_Settings::update( array( 'base_url' => IRNoti_Settings::clean_base_url( (string) $p['base_url'] ) ) );
+				}
 				$key = trim( (string) ( $p['api_key'] ?? '' ) );
 				if ( '' !== $key ) {
 					IRNoti_Settings::set_api_key( sanitize_text_field( $key ) );
+				}
+				$wh = trim( (string) ( $p['webhook_secret'] ?? '' ) );
+				if ( '' !== $wh ) {
+					IRNoti_Settings::set_webhook_secret( sanitize_text_field( $wh ) );
 				}
 				break;
 			case 'sms':
@@ -214,10 +282,12 @@ class IRNoti_Admin {
 					'sms_line_id'  => sanitize_text_field( $p['sms_line_id'] ?? '' ),
 					'sms_admin_to' => sanitize_text_field( $p['sms_admin_to'] ?? '' ),
 					'sms_events'   => $events,
+					'otp_login'    => empty( $p['otp_login'] ) ? 0 : 1,
+					'otp_pattern'  => sanitize_text_field( $p['otp_pattern'] ?? '' ),
 				) );
 				break;
 			case 'bot':
-				IRNoti_Settings::update( array( 'bot_id' => preg_replace( '/\D/', '', (string) ( $p['bot_id'] ?? '' ) ), 'bot_auto_sync' => empty( $p['bot_auto_sync'] ) ? 0 : 1 ) );
+				IRNoti_Settings::update( array( 'bot_id' => preg_replace( '/\D/', '', (string) ( $p['bot_id'] ?? '' ) ), 'bot_auto_sync' => empty( $p['bot_auto_sync'] ) ? 0 : 1, 'bot_pull_orders' => empty( $p['bot_pull_orders'] ) ? 0 : 1 ) );
 				break;
 			case 'email':
 				IRNoti_Settings::update( array( 'email_enabled' => empty( $p['email_enabled'] ) ? 0 : 1, 'email_from' => sanitize_email( $p['email_from'] ?? '' ) ) );
@@ -251,6 +321,13 @@ class IRNoti_Admin {
 			wp_send_json_error( array( 'message' => 'WooCommerce inactive' ) );
 		}
 		wp_send_json_success( IRNoti_Bot_Sync::sync_batch( max( 1, (int) ( $_POST['page'] ?? 1 ) ) ) );
+	}
+
+	public static function ajax_pull_orders(): void {
+		check_ajax_referer( 'irnoti_sync', 'nonce' );
+		current_user_can( 'manage_options' ) || wp_send_json_error( null, 403 );
+		$n = IRNoti_Bot_Orders::pull();
+		is_wp_error( $n ) ? wp_send_json_error( array( 'message' => $n->get_error_message() ) ) : wp_send_json_success( array( 'new' => $n ) );
 	}
 
 	private static function back( string $tab, bool $ok, string $msg ): void {

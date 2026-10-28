@@ -7,7 +7,7 @@ class IRNoti_API {
 		return IRNoti_Settings::api_key() !== '';
 	}
 
-	public static function request( string $method, string $path, ?array $body = null, array $query = array(), array $headers = array() ) {
+	public static function request( string $method, string $path, ?array $body = null, array $query = array(), array $headers = array(), bool $raw = false ) {
 		$key = IRNoti_Settings::api_key();
 		if ( '' === $key ) {
 			return new WP_Error( 'irnoti_no_key', __( 'کلید API تنظیم نشده است.', 'irnoti-service' ) );
@@ -30,13 +30,16 @@ class IRNoti_API {
 		);
 		if ( null !== $body ) {
 			$args['headers']['Content-Type'] = 'application/json';
-			$args['body']                    = wp_json_encode( $body );
+			$args['body']                    = wp_json_encode( $body ?: new stdClass() ); // `[]` would fail object schemas.
 		}
 		$res = wp_safe_remote_request( $url, $args );
 		if ( is_wp_error( $res ) ) {
 			return $res;
 		}
 		$code = (int) wp_remote_retrieve_response_code( $res );
+		if ( $raw && $code < 400 ) {
+			return wp_remote_retrieve_body( $res );
+		}
 		$data = json_decode( wp_remote_retrieve_body( $res ), true );
 		if ( $code >= 400 ) {
 			$err = is_array( $data ) ? ( $data['error'] ?? $data ) : array();
@@ -48,6 +51,10 @@ class IRNoti_API {
 
 	public static function get( string $path, array $query = array() ) {
 		return self::request( 'GET', $path, null, $query );
+	}
+
+	public static function get_raw( string $path, array $query = array() ) {
+		return self::request( 'GET', $path, null, $query, array(), true );
 	}
 
 	public static function post( string $path, array $body = array(), string $idempotency_key = '' ) {
