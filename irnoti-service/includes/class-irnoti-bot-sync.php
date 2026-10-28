@@ -18,6 +18,8 @@ class IRNoti_Bot_Sync {
 	public static function hooks(): void {
 		add_action( 'woocommerce_update_product', array( __CLASS__, 'queue' ) );
 		add_action( 'woocommerce_new_product', array( __CLASS__, 'queue' ) );
+		add_action( 'woocommerce_product_set_stock', array( __CLASS__, 'queue_stock' ) );
+		add_action( 'woocommerce_variation_set_stock', array( __CLASS__, 'queue_stock' ) );
 		add_action( 'wp_trash_post', array( __CLASS__, 'on_trash' ) );
 		add_action( 'before_delete_post', array( __CLASS__, 'on_trash' ) );
 		add_action( self::CRON, array( __CLASS__, 'sync_product' ) );
@@ -33,6 +35,13 @@ class IRNoti_Bot_Sync {
 			return;
 		}
 		wp_schedule_single_event( time() + 5, self::CRON, array( (int) $product_id ) );
+	}
+
+	/** Any stock movement (web order, refund, manual edit, bot order) is pushed so the bot never sells what Woo no longer has. */
+	public static function queue_stock( $product ): void {
+		if ( $product instanceof WC_Product ) {
+			self::queue( $product->is_type( 'variation' ) ? $product->get_parent_id() : $product->get_id() );
+		}
 	}
 
 	public static function on_trash( $post_id ): void {

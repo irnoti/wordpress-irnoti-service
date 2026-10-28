@@ -29,14 +29,22 @@
     var tb = t.appendChild(el('tbody'));
     data.forEach(function (row) {
       var tr = tb.appendChild(el('tr'));
-      cols.forEach(function (c) { var v = row[c.key]; tr.appendChild(el('td', c.fmt ? c.fmt(v, row) : (v == null ? '' : String(v)), c.ltr ? { dir: 'ltr' } : {})); });
+      cols.forEach(function (c) {
+        var v = row[c.key], td = tr.appendChild(el('td', null, c.ltr ? { dir: 'ltr' } : {})), txt = c.fmt ? c.fmt(v, row) : (v == null ? '' : String(v));
+        if (c.badge && txt) td.appendChild(el('span', txt, { 'class': 'irn-badge ' + (BADGE[String(v)] || '') })); else td.textContent = txt;
+      });
       if (actions) { var td = tr.appendChild(el('td')); actions(row).forEach(function (a) { td.appendChild(a); td.appendChild(document.createTextNode(' ')); }); }
     });
-    if (!data.length) tb.appendChild(el('tr')).appendChild(el('td', '—', { colspan: cols.length + 1 }));
+    if (!data.length) tb.appendChild(el('tr')).appendChild(el('td', '—', { colspan: cols.length + 1, 'class': 'irn-empty' }));
     return t;
   }
   function show(box, node) { box.textContent = ''; box.appendChild(node); }
-  function ok(r, st) { if (!r.success) { alert(err(r)); } return r.success; }
+  function toast(msg, bad) {
+    var t = el('div', msg, { 'class': 'irn-toast' + (bad ? ' bad' : '') });
+    document.body.appendChild(t); setTimeout(function () { t.remove(); }, 4000);
+  }
+  function ok(r) { if (!r.success) { toast(err(r), true); } return r.success; }
+  var BADGE = { answered: 'ok', done: 'ok', completed: 'ok', missed: 'warn', ringing: 'brand', failed: 'bad', busy: 'warn', in: 'brand', out: 'brand' };
 
   // ---------- Woo sync ----------
   var syncBtn = $('irnoti-sync-all');
@@ -66,6 +74,7 @@
   var panels = root.querySelectorAll('[data-panel]'), liveTimer = null;
   function open(sec) {
     panels.forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== sec; });
+    root.querySelectorAll('[data-sec]').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-sec') === sec); });
     clearInterval(liveTimer);
     if (sec === 'live') { loadLive(); liveTimer = setInterval(function () { if ($('irnoti-live-auto').checked) loadLive(); }, 5000); }
     if (sec === 'reports' && !$('irnoti-rep-table').firstChild) loadReport(true);
@@ -79,7 +88,7 @@
   var ctc = $('irnoti-ctc');
   if (ctc) ctc.addEventListener('click', function (e) {
     e.preventDefault(); var st = $('irnoti-ctc-status'); st.textContent = '…';
-    voip('call', { from: IRNOTI.voipFrom, to: $('irnoti-ctc-to').value }).then(function (r) { st.textContent = r.success ? '✔' : err(r); });
+    voip('call', { from: IRNOTI.voipFrom, to: $('irnoti-ctc-to').value }).then(function (r) { st.textContent = ''; toast(r.success ? 'تماس برقرار شد' : err(r), !r.success); });
   });
 
   // live calls
@@ -88,8 +97,8 @@
       var box = $('irnoti-live');
       if (!r.success) { box.textContent = err(r); return; }
       show(box, table([
-        { key: 'direction', label: 'جهت' }, { key: 'from', label: 'از', ltr: true }, { key: 'to', label: 'به', ltr: true },
-        { key: 'state', label: 'وضعیت' }, { key: 'ageSec', label: 'ثانیه' },
+        { key: 'direction', label: 'جهت', badge: true }, { key: 'from', label: 'از', ltr: true }, { key: 'to', label: 'به', ltr: true },
+        { key: 'state', label: 'وضعیت', badge: true }, { key: 'ageSec', label: 'ثانیه' },
       ], rows(r.data), function (c) {
         return [
           btn('قطع', function () { voip('hangup', { id: c.id }).then(function (x) { ok(x); loadLive(); }); }),
@@ -119,7 +128,7 @@
         var box = $('irnoti-rep-summary'); box.textContent = '';
         if (!r.success) { box.textContent = err(r); return; }
         var ul = el('ul', null, { 'class': 'irnoti-cards' });
-        Object.keys(r.data).forEach(function (k) { var v = r.data[k]; if (v !== null && typeof v !== 'object') ul.appendChild(el('li', k + ': ' + v)); });
+        Object.keys(r.data).forEach(function (k) { var v = r.data[k]; if (v === null || typeof v === 'object' || k === 'from' || k === 'to' || k === 'truncated') return; var li = ul.appendChild(el('li')); li.appendChild(el('b', typeof v === 'number' ? v.toLocaleString('fa-IR') : String(v))); li.appendChild(el('span', k)); });
         box.appendChild(ul);
       });
     }
@@ -129,8 +138,8 @@
       if (!r.success) { $('irnoti-rep-table').textContent = err(r); return; }
       var items = rows(r.data); before = r.data && r.data.nextBefore || null;
       if (reset || !repTable) { repTable = table([
-        { key: 'createdAt', label: 'زمان', fmt: date }, { key: 'direction', label: 'جهت' }, { key: 'fromNumber', label: 'از', ltr: true },
-        { key: 'toNumber', label: 'به', ltr: true }, { key: 'status', label: 'وضعیت' }, { key: 'durationSec', label: 'مدت (ث)' },
+        { key: 'createdAt', label: 'زمان', fmt: date }, { key: 'direction', label: 'جهت', badge: true }, { key: 'fromNumber', label: 'از', ltr: true },
+        { key: 'toNumber', label: 'به', ltr: true }, { key: 'status', label: 'وضعیت', badge: true }, { key: 'durationSec', label: 'مدت (ث)' },
         { key: 'price', label: 'هزینه (ریال)' },
       ], items); show($('irnoti-rep-table'), repTable); }
       else { var tb = repTable.tBodies[0]; items.forEach(function (row) { var tr = tb.appendChild(el('tr')); [date(row.createdAt), row.direction, row.fromNumber, row.toNumber, row.status, row.durationSec, row.price].forEach(function (v) { tr.appendChild(el('td', v == null ? '' : String(v))); }); }); }
