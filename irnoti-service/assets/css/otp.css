@@ -1,0 +1,11 @@
+/* Front-end SMS login form [irnoti_login] */
+@font-face{font-family:Vazirmatn;font-weight:400;font-display:swap;src:url(../fonts/Vazirmatn-Regular.woff2) format("woff2")}
+@font-face{font-family:Vazirmatn;font-weight:700;font-display:swap;src:url(../fonts/Vazirmatn-Bold.woff2) format("woff2")}
+.irnoti-otp{font-family:Vazirmatn,system-ui,sans-serif;max-width:380px;margin:24px auto;background:#fff;border:1px solid #EFEAE6;border-radius:20px;padding:28px;box-shadow:0 20px 40px -24px rgba(26,22,20,.3);color:#1A1614;text-align:right}
+.irnoti-otp label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.irnoti-otp input{width:100%;box-sizing:border-box;font-family:inherit;font-size:16px;padding:12px 14px;border:1px solid #DDD5CF;border-radius:8px;background:#FAF8F6;letter-spacing:2px;text-align:center}
+.irnoti-otp input:focus{outline:0;border-color:#FF3300;box-shadow:0 0 0 3px rgba(255,51,0,.14);background:#fff}
+.irnoti-otp button{width:100%;font-family:inherit;background:#FF3300;color:#fff;border:0;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.irnoti-otp button:hover{background:#D92B00}
+.irnoti-otp p{margin:0 0 16px}
+#irnoti-otp-msg{color:#6B625D;font-size:13px;margin:0;min-height:20px}

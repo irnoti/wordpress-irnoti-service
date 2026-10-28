@@ -25,6 +25,7 @@ class IRNoti_OTP_Login {
 		if ( ! self::enabled() || is_user_logged_in() ) {
 			return '';
 		}
+		wp_enqueue_style( 'irnoti-otp', IRNOTI_URL . 'assets/css/otp.css', array(), IRNOTI_VERSION );
 		wp_enqueue_script( 'irnoti-otp', IRNOTI_URL . 'assets/js/otp.js', array(), IRNOTI_VERSION, true );
 		wp_localize_script( 'irnoti-otp', 'IRNOTI_OTP', array( 'ajax' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( 'irnoti_otp' ), 'redirect' => home_url( '/' ) ) );
 		ob_start();

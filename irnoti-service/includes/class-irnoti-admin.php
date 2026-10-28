@@ -15,7 +15,7 @@ class IRNoti_Admin {
 	}
 
 	public static function menu(): void {
-		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), 'dashicons-megaphone', 58 );
+		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), IRNOTI_URL . 'assets/img/icon.png', 58 );
 	}
 
 	private static function tabs(): array {
@@ -37,6 +37,7 @@ class IRNoti_Admin {
 			return;
 		}
 		$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'connection';
+		wp_enqueue_style( 'irnoti-admin', IRNOTI_URL . 'assets/css/admin.css', array(), IRNOTI_VERSION );
 		wp_enqueue_script( 'irnoti-admin', IRNOTI_URL . 'assets/js/admin.js', array(), IRNOTI_VERSION, true );
 		wp_localize_script( 'irnoti-admin', 'IRNOTI', array(
 			'ajax'      => admin_url( 'admin-ajax.php' ),
@@ -44,10 +45,19 @@ class IRNoti_Admin {
 			'voipNonce' => wp_create_nonce( 'irnoti_voip' ),
 			'voipFrom'  => (string) IRNoti_Settings::get( 'voip_from' ),
 		) );
-		wp_add_inline_style( 'wp-admin', '.irnoti-cards{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none}.irnoti-cards li{background:#fff;border:1px solid #dcdcde;padding:8px 12px;border-radius:4px}' );
 		if ( 'voip' === $tab && IRNoti_VoIP::jssip_url() ) {
 			wp_enqueue_script( 'irnoti-jssip', IRNoti_VoIP::jssip_url(), array(), null, true );
 		}
+	}
+
+	private static function meta(): array {
+		return array(
+			'connection' => array( __( 'اتصال به IRNoti', 'irnoti-service' ), __( 'کلید API و دریافت رویدادها (وب‌هوک).', 'irnoti-service' ) ),
+			'sms'        => array( __( 'پیامک', 'irnoti-service' ), __( 'پیامک سفارش‌ها، ورود با کد یکبارمصرف و ارسال آزمایشی.', 'irnoti-service' ) ),
+			'bot'        => array( __( 'ربات و محصولات', 'irnoti-service' ), __( 'همگام‌سازی محصولات و سفارش‌های ووکامرس با ربات فروشگاهی.', 'irnoti-service' ) ),
+			'email'      => array( __( 'ایمیل', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس از زیرساخت IRNoti.', 'irnoti-service' ) ),
+			'voip'       => array( __( 'VoIP و سافت‌فون', 'irnoti-service' ), __( 'تماس، گزارش‌ها، ضبط‌ها و حساب‌های SIP از داخل وردپرس.', 'irnoti-service' ) ),
+		);
 	}
 
 	public static function render(): void {
@@ -56,21 +66,27 @@ class IRNoti_Admin {
 		}
 		$tabs = self::tabs();
 		$tab  = isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ? sanitize_key( $_GET['tab'] ) : 'connection';
-		echo '<div class="wrap" dir="rtl"><h1>IRNoti</h1>';
+		$meta = self::meta()[ $tab ];
+		$on   = IRNoti_API::configured();
+		echo '<div class="wrap irn" dir="rtl"><h2 class="screen-reader-text"></h2>';
+		echo '<header class="irn-head"><img class="irn-logo" src="' . esc_url( IRNOTI_URL . 'assets/img/icon.png' ) . '" alt="">';
+		echo '<h1>IRNoti<small>' . esc_html__( 'ایران ناتیفیکیشن · پیامک، ربات، ایمیل و VoIP', 'irnoti-service' ) . '</small></h1><span class="irn-spacer"></span>';
+		printf( '<span class="irn-pill %s"><i></i>%s</span>', $on ? 'on' : 'off', esc_html( $on ? __( 'متصل', 'irnoti-service' ) : __( 'اتصال برقرار نیست', 'irnoti-service' ) ) );
+		echo '<span class="irn-pill">v' . esc_html( IRNOTI_VERSION ) . '</span></header>';
 		if ( isset( $_GET['irnoti_msg'] ) ) {
-			$ok = ! empty( $_GET['ok'] );
-			printf( '<div class="notice notice-%s is-dismissible"><p>%s</p></div>', $ok ? 'success' : 'error', esc_html( wp_unslash( $_GET['irnoti_msg'] ) ) );
+			printf( '<div class="notice notice-%s"><p>%s</p></div>', ! empty( $_GET['ok'] ) ? 'success' : 'error', esc_html( wp_unslash( $_GET['irnoti_msg'] ) ) );
 		}
 		echo '<nav class="nav-tab-wrapper">';
 		foreach ( $tabs as $k => $label ) {
 			printf( '<a class="nav-tab %s" href="%s">%s</a>', $k === $tab ? 'nav-tab-active' : '', esc_url( self::url( $k ) ), esc_html( $label ) );
 		}
 		echo '</nav>';
-		if ( 'connection' !== $tab && ! IRNoti_API::configured() ) {
-			echo '<div class="notice notice-warning inline"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
+		if ( 'connection' !== $tab && ! $on ) {
+			echo '<div class="notice notice-warning"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
 		}
+		echo '<section class="irn-card"><div class="irn-card-head"><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div>';
 		call_user_func( array( __CLASS__, 'tab_' . $tab ) );
-		echo '</div>';
+		echo '</section></div>';
 	}
 
 	private static function form_open( string $tab ): void {
@@ -147,7 +163,7 @@ class IRNoti_Admin {
 		submit_button( __( 'ارسال', 'irnoti-service' ), 'secondary', 'submit', false );
 		echo '</form><h2>' . esc_html__( 'ارسال‌های اخیر', 'irnoti-service' ) . '</h2><table class="widefat striped"><tbody>';
 		foreach ( (array) get_option( IRNoti_SMS::LOG, array() ) as $row ) {
-			printf( '<tr><td>%s</td><td dir="ltr">%s</td><td>%s</td><td>%s</td></tr>', esc_html( wp_date( 'Y/m/d H:i', $row['time'] ) ), esc_html( $row['to'] ), esc_html( $row['text'] ), $row['ok'] ? '✔' : esc_html( '✖ ' . $row['error'] ) );
+			printf( '<tr><td>%s</td><td dir="ltr">%s</td><td>%s</td><td>%s</td></tr>', esc_html( wp_date( 'Y/m/d H:i', $row['time'] ) ), esc_html( $row['to'] ), esc_html( $row['text'] ), $row['ok'] ? '<span class="irn-badge ok">' . esc_html__( 'ارسال شد', 'irnoti-service' ) . '</span>' : '<span class="irn-badge bad">' . esc_html( $row['error'] ?: __( 'ناموفق', 'irnoti-service' ) ) . '</span>' );
 		}
 		echo '</tbody></table>';
 	}

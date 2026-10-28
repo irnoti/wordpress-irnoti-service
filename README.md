@@ -14,6 +14,10 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Webhooks | Receives IRNoti events at `/wp-json/irnoti/v1/webhook` with HMAC verification; exposes `irnoti_webhook_{event}` actions for developers | – |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
+## Design
+
+The admin UI follows the IRNoti platform design: RTL, Vazirmatn (bundled locally under the SIL OFL, no external font requests), brand `#FF3300`, warm `#FAF8F6` background, dark header, pill tabs, cards and status badges. Styles live in `assets/css/admin.css` (scoped to `.irn`, so they never leak into other admin pages) and `assets/css/otp.css` for the login form.
+
 ## Requirements
 
 - WordPress 6.2+, PHP 8.0+ (with OpenSSL)
