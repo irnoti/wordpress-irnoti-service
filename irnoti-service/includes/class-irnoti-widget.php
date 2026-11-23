@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class IRNoti_Widget {
 	/** Official embed script of IRNoti's support/AI-agent widget; the project code goes in data-agent. */
-	const DEFAULT_SRC = 'https://api.irnoti.com/api/v1/embed/widget.js';
+	const DEFAULT_SRC = 'https://api.irnoti.com/v1/embed/widget.js';
 
 	private static bool $printed = false;
 
