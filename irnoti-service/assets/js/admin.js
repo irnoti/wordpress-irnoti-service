@@ -257,3 +257,61 @@
     btnHang.disabled = false;
   });
 })();
+
+// ---------- widget live test & health report ----------
+(function () {
+  'use strict';
+  var out = document.getElementById('irnoti-w-out');
+  var W = (window.IRNOTI && IRNOTI.widget) || {};
+  function line(state, title, detail) {
+    var p = document.createElement('div'); p.className = 'irn-w-line is-' + state;
+    var b = document.createElement('span'); b.className = 'irn-badge ' + (state === 'ok' ? 'ok' : state === 'bad' ? 'bad' : 'warn');
+    b.textContent = state === 'ok' ? 'سالم' : state === 'bad' ? 'خطا' : 'هشدار';
+    var t = document.createElement('strong'); t.textContent = ' ' + title + ' ';
+    p.appendChild(b); p.appendChild(t);
+    if (detail) { var d = document.createElement('pre'); d.dir = 'ltr'; d.textContent = detail; p.appendChild(d); }
+    out.appendChild(p);
+  }
+  var check = document.getElementById('irnoti-w-check');
+  if (check && out) check.addEventListener('click', function () {
+    out.textContent = '';
+    if (!W.key) { line('bad', 'کد پروژه وارد نشده است.'); return; }
+    if (!/^(ag|pj)_[A-Za-z0-9_-]{20,40}$/.test(W.key)) { line('bad', 'قالب کد پروژه درست نیست (سرور validation_error می‌دهد).', W.key); return; }
+    var url = W.api + '/embed/agents/' + encodeURIComponent(W.key), t0 = Date.now();
+    check.disabled = true;
+    fetch(url, { headers: { accept: 'application/json' } }).then(function (r) {
+      return r.text().then(function (txt) {
+        var j = null; try { j = JSON.parse(txt); } catch (e) { /* not JSON */ }
+        var ms = (Date.now() - t0) + 'ms';
+        if (r.ok) {
+          line('ok', 'سرور ویجت پاسخ داد (' + ms + ')' + (j && j.name ? ': «' + j.name + '»' : ''), null);
+          if (j && j.offline) line('warn', 'اپراتور الان خارج از ساعت کاری است؛ ویجت پیام «آفلاین» نشان می‌دهد.');
+        } else if (r.status === 404) {
+          line('bad', 'پیدا نشد (404) برای ' + location.origin, 'کد پروژه اشتباه است، پروژه/اپراتور خاموش است، اپراتور فعالی ندارد، یا دامنهٔ ' + location.host + ' در «دامنه‌های مجاز» پروژه نیست.');
+        } else {
+          var msg = j ? (j.message || j.code || '') : txt.slice(0, 300);
+          var fields = j && j.fields ? j.fields.map(function (f) { return (f.path || '(مسیر/پارامتر)') + ': ' + f.message; }).join('\n') : '';
+          line('bad', 'HTTP ' + r.status + (j && j.code ? ' · ' + j.code : '') + ' — ' + msg, 'GET ' + url + (fields ? '\n' + fields : ''));
+        }
+      });
+    }).catch(function (e) {
+      line('bad', 'درخواست به سرور ویجت انجام نشد', String(e && e.message || e) + '\n' + url + '\nاحتمالاً افزونهٔ مسدودکننده (adblock)، فایروال یا افزونهٔ بهینه‌ساز سایت درخواست را بسته است.');
+    }).then(function () { check.disabled = false; });
+  });
+  var show = document.getElementById('irnoti-w-show');
+  if (show) show.addEventListener('click', function () {
+    if (!W.key) return;
+    if (window.__irnotiAgent) { line('ok', 'ویجت قبلاً روی این صفحه بارگذاری شده؛ گوشهٔ صفحه را ببینید.'); return; }
+    var s = document.createElement('script');
+    s.async = true; s.src = W.src; s.setAttribute('data-agent', W.key); s.setAttribute('data-api', W.api);
+    s.onerror = function () { line('bad', 'فایل widget.js بارگذاری نشد', W.src); };
+    s.onload = function () { line('ok', 'widget.js بارگذاری شد؛ اگر ویجت ظاهر نشد، «بررسی ویجت» را بزنید.'); };
+    document.body.appendChild(s);
+  });
+  var copy = document.getElementById('irnoti-copy-report'), rep = document.getElementById('irnoti-report');
+  if (copy && rep) copy.addEventListener('click', function () {
+    var done = function () { copy.textContent = '✓ کپی شد'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(rep.value).then(done, function () { rep.select(); document.execCommand('copy'); done(); });
+    else { rep.select(); document.execCommand('copy'); done(); }
+  });
+})();

@@ -18,7 +18,7 @@ define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
 
-foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'admin-sms', 'admin' ) as $irnoti_part ) {
+foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'health', 'admin-sms', 'admin' ) as $irnoti_part ) {
 	require_once IRNOTI_DIR . 'includes/class-irnoti-' . $irnoti_part . '.php';
 }
 
