@@ -9,6 +9,7 @@ class IRNoti_Admin {
 		add_action( 'admin_post_irnoti_save', array( __CLASS__, 'save' ) );
 		add_action( 'admin_post_irnoti_sms_test', array( __CLASS__, 'sms_test' ) );
 		add_action( 'admin_post_irnoti_email_test', array( __CLASS__, 'email_test' ) );
+		add_action( 'admin_post_irnoti_verify', array( __CLASS__, 'verify_key' ) );
 		add_action( 'wp_ajax_irnoti_sync_batch', array( __CLASS__, 'ajax_sync_batch' ) );
 		add_action( 'wp_ajax_irnoti_pull_orders', array( __CLASS__, 'ajax_pull_orders' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
@@ -85,11 +86,18 @@ class IRNoti_Admin {
 		$tabs = self::tabs();
 		$tab  = isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ? sanitize_key( $_GET['tab'] ) : 'overview';
 		$meta = self::meta()[ $tab ];
-		$on   = IRNoti_API::configured();
+		$st   = IRNoti_API::status();
+		$on   = 'ok' === $st['state'];
+		$pill = array(
+			'ok'      => array( 'on', __( 'متصل', 'irnoti-service' ) ),
+			'invalid' => array( 'bad', __( 'کلید API نامعتبر', 'irnoti-service' ) ),
+			'error'   => array( 'off', __( 'سرور IRNoti در دسترس نیست', 'irnoti-service' ) ),
+			'none'    => array( 'off', __( 'کلید API وارد نشده', 'irnoti-service' ) ),
+		)[ $st['state'] ] ?? array( 'off', '' );
 		echo '<div class="wrap irn" dir="rtl"><h2 class="screen-reader-text"></h2>';
 		echo '<header class="irn-head"><img class="irn-logo" src="' . esc_url( IRNOTI_URL . 'assets/img/icon.png' ) . '" alt="">';
 		echo '<h1>IRNoti<small>' . esc_html__( 'ایران ناتیفیکیشن · پیامک، ربات، ایمیل و VoIP', 'irnoti-service' ) . '</small></h1><span class="irn-spacer"></span>';
-		printf( '<span class="irn-pill %s"><i></i>%s</span>', $on ? 'on' : 'off', esc_html( $on ? __( 'متصل', 'irnoti-service' ) : __( 'اتصال برقرار نیست', 'irnoti-service' ) ) );
+		printf( '<a class="irn-pill %s" href="%s"><i></i>%s</a>', esc_attr( $pill[0] ), esc_url( self::url( 'connection' ) ), esc_html( $pill[1] ) );
 		echo '<span class="irn-pill">v' . esc_html( IRNOTI_VERSION ) . '</span></header>';
 		if ( isset( $_GET['irnoti_msg'] ) ) {
 			printf( '<div class="notice notice-%s"><p>%s</p></div>', ! empty( $_GET['ok'] ) ? 'success' : 'error', esc_html( sanitize_text_field( wp_unslash( $_GET['irnoti_msg'] ) ) ) );
@@ -100,7 +108,9 @@ class IRNoti_Admin {
 			printf( '<a class="nav-tab %s" href="%s"><span class="dashicons dashicons-%s"></span>%s</a>', $k === $tab ? 'nav-tab-active' : '', esc_url( self::url( $k ) ), esc_attr( $icons[ $k ] ), esc_html( $label ) );
 		}
 		echo '</nav>';
-		if ( ! in_array( $tab, array( 'connection', 'overview', 'widget' ), true ) && ! $on ) {
+		if ( in_array( $st['state'], array( 'invalid', 'error' ), true ) ) {
+			printf( '<div class="notice notice-error"><p><strong>%s</strong> %s <a href="%s">%s</a></p></div>', esc_html( 'invalid' === $st['state'] ? __( 'اتصال به IRNoti برقرار نیست: کلید API نامعتبر است.', 'irnoti-service' ) : __( 'اتصال به IRNoti برقرار نیست.', 'irnoti-service' ) ), esc_html( (string) $st['msg'] ), esc_url( self::url( 'connection' ) ), esc_html__( 'بررسی تنظیمات اتصال', 'irnoti-service' ) );
+		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget' ), true ) && ! $on ) {
 			echo '<div class="notice notice-warning"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
 		}
 		echo '<section class="irn-card irn-tab-' . esc_attr( $tab ) . '"><div class="irn-card-head"><span class="irn-card-ico dashicons dashicons-' . esc_attr( $icons[ $tab ] ) . '"></span><div><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div></div>';
@@ -149,11 +159,12 @@ class IRNoti_Admin {
 	}
 
 	public static function tab_overview(): void {
-		$on    = IRNoti_API::configured();
+		$st    = IRNoti_API::status();
+		$on    = 'ok' === $st['state'];
 		$rules = count( IRNoti_SMS_Rules::all() );
 		$woo   = class_exists( 'WooCommerce' );
 		$cards = array(
-			array( 'connection', 'admin-network', __( 'اتصال API', 'irnoti-service' ), $on, $on ? __( 'کلید ذخیره شده', 'irnoti-service' ) : __( 'کلید وارد نشده', 'irnoti-service' ), __( 'کلید API و وب‌هوک', 'irnoti-service' ) ),
+			array( 'connection', 'admin-network', __( 'اتصال API', 'irnoti-service' ), $on, array( 'ok' => __( 'متصل و تأیید شده', 'irnoti-service' ), 'invalid' => __( 'کلید نامعتبر', 'irnoti-service' ), 'error' => __( 'سرور در دسترس نیست', 'irnoti-service' ) )[ $st['state'] ] ?? __( 'کلید وارد نشده', 'irnoti-service' ), __( 'کلید API و وب‌هوک', 'irnoti-service' ) ),
 			array( 'sms', 'smartphone', __( 'پیامک', 'irnoti-service' ), $rules > 0, sprintf( /* translators: %s: rule count */ __( '%s قانون', 'irnoti-service' ), number_format_i18n( $rules ) ), __( 'قوانین رویداد، پترن، ورود با کد یکبارمصرف', 'irnoti-service' ) ),
 			array( 'bot', 'cart', __( 'ربات و محصولات', 'irnoti-service' ), '' !== (string) IRNoti_Settings::get( 'bot_id' ), $woo ? __( 'ووکامرس فعال', 'irnoti-service' ) : __( 'ووکامرس غیرفعال', 'irnoti-service' ), __( 'همگام‌سازی محصولات و سفارش‌ها', 'irnoti-service' ) ),
 			array( 'email', 'email-alt', __( 'ایمیل', 'irnoti-service' ), (bool) IRNoti_Settings::get( 'email_enabled' ), IRNoti_Settings::get( 'email_enabled' ) ? __( 'فعال', 'irnoti-service' ) : __( 'غیرفعال', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس', 'irnoti-service' ) ),
@@ -170,6 +181,9 @@ class IRNoti_Admin {
 		$done = count( array_filter( array_column( $steps, 0 ) ) );
 		$pct  = (int) round( $done / count( $steps ) * 100 );
 
+		if ( $on ) {
+			IRNoti_Account::render_cards();
+		}
 		echo '<div class="irn-hero"><div class="irn-ring" style="--p:' . (int) $pct . '"><b>' . esc_html( number_format_i18n( $pct ) ) . '٪</b></div><div><h3>' . esc_html( $pct >= 100 ? __( 'همه‌چیز آماده است 🎉', 'irnoti-service' ) : __( 'راه‌اندازی را کامل کنید', 'irnoti-service' ) ) . '</h3><p>' . esc_html( sprintf( /* translators: 1: done, 2: total */ __( '%1$s از %2$s مرحله انجام شده است.', 'irnoti-service' ), number_format_i18n( $done ), number_format_i18n( count( $steps ) ) ) ) . '</p></div></div>';
 
 		echo '<div class="irn-grid">';
@@ -189,6 +203,16 @@ class IRNoti_Admin {
 			printf( '<li class="%s"><span class="irn-check">%s</span><a href="%s">%s</a></li>', $st[0] ? 'done' : '', $st[0] ? '✓' : '', esc_url( self::url( $st[2] ) ), esc_html( $st[1] ) );
 		}
 		echo '</ol>';
+		if ( $on ) {
+			echo '<h2>' . esc_html__( 'هشدار موجودی کم', 'irnoti-service' ) . '</h2>';
+			self::form_open( 'account' );
+			echo '<table class="form-table">';
+			self::row( __( 'حد هشدار (ریال)', 'irnoti-service' ), self::input( 'low_balance', (string) ( (int) IRNoti_Settings::get( 'low_balance' ) ?: '' ), 'text', 'inputmode="numeric" placeholder="500000"' ), __( 'وقتی کیف پول + اعتبار پیامکی از این کمتر شود، روزی یک بار ایمیل هشدار فرستاده می‌شود و کنار مبلغ در نوار ابزار ⚠ می‌آید. خالی = خاموش.', 'irnoti-service' ) );
+			self::row( __( 'ایمیل هشدار', 'irnoti-service' ), self::input( 'low_balance_email', (string) IRNoti_Settings::get( 'low_balance_email' ), 'email', 'placeholder="' . esc_attr( (string) get_option( 'admin_email' ) ) . '"' ), __( 'خالی = ایمیل مدیر سایت.', 'irnoti-service' ) );
+			echo '</table>';
+			submit_button( __( 'ذخیرهٔ هشدار', 'irnoti-service' ) );
+			echo '</form>';
+		}
 	}
 
 	public static function tab_widget(): void {
@@ -223,7 +247,7 @@ class IRNoti_Admin {
 		echo '<table class="form-table">';
 		self::row( __( 'آدرس API', 'irnoti-service' ), self::input( 'base_url', (string) IRNoti_Settings::get( 'base_url' ), 'url' ), __( 'پیش‌فرض: https://api.irnoti.com/v1 (فقط https).', 'irnoti-service' ) );
 		$has = IRNoti_API::configured();
-		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send.', 'irnoti-service' ) );
+		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
@@ -244,9 +268,18 @@ class IRNoti_Admin {
 			echo '</tbody></table>';
 		}
 		if ( $has ) {
-			$me = IRNoti_API::get( 'email/me' );
-			$tx = is_wp_error( $me ) && 401 === ( $me->get_error_data()['status'] ?? 0 ) ? __( 'کلید نامعتبر است.', 'irnoti-service' ) : __( 'کلید ذخیره شده است.', 'irnoti-service' );
-			echo '<p>' . esc_html( $tx ) . '</p>';
+			$st  = IRNoti_API::status();
+			$cls = array( 'ok' => 'ok', 'invalid' => 'bad', 'error' => 'warn' )[ $st['state'] ] ?? '';
+			$tx  = array( 'ok' => __( 'کلید معتبر است و اتصال برقرار است.', 'irnoti-service' ), 'invalid' => __( 'کلید API نامعتبر است.', 'irnoti-service' ), 'error' => __( 'به سرور IRNoti وصل نشد.', 'irnoti-service' ) )[ $st['state'] ] ?? '';
+			printf(
+				'<p class="irn-keystate"><span class="irn-badge %s">%s</span> %s <small>%s</small> <a class="button button-small" href="%s">%s</a></p>',
+				esc_attr( $cls ),
+				esc_html( $tx ),
+				esc_html( (string) $st['msg'] ),
+				esc_html( isset( $st['time'] ) ? sprintf( /* translators: %s: time of the last check */ __( 'آخرین بررسی: %s', 'irnoti-service' ), wp_date( 'Y/m/d H:i', (int) $st['time'] ) ) : '' ),
+				esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=irnoti_verify' ), 'irnoti_verify' ) ),
+				esc_html__( 'بررسی دوباره', 'irnoti-service' )
+			);
 		}
 	}
 
@@ -393,6 +426,9 @@ class IRNoti_Admin {
 				if ( '' !== $wh ) {
 					IRNoti_Settings::set_webhook_secret( sanitize_text_field( $wh ) );
 				}
+				if ( '' !== $key || isset( $p['base_url'] ) ) {
+					self::back_status( IRNoti_API::verify() );
+				}
 				break;
 			case 'sms':
 				IRNoti_Settings::update( array(
@@ -407,6 +443,15 @@ class IRNoti_Admin {
 				break;
 			case 'email':
 				IRNoti_Settings::update( array( 'email_enabled' => empty( $p['email_enabled'] ) ? 0 : 1, 'email_from' => sanitize_email( $p['email_from'] ?? '' ) ) );
+				break;
+			case 'account':
+				$digits = strtr( (string) ( $p['low_balance'] ?? '' ), array( '۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9' ) );
+				IRNoti_Settings::update( array(
+					'low_balance'       => (int) preg_replace( '/\D/', '', $digits ),
+					'low_balance_email' => sanitize_email( $p['low_balance_email'] ?? '' ),
+				) );
+				IRNoti_Account::schedule();
+				self::back( 'overview', true, __( 'ذخیره شد.', 'irnoti-service' ) );
 				break;
 			case 'widget':
 				$raw    = trim( (string) ( $p['widget_key'] ?? '' ) );
@@ -439,6 +484,22 @@ class IRNoti_Admin {
 				break;
 		}
 		self::back( $tab, true, __( 'ذخیره شد.', 'irnoti-service' ) );
+	}
+
+	public static function verify_key(): void {
+		check_admin_referer( 'irnoti_verify' );
+		current_user_can( 'manage_options' ) || wp_die( 'forbidden', 403 );
+		self::back_status( IRNoti_API::verify() );
+	}
+
+	/** Redirects to the connection tab with the outcome of a key check. */
+	private static function back_status( array $st ): void {
+		$msg = array(
+			'ok'      => __( 'ذخیره شد؛ کلید API معتبر است و اتصال برقرار است.', 'irnoti-service' ),
+			'invalid' => __( 'کلید API نامعتبر است. کلید را از پنل IRNoti ← کلیدهای API دوباره کپی کنید.', 'irnoti-service' ),
+			'error'   => __( 'ذخیره شد، ولی اتصال به سرور IRNoti برقرار نشد:', 'irnoti-service' ) . ' ' . ( $st['msg'] ?? '' ),
+		)[ $st['state'] ] ?? __( 'ذخیره شد.', 'irnoti-service' );
+		self::back( 'connection', 'ok' === $st['state'], $msg );
 	}
 
 	public static function sms_test(): void {

@@ -32,6 +32,8 @@ class IRNoti_Settings {
 			'widget_hide_admin' => 0,
 			'widget_hide_ids'   => '',
 			'widget_delay'      => 0,
+			'low_balance'       => 0,
+			'low_balance_email' => '',
 		);
 	}
 
