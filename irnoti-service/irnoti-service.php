@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       IRNoti Service (ایران ناتیفیکیشن)
+ * Plugin Name:       IRNoti Service
  * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل، ویجت سایت و VoIP/سافت‌فون IRNoti روی وردپرس.
  * Version:           0.1.0
- * Requires at least: 6.2
+ * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            IRNoti
  * License:           GPL-2.0-or-later

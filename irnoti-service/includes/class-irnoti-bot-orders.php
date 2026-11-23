@@ -112,7 +112,7 @@ class IRNoti_Bot_Orders {
 		foreach ( $order->get_items() as $it ) {
 			$p = $it->get_product();
 			if ( $p && $p->managing_stock() && (int) $p->get_stock_quantity() < 0 ) {
-				$order->add_order_note( sprintf( __( 'هشدار: موجودی «%s» منفی شد؛ موجودی را بررسی کنید.', 'irnoti-service' ), $p->get_name() ) );
+				$order->add_order_note( sprintf( /* translators: %s: product name */ __( 'هشدار: موجودی «%s» منفی شد؛ موجودی را بررسی کنید.', 'irnoti-service' ), $p->get_name() ) );
 			}
 			if ( $p ) {
 				IRNoti_Bot_Sync::queue( $p->is_type( 'variation' ) ? $p->get_parent_id() : $p->get_id() );
@@ -166,7 +166,7 @@ class IRNoti_Bot_Orders {
 		if ( ! empty( $o['note'] ) ) {
 			$order->add_order_note( sanitize_textarea_field( (string) $o['note'] ) );
 		}
-		$note = sprintf( __( 'سفارش ربات #%s', 'irnoti-service' ), (string) ( $o['number'] ?? $o['id'] ) );
+		$note = sprintf( /* translators: %s: bot order number */ __( 'سفارش ربات #%s', 'irnoti-service' ), (string) ( $o['number'] ?? $o['id'] ) );
 		$order->set_status( self::TO_WOO[ $status ] ?? 'on-hold', $note );
 		$order->save();
 		// Moving to on-hold/processing reduces stock through WooCommerce's own hooks; payment_complete() is only for orders the bot marks paid.

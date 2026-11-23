@@ -72,10 +72,6 @@ msgstr ""
 msgid "اتصال وردپرس شما به IRNoti برقرار است."
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin.php
-msgid "اختیاری: اگر کد کامل را چسباندید، همان استفاده می‌شود (فقط https و ویژگی‌های data-*)."
-msgstr ""
-
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "ارسال"
 msgstr ""
@@ -365,7 +361,7 @@ msgid "در صورت خطای API، ارسال به‌صورت خودکار با
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "در پنل IRNoti ← استودیوی عامل ← «ویجت و نصب» کد پروژه (pj_…) را کپی کنید. دامنهٔ سایت باید در پروژه مجاز و تأیید شده باشد."
+msgid "در پنل IRNoti ← استودیوی عامل ← «ویجت و نصب» کد پروژه (pj_…) را کپی کنید؛ چسباندن کد کامل نصب هم پذیرفته می‌شود. دامنهٔ سایت باید در پروژه مجاز و تأیید شده باشد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -938,10 +934,6 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "کد جاسازی معتبر نیست؛ باید آدرس https داشته باشد."
-msgstr ""
-
-#: irnoti-service/includes/class-irnoti-admin.php
-msgid "کد جاسازی کامل (پیشرفته)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-otp-login.php

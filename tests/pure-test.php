@@ -30,9 +30,10 @@ check( 'segments ascii 161', IRNoti_SMS_Rules::segments( str_repeat( 'a', 161 ) 
 $w = IRNoti_Widget::parse_embed( '<script async src="https://cdn.irnoti.com/w.js" data-key="abc" onload="evil()" data-position="left"></script>' );
 check( 'widget src', 'https://cdn.irnoti.com/w.js' === $w['src'] );
 check( 'widget data attrs only', array( 'data-key' => 'abc', 'data-position' => 'left' ) === $w['attrs'] );
-check( 'widget bare url', 'https://x.io/a.js' === IRNoti_Widget::parse_embed( 'https://x.io/a.js' )['src'] );
+check( 'widget bare url', 'https://api.irnoti.com/a.js' === IRNoti_Widget::parse_embed( 'https://api.irnoti.com/a.js' )['src'] );
 check( 'widget rejects http', '' === IRNoti_Widget::parse_embed( '<script src="http://x.io/a.js"></script>' )['src'] );
 check( 'widget rejects js url', '' === IRNoti_Widget::parse_embed( '<script src="javascript:alert(1)"></script>' )['src'] );
 check( 'widget empty', '' === IRNoti_Widget::parse_embed( '' )['src'] );
 check( 'widget default src is https', 0 === strpos( IRNoti_Widget::DEFAULT_SRC, 'https://' ) );
+check( 'widget rejects foreign host', '' === IRNoti_Widget::parse_embed( 'https://evil.example/a.js' )['src'] );
 exit( $fail ? 1 : 0 );

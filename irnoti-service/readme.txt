@@ -1,8 +1,8 @@
 === IRNoti Service ===
 Contributors: irnoti
 Tags: sms, woocommerce, telegram, bale, voip
-Requires at least: 6.2
-Tested up to: 6.8
+Requires at least: 6.3
+Tested up to: 7.1
 Requires PHP: 8.0
 Stable tag: 0.1.0
 License: GPLv2 or later

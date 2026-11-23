@@ -62,7 +62,7 @@ class IRNoti_VoIP {
 	private static function build( string $op ): array {
 		list( $method, $path, $allowed ) = self::OPS[ $op ];
 		if ( false !== strpos( $path, '{id}' ) ) {
-			$id = preg_replace( '/\D/', '', (string) ( $_POST['id'] ?? '' ) );
+			$id = preg_replace( '/\D/', '', sanitize_text_field( wp_unslash( (string) ( $_POST['id'] ?? '' ) ) ) );
 			if ( '' === $id ) {
 				wp_send_json_error( array( 'message' => 'id required' ), 400 );
 			}
@@ -71,13 +71,13 @@ class IRNoti_VoIP {
 		$params = array();
 		foreach ( $allowed as $k ) {
 			if ( isset( $_POST[ $k ] ) && '' !== $_POST[ $k ] ) {
-				$params[ $k ] = self::clean( $k, $_POST[ $k ] );
+				$params[ $k ] = self::clean( $k, sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) );
 			}
 		}
 		// Report dates arrive as `YYYY-MM-DD` from <input type=date>; the API wants ISO instants.
 		foreach ( array( 'from', 'to' ) as $d ) {
-			if ( in_array( $op, array( 'summary', 'calls' ), true ) && isset( $_POST[ $d ] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $_POST[ $d ] ) ) {
-				$params[ $d ] = $_POST[ $d ] . ( 'from' === $d ? 'T00:00:00.000Z' : 'T23:59:59.999Z' );
+			if ( in_array( $op, array( 'summary', 'calls' ), true ) && isset( $_POST[ $d ] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', sanitize_text_field( wp_unslash( (string) $_POST[ $d ] ) ) ) ) {
+				$params[ $d ] = sanitize_text_field( wp_unslash( $_POST[ $d ] ) ) . ( 'from' === $d ? 'T00:00:00.000Z' : 'T23:59:59.999Z' );
 			}
 		}
 		return array( $method, $path, $params );

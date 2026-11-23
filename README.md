@@ -25,7 +25,7 @@ The admin UI follows the IRNoti platform design: RTL, Vazirmatn (bundled locally
 
 ## Requirements
 
-- WordPress 6.2+, PHP 8.0+ (with OpenSSL)
+- WordPress 6.3+, PHP 8.0+ (with OpenSSL)
 - WooCommerce for order SMS and bot product/order sync (optional)
 - An IRNoti account and an API key (`irn_…`)
 
