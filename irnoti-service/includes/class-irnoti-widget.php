@@ -67,7 +67,17 @@ class IRNoti_Widget {
 		if ( '' !== $key ) {
 			$attrs['data-agent'] = $key;
 		}
+		$src               = (string) IRNoti_Settings::get( 'widget_src' );
+		$attrs['data-api'] = self::api_base( self::allowed_src( $src ) ? $src : self::DEFAULT_SRC );
 		return $attrs;
+	}
+
+	/**
+	 * API base the widget calls, from the script URL. Sent as data-api so the widget still works when a
+	 * speed/CDN plugin (Zhaket Booster, WP Rocket…) serves a copy of widget.js from the site's own host.
+	 */
+	public static function api_base( string $src ): string {
+		return (string) preg_replace( '#/embed/widget\.js.*$#', '', $src );
 	}
 
 	/** Should the widget show on the current request? */

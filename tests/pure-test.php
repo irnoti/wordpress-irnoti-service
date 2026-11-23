@@ -36,4 +36,5 @@ check( 'widget rejects js url', '' === IRNoti_Widget::parse_embed( '<script src=
 check( 'widget empty', '' === IRNoti_Widget::parse_embed( '' )['src'] );
 check( 'widget default src is https', 0 === strpos( IRNoti_Widget::DEFAULT_SRC, 'https://' ) );
 check( 'widget rejects foreign host', '' === IRNoti_Widget::parse_embed( 'https://evil.example/a.js' )['src'] );
+check( 'widget api base', 'https://api.irnoti.com/v1' === IRNoti_Widget::api_base( IRNoti_Widget::DEFAULT_SRC ) );
 exit( $fail ? 1 : 0 );
