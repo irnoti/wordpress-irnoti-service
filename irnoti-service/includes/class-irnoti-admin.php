@@ -175,12 +175,13 @@ class IRNoti_Admin {
 		self::form_open( 'widget' );
 		echo '<div class="irn-split"><div>';
 		echo '<table class="form-table">';
-		self::row( __( 'وضعیت', 'irnoti-service' ), self::switch( 'widget_enabled', (bool) IRNoti_Settings::get( 'widget_enabled' ), __( 'نمایش ویجت روی سایت', 'irnoti-service' ) ), $src ? '' : __( 'ابتدا کد جاسازی را در پایین وارد کنید.', 'irnoti-service' ) );
-		self::row( __( 'کد جاسازی', 'irnoti-service' ), '<textarea class="large-text" dir="ltr" rows="4" name="widget_embed" placeholder="&lt;script async src=&quot;https://…&quot; data-key=&quot;…&quot;&gt;&lt;/script&gt;">' . esc_textarea( $src ? '<script async src="' . $src . '"' . implode( '', array_map( static fn( $k, $v ) => ' ' . $k . '="' . $v . '"', array_keys( (array) IRNoti_Settings::get( 'widget_attrs' ) ), (array) IRNoti_Settings::get( 'widget_attrs' ) ) ) . '></script>' : '' ) . '</textarea>', __( 'کد را از پنل IRNoti کپی و اینجا بچسبانید. فقط آدرس https و ویژگی‌های data-* ذخیره می‌شوند.', 'irnoti-service' ) );
-		self::row( __( 'کلید ویجت (اختیاری)', 'irnoti-service' ), self::input( 'widget_key', (string) IRNoti_Settings::get( 'widget_key' ) ), __( 'اگر کد شما کلید جدا دارد، به‌صورت data-key ارسال می‌شود.', 'irnoti-service' ) );
+		self::row( __( 'وضعیت', 'irnoti-service' ), self::switch( 'widget_enabled', (bool) IRNoti_Settings::get( 'widget_enabled' ), __( 'نمایش ویجت روی سایت', 'irnoti-service' ) ), '' !== (string) IRNoti_Settings::get( 'widget_key' ) || $src ? '' : __( 'ابتدا کد پروژه را وارد کنید.', 'irnoti-service' ) );
+		self::row( __( 'کد پروژهٔ ویجت', 'irnoti-service' ), self::input( 'widget_key', (string) IRNoti_Settings::get( 'widget_key' ), 'text', 'placeholder="pj_…"' ), __( 'در پنل IRNoti ← استودیوی عامل ← «ویجت و نصب» کد پروژه (pj_…) را کپی کنید. دامنهٔ سایت باید در پروژه مجاز و تأیید شده باشد.', 'irnoti-service' ) );
+		$embed = $src && IRNoti_Widget::DEFAULT_SRC !== $src ? '<script async src="' . $src . '"' . implode( '', array_map( static fn( $k, $v ) => ' ' . $k . '="' . $v . '"', array_keys( (array) IRNoti_Settings::get( 'widget_attrs' ) ), (array) IRNoti_Settings::get( 'widget_attrs' ) ) ) . '></script>' : '';
+		self::row( __( 'کد جاسازی کامل (پیشرفته)', 'irnoti-service' ), '<textarea class="large-text" dir="ltr" rows="3" name="widget_embed" placeholder="&lt;script src=&quot;https://api.irnoti.com/api/v1/embed/widget.js&quot; data-agent=&quot;pj_…&quot; async&gt;&lt;/script&gt;">' . esc_textarea( $embed ) . '</textarea>', __( 'اختیاری: اگر کد کامل را چسباندید، همان استفاده می‌شود (فقط https و ویژگی‌های data-*).', 'irnoti-service' ) );
 		echo '</table><h2>' . esc_html__( 'ظاهر و رفتار', 'irnoti-service' ) . '</h2><table class="form-table">';
 		$pos = (string) IRNoti_Settings::get( 'widget_position' );
-		self::row( __( 'جایگاه', 'irnoti-service' ), '<div class="irn-seg"><label><input type="radio" name="widget_position" value="right" ' . checked( 'right', $pos, false ) . '><span>' . esc_html__( 'راست', 'irnoti-service' ) . '</span></label><label><input type="radio" name="widget_position" value="left" ' . checked( 'left', $pos, false ) . '><span>' . esc_html__( 'چپ', 'irnoti-service' ) . '</span></label></div>' );
+		self::row( __( 'جایگاه پیش‌نمایش', 'irnoti-service' ), '<div class="irn-seg"><label><input type="radio" name="widget_position" value="right" ' . checked( 'right', $pos, false ) . '><span>' . esc_html__( 'راست', 'irnoti-service' ) . '</span></label><label><input type="radio" name="widget_position" value="left" ' . checked( 'left', $pos, false ) . '><span>' . esc_html__( 'چپ', 'irnoti-service' ) . '</span></label></div>', __( 'فقط برای پیش‌نمایش؛ جایگاه، رنگ، متن و ساعت کاری واقعی ویجت را در استودیوی IRNoti تنظیم می‌کنید.', 'irnoti-service' ) );
 		$sc  = (string) IRNoti_Settings::get( 'widget_scope' );
 		$opt = '';
 		foreach ( array( 'all' => __( 'همهٔ صفحات', 'irnoti-service' ), 'home' => __( 'فقط صفحهٔ نخست', 'irnoti-service' ), 'woo' => __( 'فقط فروشگاه (محصول، سبد، پرداخت)', 'irnoti-service' ) ) as $k => $l ) {
@@ -389,12 +390,20 @@ class IRNoti_Admin {
 				break;
 			case 'widget':
 				$parsed = IRNoti_Widget::parse_embed( (string) ( $p['widget_embed'] ?? '' ) );
+				$code   = preg_replace( '/[^A-Za-z0-9_-]/', '', (string) ( $p['widget_key'] ?? '' ) );
+				if ( '' === $parsed['src'] && '' !== $code ) {
+					$parsed['src'] = IRNoti_Widget::DEFAULT_SRC;
+				}
+				if ( isset( $parsed['attrs']['data-agent'] ) && '' === $code ) {
+					$code = preg_replace( '/[^A-Za-z0-9_-]/', '', $parsed['attrs']['data-agent'] );
+				}
+				unset( $parsed['attrs']['data-agent'] );
 				$scopes = array( 'all', 'home', 'woo' );
 				IRNoti_Settings::update( array(
 					'widget_enabled'    => empty( $p['widget_enabled'] ) ? 0 : 1,
 					'widget_src'        => $parsed['src'],
 					'widget_attrs'      => array_map( 'sanitize_text_field', $parsed['attrs'] ),
-					'widget_key'        => sanitize_text_field( $p['widget_key'] ?? '' ),
+					'widget_key'        => $code,
 					'widget_position'   => 'left' === ( $p['widget_position'] ?? '' ) ? 'left' : 'right',
 					'widget_scope'      => in_array( $p['widget_scope'] ?? '', $scopes, true ) ? $p['widget_scope'] : 'all',
 					'widget_hide_admin' => empty( $p['widget_hide_admin'] ) ? 0 : 1,

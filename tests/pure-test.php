@@ -34,4 +34,5 @@ check( 'widget bare url', 'https://x.io/a.js' === IRNoti_Widget::parse_embed( 'h
 check( 'widget rejects http', '' === IRNoti_Widget::parse_embed( '<script src="http://x.io/a.js"></script>' )['src'] );
 check( 'widget rejects js url', '' === IRNoti_Widget::parse_embed( '<script src="javascript:alert(1)"></script>' )['src'] );
 check( 'widget empty', '' === IRNoti_Widget::parse_embed( '' )['src'] );
+check( 'widget default src is https', 0 === strpos( IRNoti_Widget::DEFAULT_SRC, 'https://' ) );
 exit( $fail ? 1 : 0 );

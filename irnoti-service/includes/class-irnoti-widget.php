@@ -7,6 +7,9 @@ defined( 'ABSPATH' ) || exit;
  * (https only, data-* attributes only) and re-render the tag ourselves, so arbitrary HTML never reaches the page.
  */
 class IRNoti_Widget {
+	/** Official embed script of IRNoti's support/AI-agent widget; the project code goes in data-agent. */
+	const DEFAULT_SRC = 'https://api.irnoti.com/api/v1/embed/widget.js';
+
 	private static bool $printed = false;
 
 	public static function init(): void {
@@ -49,16 +52,12 @@ class IRNoti_Widget {
 		return (bool) IRNoti_Settings::get( 'widget_enabled' ) && '' !== (string) IRNoti_Settings::get( 'widget_src' );
 	}
 
-	/** Final attribute map: stored data-* attrs, plus the optional key and position fields. */
+	/** Final attribute map: stored data-* attrs plus the project code as data-agent (look and position are set in the IRNoti agent studio). */
 	public static function attrs(): array {
 		$attrs = (array) IRNoti_Settings::get( 'widget_attrs' );
 		$key   = trim( (string) IRNoti_Settings::get( 'widget_key' ) );
 		if ( '' !== $key ) {
-			$attrs['data-key'] = $key;
-		}
-		$pos = (string) IRNoti_Settings::get( 'widget_position' );
-		if ( in_array( $pos, array( 'right', 'left' ), true ) ) {
-			$attrs['data-position'] = $pos;
+			$attrs['data-agent'] = $key;
 		}
 		return $attrs;
 	}

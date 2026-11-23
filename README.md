@@ -12,7 +12,7 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Email | Routes every `wp_mail()` through IRNoti; falls back to the normal WordPress transport if the API fails. Test email included | `POST /email/send` |
 | VoIP | WebRTC softphone (JsSIP), click-to-call, live calls (hang up / hold / transfer), call reports with CSV export, recordings and voicemail (play / transcribe / delete), block list, SIP account management | `/voip/*` |
 | Webhooks | Receives IRNoti events at `/wp-json/irnoti/v1/webhook` with HMAC verification; exposes `irnoti_webhook_{event}` actions for developers | – |
-| Site widget | Paste the embed code from the IRNoti panel; the plugin validates it (https + `data-*` only) and injects it in the footer. Position, scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
+| Site widget | Enter the project code (`pj_…`) from the IRNoti agent studio (or paste the full embed code); the plugin injects `<script src="https://api.irnoti.com/api/v1/embed/widget.js" data-agent="pj_…" async>` in the footer (https + `data-*` only). Look, position, hours and mobile hiding are set in the studio; the plugin adds scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
 ## Design

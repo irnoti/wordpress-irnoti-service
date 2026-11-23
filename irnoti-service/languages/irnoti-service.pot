@@ -49,7 +49,7 @@ msgid "ابتدا در تب «اتصال» کلید API را وارد کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "ابتدا کد جاسازی را در پایین وارد کنید."
+msgid "ابتدا کد پروژه را وارد کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -70,6 +70,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-email.php
 msgid "اتصال وردپرس شما به IRNoti برقرار است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اختیاری: اگر کد کامل را چسباندید، همان استفاده می‌شود (فقط https و ویژگی‌های data-*)."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -174,10 +178,6 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "اگر این شماره ثبت شده باشد، کد ارسال شد."
-msgstr ""
-
-#: irnoti-service/includes/class-irnoti-admin.php
-msgid "اگر کد شما کلید جدا دارد، به‌صورت data-key ارسال می‌شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -313,7 +313,7 @@ msgid "ثبت‌نام کاربر در وردپرس"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "جایگاه"
+msgid "جایگاه پیش‌نمایش"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -362,6 +362,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "در صورت خطای API، ارسال به‌صورت خودکار با روش پیش‌فرض وردپرس انجام می‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "در پنل IRNoti ← استودیوی عامل ← «ویجت و نصب» کد پروژه (pj_…) را کپی کنید. دامنهٔ سایت باید در پروژه مجاز و تأیید شده باشد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -510,6 +514,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "فقط الگوهای تأییدشده. الگوی جدید را در تب «الگوها» بسازید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط برای پیش‌نمایش؛ جایگاه، رنگ، متن و ساعت کاری واقعی ویجت را در استودیوی IRNoti تنظیم می‌کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -929,19 +937,15 @@ msgid "کد الگو؛ پارامتر code به آن داده می‌شود. خ�
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "کد جاسازی"
+msgid "کد جاسازی معتبر نیست؛ باید آدرس https داشته باشد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "کد جاسازی معتبر نیست؛ باید آدرس https داشته باشد."
+msgid "کد جاسازی کامل (پیشرفته)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "کد دریافتی"
-msgstr ""
-
-#: irnoti-service/includes/class-irnoti-admin.php
-msgid "کد را از پنل IRNoti کپی و اینجا بچسبانید. فقط آدرس https و ویژگی‌های data-* ذخیره می‌شوند."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -954,6 +958,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "کد ورود به %1$s: %2$s"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کد پروژهٔ ویجت"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -994,10 +1002,6 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "کلید وارد نشده"
-msgstr ""
-
-#: irnoti-service/includes/class-irnoti-admin.php
-msgid "کلید ویجت (اختیاری)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
