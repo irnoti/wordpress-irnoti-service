@@ -6,6 +6,7 @@ class IRNoti_Admin {
 
 	public static function init(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
+		add_action( 'admin_head', array( __CLASS__, 'menu_icon_css' ) );
 		add_action( 'admin_post_irnoti_save', array( __CLASS__, 'save' ) );
 		add_action( 'admin_post_irnoti_sms_test', array( __CLASS__, 'sms_test' ) );
 		add_action( 'admin_post_irnoti_email_test', array( __CLASS__, 'email_test' ) );
@@ -19,10 +20,17 @@ class IRNoti_Admin {
 		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), self::menu_icon(), 58 );
 	}
 
-	/** Monochrome 20x20 SVG (WordPress recolors it for every admin color scheme and hover state). */
+	/**
+	 * The official IRNoti logo (same file as the platform's logo.svg, only drawn at 20px). A file URL, not a data URI:
+	 * WordPress repaints base64 SVG menu icons in one colour, which would lose the brand colours.
+	 */
 	private static function menu_icon(): string {
-		$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="black" fill-rule="evenodd" d="M5 1.5H15A3.5 3.5 0 0 1 18.5 5V12A3.5 3.5 0 0 1 15 15.5H6.5L1.5 18.5V5A3.5 3.5 0 0 1 5 1.5ZM8.263 14.437L14.563 7.437A1.7 1.7 0 0 0 12.037 5.163L5.737 12.163A1.7 1.7 0 0 0 8.263 14.437Z"/></svg>';
-		return 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- WordPress menu icons must be base64 SVG data URIs.
+		return IRNOTI_URL . 'assets/img/menu-icon.svg';
+	}
+
+	/** Fits the logo into the menu row on every admin page (WordPress shows image icons at their own size and dimmed). */
+	public static function menu_icon_css(): void {
+		echo '<style>#adminmenu .toplevel_page_irnoti .wp-menu-image img{width:20px;height:20px;padding:7px 0 0;opacity:1;box-sizing:content-box}</style>';
 	}
 
 	private static function tabs(): array {
