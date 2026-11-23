@@ -76,6 +76,11 @@ class IRNoti_Widget {
 	 * API base the widget calls, from the script URL. Sent as data-api so the widget still works when a
 	 * speed/CDN plugin (Zhaket Booster, WP Rocket…) serves a copy of widget.js from the site's own host.
 	 */
+	/** Same rule the IRNoti server applies to the key in /embed/agents/:key (otherwise it answers validation_error). */
+	public static function valid_key( string $key ): bool {
+		return (bool) preg_match( '/^(ag|pj)_[A-Za-z0-9_-]{20,40}$/', $key );
+	}
+
 	public static function api_base( string $src ): string {
 		return (string) preg_replace( '#/embed/widget\.js.*$#', '', $src );
 	}

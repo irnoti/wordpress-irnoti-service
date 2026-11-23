@@ -34,11 +34,12 @@ class IRNoti_Admin {
 			'email'      => __( 'ایمیل', 'irnoti-service' ),
 			'widget'     => __( 'ویجت سایت', 'irnoti-service' ),
 			'voip'       => __( 'VoIP و سافت‌فون', 'irnoti-service' ),
+			'health'     => __( 'سلامت سیستم', 'irnoti-service' ),
 		);
 	}
 
 	private static function icons(): array {
-		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'voip' => 'phone' );
+		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'voip' => 'phone', 'health' => 'heart' );
 	}
 
 	private static function url( string $tab, array $extra = array() ): string {
@@ -57,6 +58,11 @@ class IRNoti_Admin {
 			'syncNonce' => wp_create_nonce( 'irnoti_sync' ),
 			'voipNonce' => wp_create_nonce( 'irnoti_voip' ),
 			'voipFrom'  => (string) IRNoti_Settings::get( 'voip_from' ),
+			'widget'    => array(
+				'key' => (string) IRNoti_Settings::get( 'widget_key' ),
+				'api' => IRNoti_Widget::api_base( IRNoti_Widget::DEFAULT_SRC ),
+				'src' => IRNoti_Widget::DEFAULT_SRC,
+			),
 		) );
 		if ( 'sms' === $tab && isset( $_GET['rule'] ) ) {
 			wp_enqueue_script( 'irnoti-sms-rules', IRNOTI_URL . 'assets/js/sms-rules.js', array(), IRNOTI_VERSION, true );
@@ -75,6 +81,7 @@ class IRNoti_Admin {
 			'sms'        => array( __( 'پیامک', 'irnoti-service' ), __( 'پیامک سفارش‌ها، ورود با کد یکبارمصرف و ارسال آزمایشی.', 'irnoti-service' ) ),
 			'bot'        => array( __( 'ربات و محصولات', 'irnoti-service' ), __( 'همگام‌سازی محصولات و سفارش‌های ووکامرس با ربات فروشگاهی.', 'irnoti-service' ) ),
 			'email'      => array( __( 'ایمیل', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس از زیرساخت IRNoti.', 'irnoti-service' ) ),
+			'health'     => array( __( 'سلامت سیستم', 'irnoti-service' ), __( 'بررسی خودکار اتصال، دسترسی‌های کلید، ویجت، کارهای زمان‌بندی‌شده و افزونه‌های تداخلی.', 'irnoti-service' ) ),
 			'voip'       => array( __( 'VoIP و سافت‌فون', 'irnoti-service' ), __( 'تماس، گزارش‌ها، ضبط‌ها و حساب‌های SIP از داخل وردپرس.', 'irnoti-service' ) ),
 		);
 	}
@@ -110,7 +117,7 @@ class IRNoti_Admin {
 		echo '</nav>';
 		if ( in_array( $st['state'], array( 'invalid', 'error' ), true ) ) {
 			printf( '<div class="notice notice-error"><p><strong>%s</strong> %s <a href="%s">%s</a></p></div>', esc_html( 'invalid' === $st['state'] ? __( 'اتصال به IRNoti برقرار نیست: کلید API نامعتبر است.', 'irnoti-service' ) : __( 'اتصال به IRNoti برقرار نیست.', 'irnoti-service' ) ), esc_html( (string) $st['msg'] ), esc_url( self::url( 'connection' ) ), esc_html__( 'بررسی تنظیمات اتصال', 'irnoti-service' ) );
-		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget' ), true ) && ! $on ) {
+		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget', 'health' ), true ) && ! $on ) {
 			echo '<div class="notice notice-warning"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
 		}
 		echo '<section class="irn-card irn-tab-' . esc_attr( $tab ) . '"><div class="irn-card-head"><span class="irn-card-ico dashicons dashicons-' . esc_attr( $icons[ $tab ] ) . '"></span><div><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div></div>';
@@ -240,6 +247,49 @@ class IRNoti_Admin {
 		echo '</div><aside class="irn-preview"><div class="irn-browser"><div class="irn-browser-bar"><i></i><i></i><i></i></div><div class="irn-browser-body"><span class="l1"></span><span class="l2"></span><span class="l3"></span><div class="irn-bubble ' . ( 'left' === $pos ? 'left' : 'right' ) . ' ' . ( $on ? '' : 'off' ) . '"><img src="' . esc_url( IRNOTI_URL . 'assets/img/icon.png' ) . '" alt=""></div></div></div>';
 		echo '<p class="irn-preview-cap">' . esc_html( $on ? __( 'ویجت فعال است و در سایت نمایش داده می‌شود.', 'irnoti-service' ) : __( 'ویجت غیرفعال است.', 'irnoti-service' ) ) . '</p>';
 		echo '<p class="description">' . esc_html__( 'برای قراردادن ویجت در محل دلخواه از شورت‌کد زیر استفاده کنید:', 'irnoti-service' ) . '</p><p><code dir="ltr">[irnoti_widget]</code></p></aside></div></form>';
+		echo '<section class="irn-live"><h2>' . esc_html__( 'تست زنده', 'irnoti-service' ) . '</h2><p class="description">' . esc_html__( 'همان درخواستی که مرورگر بازدیدکننده می‌زند از همین صفحه فرستاده می‌شود و پاسخ یا خطای سرور (مثل validation_error یا دامنهٔ غیرمجاز) همین‌جا نشان داده می‌شود. «نمایش ویجت» خود ویجت را روی همین صفحهٔ مدیریت باز می‌کند.', 'irnoti-service' ) . '</p>';
+		echo '<p><button type="button" class="button button-primary" id="irnoti-w-check">' . esc_html__( 'بررسی ویجت', 'irnoti-service' ) . '</button> <button type="button" class="button" id="irnoti-w-show">' . esc_html__( 'نمایش ویجت در همین صفحه', 'irnoti-service' ) . '</button> <a class="button" href="' . esc_url( self::url( 'health' ) ) . '">' . esc_html__( 'بررسی سلامت کامل', 'irnoti-service' ) . '</a></p><div id="irnoti-w-out"></div></section>';
+	}
+
+	public static function tab_health(): void {
+		$rows  = IRNoti_Health::run();
+		$count = array( 'ok' => 0, 'warn' => 0, 'bad' => 0, 'info' => 0 );
+		foreach ( $rows as $r ) {
+			++$count[ $r['state'] ];
+		}
+		$cls = $count['bad'] ? 'bad' : ( $count['warn'] ? 'warn' : 'ok' );
+		$ttl = $count['bad'] ? __( 'مشکل‌هایی پیدا شد که باید رفع شوند', 'irnoti-service' ) : ( $count['warn'] ? __( 'کار می‌کند، با چند هشدار', 'irnoti-service' ) : __( 'همه‌چیز سالم است', 'irnoti-service' ) );
+		printf(
+			'<div class="irn-health-sum %1$s"><span class="irn-health-dot"></span><div><h3>%2$s</h3><p>%3$s</p></div><span class="irn-spacer"></span><a class="button" href="%4$s">%5$s</a> <button type="button" class="button" id="irnoti-copy-report">%6$s</button></div>',
+			esc_attr( $cls ),
+			esc_html( $ttl ),
+			/* translators: 1: passed, 2: warnings, 3: failures */
+			esc_html( sprintf( __( '%1$s سالم · %2$s هشدار · %3$s خطا', 'irnoti-service' ), number_format_i18n( $count['ok'] ), number_format_i18n( $count['warn'] ), number_format_i18n( $count['bad'] ) ) ),
+			esc_url( self::url( 'health' ) ),
+			esc_html__( 'اجرای دوباره', 'irnoti-service' ),
+			esc_html__( 'کپی گزارش برای پشتیبانی', 'irnoti-service' )
+		);
+		$label = array( 'ok' => __( 'سالم', 'irnoti-service' ), 'warn' => __( 'هشدار', 'irnoti-service' ), 'bad' => __( 'خطا', 'irnoti-service' ), 'info' => __( 'اطلاع', 'irnoti-service' ) );
+		$badge = array( 'ok' => 'ok', 'warn' => 'warn', 'bad' => 'bad', 'info' => '' );
+		$grp   = '';
+		foreach ( $rows as $r ) {
+			if ( $r['group'] !== $grp ) {
+				echo $grp ? '</tbody></table>' : '';
+				$grp = $r['group'];
+				echo '<h2>' . esc_html( $grp ) . '</h2><table class="widefat irn-health"><tbody>';
+			}
+			printf(
+				'<tr class="is-%1$s"><td class="irn-h-state"><span class="irn-badge %2$s">%3$s</span></td><th>%4$s</th><td><span dir="auto">%5$s</span>%6$s</td></tr>',
+				esc_attr( $r['state'] ),
+				esc_attr( $badge[ $r['state'] ] ),
+				esc_html( $label[ $r['state'] ] ),
+				esc_html( $r['label'] ),
+				esc_html( $r['detail'] ),
+				( 'ok' !== $r['state'] && 'info' !== $r['state'] && $r['hint'] ) ? '<p class="irn-h-hint">' . esc_html( $r['hint'] ) . '</p>' : ''
+			);
+		}
+		echo $grp ? '</tbody></table>' : '';
+		echo '<textarea id="irnoti-report" class="screen-reader-text" readonly>' . esc_textarea( IRNoti_Health::report( $rows ) ) . '</textarea>';
 	}
 
 	public static function tab_connection(): void {
@@ -458,6 +508,9 @@ class IRNoti_Admin {
 				$parsed = IRNoti_Widget::parse_embed( $raw );
 				$code   = $parsed['src'] ? (string) ( $parsed['attrs']['data-agent'] ?? '' ) : $raw;
 				$code   = preg_replace( '/[^A-Za-z0-9_-]/', '', $code );
+				if ( '' !== $code && ! IRNoti_Widget::valid_key( $code ) ) {
+					self::back( $tab, false, __( 'کد پروژهٔ ویجت درست نیست: باید با pj_ (یا ag_) شروع شود و ۲۰ تا ۴۰ نویسهٔ انگلیسی، عدد یا خط تیره بعدش بیاید. کد را از استودیوی IRNoti کامل کپی کنید.', 'irnoti-service' ) );
+				}
 				unset( $parsed['attrs']['data-agent'] );
 				if ( '' === $parsed['src'] && '' !== $code ) {
 					$parsed['src'] = IRNoti_Widget::DEFAULT_SRC;
