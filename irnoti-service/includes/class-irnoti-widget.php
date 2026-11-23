@@ -10,10 +10,12 @@ class IRNoti_Widget {
 	/** Official embed script of IRNoti's support/AI-agent widget; the project code goes in data-agent. */
 	const DEFAULT_SRC = 'https://api.irnoti.com/v1/embed/widget.js';
 
+	const HANDLE = 'irnoti-widget';
+
 	private static bool $printed = false;
 
 	public static function init(): void {
-		add_action( 'wp_footer', array( __CLASS__, 'footer' ), 99 );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'maybe_enqueue' ) );
 		add_shortcode( 'irnoti_widget', array( __CLASS__, 'shortcode' ) );
 	}
 
@@ -36,7 +38,7 @@ class IRNoti_Widget {
 			$src = $raw;
 		}
 		$src = trim( html_entity_decode( $src ) );
-		if ( ! preg_match( '#^https://[^\s"\'<>]+$#i', $src ) || ! filter_var( $src, FILTER_VALIDATE_URL ) ) {
+		if ( ! preg_match( '#^https://[^\s"\'<>]+$#i', $src ) || ! filter_var( $src, FILTER_VALIDATE_URL ) || ! self::allowed_src( $src ) ) {
 			return $out;
 		}
 		$out['src'] = $src;
@@ -50,6 +52,12 @@ class IRNoti_Widget {
 
 	public static function enabled(): bool {
 		return (bool) IRNoti_Settings::get( 'widget_enabled' ) && '' !== (string) IRNoti_Settings::get( 'widget_src' );
+	}
+
+	/** Only IRNoti's own hosts may serve the widget script. */
+	public static function allowed_src( string $url ): bool {
+		$host = parse_url( $url, PHP_URL_HOST ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url -- pure helper, also unit-tested outside WordPress.
+		return is_string( $host ) && (bool) preg_match( '/(^|\\.)irnoti\\.com$/i', $host );
 	}
 
 	/** Final attribute map: stored data-* attrs plus the project code as data-agent (look and position are set in the IRNoti agent studio). */
@@ -83,33 +91,47 @@ class IRNoti_Widget {
 		return true;
 	}
 
-	public static function tag(): string {
-		$src   = (string) IRNoti_Settings::get( 'widget_src' );
-		$delay = max( 0, min( 60, (int) IRNoti_Settings::get( 'widget_delay' ) ) );
-		$attrs = self::attrs();
-		if ( $delay > 0 ) {
-			return '<script>(function(){setTimeout(function(){var s=document.createElement("script");s.async=true;s.src=' . wp_json_encode( $src ) . ';var a=' . wp_json_encode( (object) $attrs ) . ';for(var k in a){s.setAttribute(k,a[k]);}document.body.appendChild(s);},' . ( $delay * 1000 ) . ');})();</script>' . "\n";
-		}
-		$html = '';
-		foreach ( $attrs as $k => $v ) {
-			$html .= ' ' . esc_attr( $k ) . '="' . esc_attr( $v ) . '"';
-		}
-		return '<script async src="' . esc_url( $src, array( 'https' ) ) . '"' . $html . '></script>' . "\n";
-	}
-
-	public static function footer(): void {
-		if ( self::$printed || ! self::visible() ) {
+	/** Enqueues the widget script (footer, async) with its data-* attributes; with a delay it is injected by a tiny inline loader. */
+	public static function enqueue(): void {
+		if ( self::$printed ) {
 			return;
 		}
 		self::$printed = true;
-		echo self::tag(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in tag().
+		$src   = self::allowed_src( (string) IRNoti_Settings::get( 'widget_src' ) ) ? (string) IRNoti_Settings::get( 'widget_src' ) : self::DEFAULT_SRC;
+		$attrs = self::attrs();
+		$delay = max( 0, min( 60, (int) IRNoti_Settings::get( 'widget_delay' ) ) );
+		if ( $delay > 0 ) {
+			wp_register_script( self::HANDLE, false, array(), IRNOTI_VERSION, true );
+			wp_enqueue_script( self::HANDLE );
+			wp_add_inline_script( self::HANDLE, '(function(){setTimeout(function(){var s=document.createElement("script");s.async=true;s.src=' . wp_json_encode( $src ) . ';var a=' . wp_json_encode( (object) $attrs ) . ';for(var k in a){s.setAttribute(k,a[k]);}document.body.appendChild(s);},' . ( $delay * 1000 ) . ');})();' );
+			return;
+		}
+		wp_enqueue_script( self::HANDLE, $src, array(), null, array( 'in_footer' => true, 'strategy' => 'async' ) ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- remote script, versioned by IRNoti.
+		add_filter( 'script_loader_tag', array( __CLASS__, 'tag_attrs' ), 10, 2 );
+	}
+
+	/** Adds the data-* attributes to the enqueued widget tag. */
+	public static function tag_attrs( string $tag, string $handle ): string {
+		if ( self::HANDLE !== $handle ) {
+			return $tag;
+		}
+		$html = '';
+		foreach ( self::attrs() as $k => $v ) {
+			$html .= ' ' . esc_attr( $k ) . '="' . esc_attr( $v ) . '"';
+		}
+		return str_replace( ' src=', $html . ' src=', $tag );
+	}
+
+	public static function maybe_enqueue(): void {
+		if ( self::visible() ) {
+			self::enqueue();
+		}
 	}
 
 	public static function shortcode(): string {
-		if ( self::$printed || ! self::enabled() ) {
-			return '';
+		if ( self::enabled() ) {
+			self::enqueue();
 		}
-		self::$printed = true;
-		return self::tag();
+		return '';
 	}
 }

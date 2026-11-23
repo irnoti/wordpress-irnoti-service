@@ -55,7 +55,7 @@ class IRNoti_OTP_Login {
 	}
 
 	private static function client_ip(): string {
-		return sanitize_text_field( $_SERVER['REMOTE_ADDR'] ?? '' ); // Not X-Forwarded-For: spoofable.
+		return sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) ); // Not X-Forwarded-For: spoofable.
 	}
 
 	private static function find_user( string $mobile ): ?WP_User {
@@ -82,7 +82,7 @@ class IRNoti_OTP_Login {
 			$code = str_pad( (string) random_int( 0, 999999 ), 6, '0', STR_PAD_LEFT );
 			set_transient( 'irnoti_otp_' . self::mobile_key( $mobile ), array( 'h' => hash_hmac( 'sha256', $code, wp_salt( 'auth' ) ), 'u' => $user->ID, 'tries' => 0 ), self::TTL );
 			$pattern = (string) IRNoti_Settings::get( 'otp_pattern' );
-			$pattern ? IRNoti_SMS::pattern( $pattern, $mobile, array( 'code' => $code ) ) : IRNoti_SMS::send( $mobile, sprintf( __( 'کد ورود به %1$s: %2$s', 'irnoti-service' ), get_bloginfo( 'name' ), $code ) );
+			$pattern ? IRNoti_SMS::pattern( $pattern, $mobile, array( 'code' => $code ) ) : IRNoti_SMS::send( $mobile, sprintf( /* translators: 1: site name, 2: one-time code */ __( 'کد ورود به %1$s: %2$s', 'irnoti-service' ), get_bloginfo( 'name' ), $code ) );
 		}
 		wp_send_json_success( array( 'message' => __( 'اگر این شماره ثبت شده باشد، کد ارسال شد.', 'irnoti-service' ) ) );
 	}
@@ -91,7 +91,7 @@ class IRNoti_OTP_Login {
 		check_ajax_referer( 'irnoti_otp', 'nonce' );
 		self::enabled() || wp_send_json_error( array( 'message' => 'disabled' ), 403 );
 		$mobile = IRNoti_SMS::normalize( sanitize_text_field( wp_unslash( $_POST['mobile'] ?? '' ) ) );
-		$code   = preg_replace( '/\D/', '', (string) ( $_POST['code'] ?? '' ) );
+		$code   = preg_replace( '/\D/', '', sanitize_text_field( wp_unslash( (string) ( $_POST['code'] ?? '' ) ) ) );
 		$key    = 'irnoti_otp_' . self::mobile_key( $mobile );
 		$rec    = get_transient( $key );
 		$fail   = static function () {

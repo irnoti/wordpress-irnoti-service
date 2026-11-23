@@ -188,7 +188,7 @@ class IRNoti_Admin_SMS {
 
 	public static function rule_toggle(): void {
 		self::guard( 'irnoti_rule' );
-		$id    = sanitize_text_field( $_GET['id'] ?? '' );
+		$id    = sanitize_text_field( wp_unslash( $_GET['id'] ?? '' ) );
 		$rules = IRNoti_SMS_Rules::all();
 		foreach ( $rules as $i => $r ) {
 			if ( $r['id'] === $id ) {
@@ -201,7 +201,7 @@ class IRNoti_Admin_SMS {
 
 	public static function rule_delete(): void {
 		self::guard( 'irnoti_rule' );
-		$id = sanitize_text_field( $_GET['id'] ?? '' );
+		$id = sanitize_text_field( wp_unslash( $_GET['id'] ?? '' ) );
 		IRNoti_SMS_Rules::save_all( array_filter( IRNoti_SMS_Rules::all(), static function ( $r ) use ( $id ) {
 			return $r['id'] !== $id;
 		} ) );
@@ -241,10 +241,10 @@ class IRNoti_Admin_SMS {
 	public static function pattern_create(): void {
 		self::guard( 'irnoti_pattern' );
 		$res = IRNoti_API::post( 'patterns', array(
-			'lineId' => preg_replace( '/\D/', '', (string) ( $_POST['line_id'] ?? '' ) ),
+			'lineId' => preg_replace( '/\D/', '', sanitize_text_field( wp_unslash( (string) ( $_POST['line_id'] ?? '' ) ) ) ),
 			'name'   => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
 			'body'   => sanitize_textarea_field( wp_unslash( $_POST['body'] ?? '' ) ),
-			'kind'   => 'otp' === ( $_POST['kind'] ?? '' ) ? 'otp' : 'transactional',
+			'kind'   => 'otp' === sanitize_key( wp_unslash( $_POST['kind'] ?? '' ) ) ? 'otp' : 'transactional',
 			'mode'   => 'internal',
 		) );
 		self::back( array( 'sub' => 'patterns' ), ! is_wp_error( $res ), is_wp_error( $res ) ? $res->get_error_message() : __( 'الگو برای بررسی ارسال شد.', 'irnoti-service' ) );

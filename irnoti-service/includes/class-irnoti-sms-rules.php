@@ -37,7 +37,7 @@ class IRNoti_SMS_Rules {
 		);
 		if ( function_exists( 'wc_get_order_statuses' ) ) {
 			foreach ( wc_get_order_statuses() as $slug => $name ) {
-				$e[ 'wc_status:' . preg_replace( '/^wc-/', '', $slug ) ] = array( sprintf( __( 'تغییر وضعیت سفارش به «%s»', 'irnoti-service' ), $name ), 'order' );
+				$e[ 'wc_status:' . preg_replace( '/^wc-/', '', $slug ) ] = array( sprintf( /* translators: %s: order status name */ __( 'تغییر وضعیت سفارش به «%s»', 'irnoti-service' ), $name ), 'order' );
 			}
 		}
 		return $e;
