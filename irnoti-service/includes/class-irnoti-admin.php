@@ -181,6 +181,9 @@ class IRNoti_Admin {
 		$done = count( array_filter( array_column( $steps, 0 ) ) );
 		$pct  = (int) round( $done / count( $steps ) * 100 );
 
+		if ( $on ) {
+			IRNoti_Account::render_cards();
+		}
 		echo '<div class="irn-hero"><div class="irn-ring" style="--p:' . (int) $pct . '"><b>' . esc_html( number_format_i18n( $pct ) ) . '٪</b></div><div><h3>' . esc_html( $pct >= 100 ? __( 'همه‌چیز آماده است 🎉', 'irnoti-service' ) : __( 'راه‌اندازی را کامل کنید', 'irnoti-service' ) ) . '</h3><p>' . esc_html( sprintf( /* translators: 1: done, 2: total */ __( '%1$s از %2$s مرحله انجام شده است.', 'irnoti-service' ), number_format_i18n( $done ), number_format_i18n( count( $steps ) ) ) ) . '</p></div></div>';
 
 		echo '<div class="irn-grid">';
@@ -200,6 +203,16 @@ class IRNoti_Admin {
 			printf( '<li class="%s"><span class="irn-check">%s</span><a href="%s">%s</a></li>', $st[0] ? 'done' : '', $st[0] ? '✓' : '', esc_url( self::url( $st[2] ) ), esc_html( $st[1] ) );
 		}
 		echo '</ol>';
+		if ( $on ) {
+			echo '<h2>' . esc_html__( 'هشدار موجودی کم', 'irnoti-service' ) . '</h2>';
+			self::form_open( 'account' );
+			echo '<table class="form-table">';
+			self::row( __( 'حد هشدار (ریال)', 'irnoti-service' ), self::input( 'low_balance', (string) ( (int) IRNoti_Settings::get( 'low_balance' ) ?: '' ), 'text', 'inputmode="numeric" placeholder="500000"' ), __( 'وقتی کیف پول + اعتبار پیامکی از این کمتر شود، روزی یک بار ایمیل هشدار فرستاده می‌شود و کنار مبلغ در نوار ابزار ⚠ می‌آید. خالی = خاموش.', 'irnoti-service' ) );
+			self::row( __( 'ایمیل هشدار', 'irnoti-service' ), self::input( 'low_balance_email', (string) IRNoti_Settings::get( 'low_balance_email' ), 'email', 'placeholder="' . esc_attr( (string) get_option( 'admin_email' ) ) . '"' ), __( 'خالی = ایمیل مدیر سایت.', 'irnoti-service' ) );
+			echo '</table>';
+			submit_button( __( 'ذخیرهٔ هشدار', 'irnoti-service' ) );
+			echo '</form>';
+		}
 	}
 
 	public static function tab_widget(): void {
@@ -234,7 +247,7 @@ class IRNoti_Admin {
 		echo '<table class="form-table">';
 		self::row( __( 'آدرس API', 'irnoti-service' ), self::input( 'base_url', (string) IRNoti_Settings::get( 'base_url' ), 'url' ), __( 'پیش‌فرض: https://api.irnoti.com/v1 (فقط https).', 'irnoti-service' ) );
 		$has = IRNoti_API::configured();
-		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send.', 'irnoti-service' ) );
+		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
@@ -430,6 +443,15 @@ class IRNoti_Admin {
 				break;
 			case 'email':
 				IRNoti_Settings::update( array( 'email_enabled' => empty( $p['email_enabled'] ) ? 0 : 1, 'email_from' => sanitize_email( $p['email_from'] ?? '' ) ) );
+				break;
+			case 'account':
+				$digits = strtr( (string) ( $p['low_balance'] ?? '' ), array( '۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9' ) );
+				IRNoti_Settings::update( array(
+					'low_balance'       => (int) preg_replace( '/\D/', '', $digits ),
+					'low_balance_email' => sanitize_email( $p['low_balance_email'] ?? '' ),
+				) );
+				IRNoti_Account::schedule();
+				self::back( 'overview', true, __( 'ذخیره شد.', 'irnoti-service' ) );
 				break;
 			case 'widget':
 				$raw    = trim( (string) ( $p['widget_key'] ?? '' ) );

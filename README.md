@@ -12,6 +12,7 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Email | Routes every `wp_mail()` through IRNoti; falls back to the normal WordPress transport if the API fails. Test email included | `POST /email/send` |
 | VoIP | WebRTC softphone (JsSIP), click-to-call, live calls (hang up / hold / transfer), call reports with CSV export, recordings and voicemail (play / transcribe / delete), block list, SIP account management | `/voip/*` |
 | Webhooks | Receives IRNoti events at `/wp-json/irnoti/v1/webhook` with HMAC verification; exposes `irnoti_webhook_{event}` actions for developers | – |
+| Account & credit | Overview shows wallet (Rial/Toman, gift part and expiry), SMS credit (nearest expiry), AI tokens, email quota and the last wallet transactions; WordPress dashboard widget; balance in the admin bar; low-balance e-mail alert (once a day) | `GET /wallet`, `/wallet/transactions`, `/ai/balance`, `/email/me` |
 | Site widget | Enter the project code (`pj_…`) from the IRNoti agent studio (or paste the full embed code); the plugin injects `<script src="https://api.irnoti.com/v1/embed/widget.js" data-agent="pj_…" async>` in the footer (https + `data-*` only). Look, position, hours and mobile hiding are set in the studio; the plugin adds scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
@@ -38,7 +39,7 @@ The admin UI follows the IRNoti platform design: RTL, Vazirmatn (bundled locally
 ### API key scopes
 
 Create the key in the IRNoti panel with the scopes for the features you use:
-`sms.send`, `sms.read`, `email.send`, `email.read`, `bot.read`, `bot.send`.
+`sms.send`, `sms.read`, `email.send`, `email.read`, `bot.read`, `bot.send`, and `wallet.read` / `ai.read` for the balances.
 Note: the VoIP endpoints use `sms.read` / `sms.send`.
 
 ## Configuration guide

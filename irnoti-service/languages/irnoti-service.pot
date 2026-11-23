@@ -4,8 +4,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "X-Domain: irnoti-service\n"
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "%1$s · تا %2$s"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "%1$s از %2$s مرحله انجام شده است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "%s ریال"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -16,12 +24,28 @@ msgstr ""
 msgid "IRNoti Service"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "IRNoti · اعتبار حساب"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "IRNoti: %s"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "VoIP و سافت‌فون"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "[%s] موجودی IRNoti رو به اتمام است"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "آخرین بررسی: %s"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "آخرین تراکنش‌های کیف پول"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -92,6 +116,10 @@ msgstr ""
 msgid "ارسال آزمایشی"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "ارسال ایمیل"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ارسال ایمیل آزمایشی"
 msgstr ""
@@ -124,6 +152,10 @@ msgstr ""
 msgid "ارسال و گزارش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "ارسال پیامک"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "ارسال کد"
 msgstr ""
@@ -137,15 +169,27 @@ msgid "از"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send."
+msgid "از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "اطلاع‌رسانی (سفارش، وضعیت…)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "اعتبار پیامکی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "اعتبار پیامکی:"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "اعلان سفارش جدید به مدیر"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "افزایش اعتبار"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -204,8 +248,16 @@ msgstr ""
 msgid "ایمیل آزمایشی IRNoti"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "ایمیل باقی‌مانده (اشتراک + بسته)"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ایمیل در صف ارسال قرار گرفت."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ایمیل هشدار"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -220,8 +272,16 @@ msgstr ""
 msgid "بازپرداخت سفارش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "بازگشت وجه"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "باید از دامنهٔ تأییدشده در IRNoti باشد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "بدون اشتراک؛ پرداخت به‌ازای ارسال از کیف پول"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -244,12 +304,16 @@ msgstr ""
 msgid "بررسی دوباره"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin.php
+#: irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-account.php
 msgid "بروزرسانی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "به سرور IRNoti وصل نشد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "به‌روزرسانی: %s"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -266,6 +330,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "تا"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "تاریخ"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -320,6 +388,18 @@ msgstr ""
 msgid "تنظیمات"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "توکن (ویجت، اپراتور هوشمند)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "توکن هوش مصنوعی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "توکن هوش مصنوعی:"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ثانیه"
 msgstr ""
@@ -340,6 +420,10 @@ msgstr ""
 msgid "جایگاه پیش‌نمایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "حد هشدار (ریال)"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "حداقل مبلغ سفارش"
 msgstr ""
@@ -352,8 +436,16 @@ msgstr ""
 msgid "حذف شود؟"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "حساب و اعتبار"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "حساب‌های SIP"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "خالی = ایمیل مدیر سایت."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -382,6 +474,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "در انتظار بررسی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "در حال رزرو: %s"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -422,6 +518,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "ذخیرهٔ قانون"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیرهٔ هشدار"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -492,6 +592,18 @@ msgstr ""
 msgid "سفارش ووکامرس"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "سهمیهٔ ایمیل"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "شارژ کیف پول"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "شرح"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "شرط‌ها"
 msgstr ""
@@ -554,6 +666,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "فقط الگوهای تأییدشده. الگوی جدید را در تب «الگوها» بسازید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "فقط برای ارسال پیامک؛ اول از این کسر می‌شود"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -624,6 +740,10 @@ msgstr ""
 msgid "لینک ویرایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "مبلغ"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "مبلغ (ریال)"
 msgstr ""
@@ -672,6 +792,10 @@ msgstr ""
 msgid "مدیران"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "مدیریت IRNoti"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "مراحل راه‌اندازی"
 msgstr ""
@@ -710,6 +834,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "موجودی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "موجودی برای ارسال پیامک از حد هشدار کمتر است؛ برای جلوگیری از توقف پیامک‌ها حساب را شارژ کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -756,6 +884,10 @@ msgstr ""
 msgid "ناموفق"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "نزدیک‌ترین انقضا: %s"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "نمای کلی"
 msgstr ""
@@ -784,12 +916,24 @@ msgstr ""
 msgid "نوع ارسال"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "هدیه"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "هدیه: %1$s · انقضا %2$s"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "هر ۵ دقیقه سفارش‌های ربات در ووکامرس ساخته شود و وضعیت‌ها دوطرفه همگام شود"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "هزینهٔ ارسال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "هشدار موجودی کم"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-bot-orders.php
@@ -882,6 +1026,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "وضعیت همهٔ خدمات و مراحل راه‌اندازی در یک نگاه."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "وقتی کیف پول + اعتبار پیامکی از این کمتر شود، روزی یک بار ایمیل هشدار فرستاده می‌شود و کنار مبلغ در نوار ابزار ⚠ می‌آید. خالی = خاموش."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -1016,6 +1164,14 @@ msgstr ""
 msgid "کلید API تنظیم نشده است."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "کلید API دسترسی %s ندارد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "کلید API دسترسی wallet.read ندارد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "کلید API را وارد کنید"
 msgstr ""
@@ -1068,6 +1224,14 @@ msgstr ""
 msgid "کمبود موجودی محصول"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "کیف پول"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "کیف پول:"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "گزارش تماس"
 msgstr ""
@@ -1094,5 +1258,9 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "۰ یعنی همزمان با صفحه. تأخیر کوتاه سرعت اولیهٔ سایت را بهتر می‌کند."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-account.php
+msgid "≈ %s تومان"
 msgstr ""
 

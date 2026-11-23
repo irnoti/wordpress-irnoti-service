@@ -204,3 +204,20 @@ a.button.is-active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .irn textarea.large-text{max-width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
 @media (max-width:1100px){.irn-split{grid-template-columns:1fr}.irn-preview{position:static}}
 @media (max-width:782px){.irn .nav-tab-wrapper{position:static}.irn-hero{flex-direction:column;text-align:center}}
+
+/* account & credit */
+.irn-acc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.irn .irn-acc-head h2{margin:0}
+.irn-acc-meta{color:var(--faint);font-size:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.irn-acc{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:22px}
+.irn-acc-card{position:relative;display:flex;flex-direction:column;gap:2px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px 16px;overflow:hidden}
+.irn-acc-card:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--brand),#FF8A5C)}
+.irn-acc-ico{width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:19px;margin-bottom:6px}
+.irn-acc-ico:before{line-height:36px}
+.irn-acc-title{color:var(--muted);font-size:12px;font-weight:500}
+.irn-acc-num{font-size:21px;font-weight:700;color:var(--ink);line-height:1.5;direction:rtl}
+.irn-acc-card small{color:var(--faint);font-size:11px}
+.irn-acc-sub{margin-top:6px;font-size:11px;color:var(--ink-2);background:var(--paper);border-radius:8px;padding:3px 8px;align-self:flex-start}
+.irn-acc-card.is-missing{background:var(--paper)}.irn-acc-card.is-missing:before{background:var(--line-2)}
+.irn-acc-err{font-size:12px;color:var(--warn);margin-top:4px}
+.irn-tx td.irn-pos{color:var(--ok);font-weight:700;text-align:left}.irn-tx td.irn-neg{color:var(--bad);font-weight:700;text-align:left}
