@@ -21,6 +21,10 @@ msgid "VoIP و سافت‌فون"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "آخرین بررسی: %s"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "آخرین تماس‌های ورودی (وب‌هوک)"
 msgstr ""
 
@@ -34,6 +38,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "آدرس API"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-api-client.php
+msgid "آدرس API اشتباه است."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -61,11 +69,15 @@ msgid "اتصال API"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "اتصال برقرار نیست"
+msgid "اتصال به IRNoti"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "اتصال به IRNoti"
+msgid "اتصال به IRNoti برقرار نیست."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اتصال به IRNoti برقرار نیست: کلید API نامعتبر است."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-email.php
@@ -177,6 +189,10 @@ msgid "اگر این شماره ثبت شده باشد، کد ارسال شد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "اگر روشن باشد، وقتی با حساب مدیر وارد شده‌اید ویجت را نمی‌بینید. برای آزمایش خاموشش کنید یا در پنجرهٔ ناشناس سایت را باز کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "ایران ناتیفیکیشن · پیامک، ربات، ایمیل و VoIP"
 msgstr ""
 
@@ -221,7 +237,19 @@ msgid "برای نوع «الگو» یک الگو انتخاب کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "بررسی تنظیمات اتصال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "بررسی دوباره"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "بروزرسانی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "به سرور IRNoti وصل نشد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -381,6 +409,14 @@ msgid "ذخیره شد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیره شد، ولی اتصال به سرور IRNoti برقرار نشد:"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیره شد؛ کلید API معتبر است و اتصال برقرار است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "ذخیرهٔ تنظیمات ویجت"
 msgstr ""
 
@@ -434,6 +470,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "سافت‌فون"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "سرور IRNoti در دسترس نیست"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "سرور در دسترس نیست"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -590,6 +634,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "متصل"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "متصل و تأیید شده"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -765,7 +813,7 @@ msgid "همهٔ روش‌های پرداخت"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "همهٔ صفحات"
+msgid "همهٔ صفحات سایت (خودکار، بدون نیاز به شورت‌کد)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -973,6 +1021,22 @@ msgid "کلید API را وارد کنید"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید API نامعتبر"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-api-client.php
+msgid "کلید API نامعتبر است یا غیرفعال شده."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید API نامعتبر است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید API نامعتبر است. کلید را از پنل IRNoti ← کلیدهای API دوباره کپی کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "کلید API و دریافت رویدادها (وب‌هوک)."
 msgstr ""
 
@@ -981,15 +1045,15 @@ msgid "کلید API و وب‌هوک"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "کلید ذخیره شده"
+msgid "کلید API وارد نشده"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "کلید ذخیره شده است."
+msgid "کلید معتبر است و اتصال برقرار است."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "کلید نامعتبر است."
+msgid "کلید نامعتبر"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php

@@ -20,6 +20,9 @@
 .irn-pill i{width:8px;height:8px;border-radius:50%;background:#8A817B;display:block}
 .irn-pill.on i{background:#3CCB7F;animation:irnPulse 2s infinite}
 .irn-pill.off i{background:var(--brand)}
+a.irn-pill{text-decoration:none}a.irn-pill:hover{color:#fff;border-color:#6B625D}
+.irn-pill.bad{background:rgba(192,38,11,.25);border-color:#C0260B;color:#fff}.irn-pill.bad i{background:#FF5A3C}
+.irn-keystate{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.irn-keystate small{color:var(--faint)}
 @keyframes irnPulse{0%{box-shadow:0 0 0 0 rgba(60,203,127,.6)}100%{box-shadow:0 0 0 8px rgba(60,203,127,0)}}
 
 /* tabs */
