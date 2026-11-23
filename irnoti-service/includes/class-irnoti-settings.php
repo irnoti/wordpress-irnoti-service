@@ -23,6 +23,15 @@ class IRNoti_Settings {
 			'bot_pull_orders' => 0,
 			'otp_login'      => 0,
 			'otp_pattern'    => '',
+			'widget_enabled'    => 0,
+			'widget_src'        => '',
+			'widget_key'        => '',
+			'widget_attrs'      => array(),
+			'widget_position'   => 'right',
+			'widget_scope'      => 'all',
+			'widget_hide_admin' => 1,
+			'widget_hide_ids'   => '',
+			'widget_delay'      => 0,
 		);
 	}
 

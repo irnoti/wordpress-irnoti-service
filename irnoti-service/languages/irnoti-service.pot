@@ -5,6 +5,18 @@ msgstr ""
 "X-Domain: irnoti-service\n"
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "%1$s از %2$s مرحله انجام شده است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "%s قانون"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "IRNoti Service"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "VoIP و سافت‌فون"
 msgstr ""
 
@@ -37,7 +49,15 @@ msgid "ابتدا در تب «اتصال» کلید API را وارد کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "ابتدا کد جاسازی را در پایین وارد کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "اتصال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اتصال API"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -62,6 +82,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ارسال ایمیل آزمایشی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ارسال ایمیل‌های وردپرس"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -141,11 +165,19 @@ msgid "الگوی OTP (اختیاری)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "اولین قانون پیامک را بسازید"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "اگر assets\/js\/jssip.min.js را با bin\/vendor-jssip.sh نساخته‌اید، آدرس https یک JsSIP ۳٫x را بدهید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "اگر این شماره ثبت شده باشد، کد ارسال شد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اگر کد شما کلید جدا دارد، به‌صورت data-key ارسال می‌شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -180,6 +212,14 @@ msgstr ""
 msgid "باید از دامنهٔ تأییدشده در IRNoti باشد."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "برای قراردادن ویجت در محل دلخواه از شورت‌کد زیر استفاده کنید:"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "برای مدیران سایت نمایش نده"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "برای نوع «الگو» یک الگو انتخاب کنید."
 msgstr ""
@@ -190,6 +230,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "بیشتر"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "تأخیر بارگذاری"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -233,6 +277,10 @@ msgid "تماس"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "تماس، گزارش و ضبط‌ها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "تماس، گزارش‌ها، ضبط‌ها و حساب‌های SIP از داخل وردپرس."
 msgstr ""
 
@@ -240,8 +288,16 @@ msgstr ""
 msgid "تماس‌های زنده"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "تنظیم نشده"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php
 msgid "تنظیمات"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ثانیه"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -254,6 +310,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "ثبت‌نام کاربر در وردپرس"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "جایگاه"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -278,6 +338,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "خط ارسال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "خط تنظیم شده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "خط پیامک پیش‌فرض را انتخاب کنید"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -312,12 +380,24 @@ msgstr ""
 msgid "ذخیره شد."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیرهٔ تنظیمات ویجت"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "ذخیرهٔ قانون"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "راز امضای وب‌هوک"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "راست"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "راه‌اندازی را کامل کنید"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -396,6 +476,10 @@ msgstr ""
 msgid "شمارهٔ موبایل نامعتبر است."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "شناسهٔ صفحه‌های مستثنا"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "شهر"
 msgstr ""
@@ -408,7 +492,11 @@ msgstr ""
 msgid "ضبط‌ها و پیام‌گیر"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin-sms.php
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ظاهر و رفتار"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php
 msgid "غیرفعال"
 msgstr ""
 
@@ -432,6 +520,14 @@ msgstr ""
 msgid "فقط سایت"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط صفحهٔ نخست"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط فروشگاه (محصول، سبد، پرداخت)"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "قانون جدید"
 msgstr ""
@@ -450,6 +546,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "قطع"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "قوانین رویداد، پترن، ورود با کد یکبارمصرف"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -514,6 +614,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "مدیر (از تنظیمات)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "مدیران"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "مراحل راه‌اندازی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -597,7 +705,23 @@ msgid "ناموفق"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "نمای کلی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "نمایش"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نمایش داده می‌شود"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نمایش در"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نمایش ویجت روی سایت"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -637,7 +761,19 @@ msgid "همهٔ روش‌های پرداخت"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "همهٔ صفحات"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "همه‌چیز آماده است 🎉"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "همگام‌سازی خودکار"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "همگام‌سازی محصولات و سفارش‌ها"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -664,6 +800,10 @@ msgstr ""
 msgid "وب‌هوک (رویدادهای تحویل پیامک، ایمیل، تماس)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "وب‌هوک را برای دریافت رویدادها فعال کنید"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "ورود"
 msgstr ""
@@ -676,7 +816,7 @@ msgstr ""
 msgid "ورودی"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-sms-rules.php
+#: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "وضعیت"
 msgstr ""
 
@@ -688,12 +828,52 @@ msgstr ""
 msgid "وضعیت قانون تغییر کرد."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "وضعیت همهٔ خدمات و مراحل راه‌اندازی در یک نگاه."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "وقتی…"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ووکامرس غیرفعال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ووکامرس فعال"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "ووکامرس فعال نیست؛ رویدادهای فروشگاه در دسترس نیستند ولی رویدادهای وردپرس (ثبت‌نام کاربر) کار می‌کنند."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت IRNoti را روی فروشگاه و سایت خود نمایش دهید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت IRNoti روی سایت شما"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت در این برگه‌ها\/نوشته‌ها نمایش داده نمی‌شود (شناسه‌ها با کاما جدا شوند)."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت را روی سایت فعال کنید"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت سایت"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت غیرفعال است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ویجت فعال است و در سایت نمایش داده می‌شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -728,6 +908,10 @@ msgstr ""
 msgid "پیش‌نمایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "چپ"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "کاربرد"
 msgstr ""
@@ -744,8 +928,20 @@ msgstr ""
 msgid "کد الگو؛ پارامتر code به آن داده می‌شود. خالی = پیامک متنی."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کد جاسازی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کد جاسازی معتبر نیست؛ باید آدرس https داشته باشد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-otp-login.php
 msgid "کد دریافتی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کد را از پنل IRNoti کپی و اینجا بچسبانید. فقط آدرس https و ویژگی‌های data-* ذخیره می‌شوند."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -773,7 +969,19 @@ msgid "کلید API تنظیم نشده است."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید API را وارد کنید"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "کلید API و دریافت رویدادها (وب‌هوک)."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید API و وب‌هوک"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید ذخیره شده"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -782,6 +990,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "کلید نامعتبر است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید وارد نشده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "کلید ویجت (اختیاری)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -814,5 +1030,9 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "یادداشت برای مشتری"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "۰ یعنی همزمان با صفحه. تأخیر کوتاه سرعت اولیهٔ سایت را بهتر می‌کند."
 msgstr ""
 

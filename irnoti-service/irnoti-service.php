@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       IRNoti Service (ایران ناتیفیکیشن)
- * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل و VoIP/سافت‌فون IRNoti روی وردپرس.
+ * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل، ویجت سایت و VoIP/سافت‌فون IRNoti روی وردپرس.
  * Version:           0.1.0
  * Requires at least: 6.2
  * Requires PHP:      8.0
@@ -18,7 +18,7 @@ define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
 
-foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'admin-sms', 'admin' ) as $irnoti_part ) {
+foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'admin-sms', 'admin' ) as $irnoti_part ) {
 	require_once IRNOTI_DIR . 'includes/class-irnoti-' . $irnoti_part . '.php';
 }
 
