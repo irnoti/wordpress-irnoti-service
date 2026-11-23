@@ -204,13 +204,13 @@ class IRNoti_Admin {
 		self::row( __( 'جایگاه پیش‌نمایش', 'irnoti-service' ), '<div class="irn-seg"><label><input type="radio" name="widget_position" value="right" ' . checked( 'right', $pos, false ) . '><span>' . esc_html__( 'راست', 'irnoti-service' ) . '</span></label><label><input type="radio" name="widget_position" value="left" ' . checked( 'left', $pos, false ) . '><span>' . esc_html__( 'چپ', 'irnoti-service' ) . '</span></label></div>', __( 'فقط برای پیش‌نمایش؛ جایگاه، رنگ، متن و ساعت کاری واقعی ویجت را در استودیوی IRNoti تنظیم می‌کنید.', 'irnoti-service' ) );
 		$sc  = (string) IRNoti_Settings::get( 'widget_scope' );
 		$opt = '';
-		foreach ( array( 'all' => __( 'همهٔ صفحات', 'irnoti-service' ), 'home' => __( 'فقط صفحهٔ نخست', 'irnoti-service' ), 'woo' => __( 'فقط فروشگاه (محصول، سبد، پرداخت)', 'irnoti-service' ) ) as $k => $l ) {
+		foreach ( array( 'all' => __( 'همهٔ صفحات سایت (خودکار، بدون نیاز به شورت‌کد)', 'irnoti-service' ), 'home' => __( 'فقط صفحهٔ نخست', 'irnoti-service' ), 'woo' => __( 'فقط فروشگاه (محصول، سبد، پرداخت)', 'irnoti-service' ) ) as $k => $l ) {
 			$opt .= sprintf( '<option value="%s" %s>%s</option>', esc_attr( $k ), selected( $sc, $k, false ), esc_html( $l ) );
 		}
 		self::row( __( 'نمایش در', 'irnoti-service' ), '<select name="widget_scope">' . $opt . '</select>' );
 		self::row( __( 'شناسهٔ صفحه‌های مستثنا', 'irnoti-service' ), self::input( 'widget_hide_ids', (string) IRNoti_Settings::get( 'widget_hide_ids' ), 'text', 'placeholder="12, 48"' ), __( 'ویجت در این برگه‌ها/نوشته‌ها نمایش داده نمی‌شود (شناسه‌ها با کاما جدا شوند).', 'irnoti-service' ) );
 		self::row( __( 'تأخیر بارگذاری', 'irnoti-service' ), '<input type="number" min="0" max="60" name="widget_delay" value="' . (int) IRNoti_Settings::get( 'widget_delay' ) . '" style="width:90px"> ' . esc_html__( 'ثانیه', 'irnoti-service' ), __( '۰ یعنی همزمان با صفحه. تأخیر کوتاه سرعت اولیهٔ سایت را بهتر می‌کند.', 'irnoti-service' ) );
-		self::row( __( 'مدیران', 'irnoti-service' ), self::switch( 'widget_hide_admin', (bool) IRNoti_Settings::get( 'widget_hide_admin' ), __( 'برای مدیران سایت نمایش نده', 'irnoti-service' ) ) );
+		self::row( __( 'مدیران', 'irnoti-service' ), self::switch( 'widget_hide_admin', (bool) IRNoti_Settings::get( 'widget_hide_admin' ), __( 'برای مدیران سایت نمایش نده', 'irnoti-service' ) ), __( 'اگر روشن باشد، وقتی با حساب مدیر وارد شده‌اید ویجت را نمی‌بینید. برای آزمایش خاموشش کنید یا در پنجرهٔ ناشناس سایت را باز کنید.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button( __( 'ذخیرهٔ تنظیمات ویجت', 'irnoti-service' ) );
 		echo '</div><aside class="irn-preview"><div class="irn-browser"><div class="irn-browser-bar"><i></i><i></i><i></i></div><div class="irn-browser-body"><span class="l1"></span><span class="l2"></span><span class="l3"></span><div class="irn-bubble ' . ( 'left' === $pos ? 'left' : 'right' ) . ' ' . ( $on ? '' : 'off' ) . '"><img src="' . esc_url( IRNOTI_URL . 'assets/img/icon.png' ) . '" alt=""></div></div></div>';
