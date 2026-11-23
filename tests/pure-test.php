@@ -4,6 +4,7 @@ define( 'ABSPATH', __DIR__ );
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-sms.php';
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-webhooks.php';
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-sms-rules.php';
+require __DIR__ . '/../irnoti-service/includes/class-irnoti-widget.php';
 $fail = 0;
 function check( $name, $cond ) { global $fail; echo ( $cond ? 'ok   ' : 'FAIL ' ) . $name . "\n"; $fail += $cond ? 0 : 1; }
 
@@ -26,4 +27,12 @@ check( 'segments persian 70', IRNoti_SMS_Rules::segments( str_repeat( 'س', 70 )
 check( 'segments persian 71', IRNoti_SMS_Rules::segments( str_repeat( 'س', 71 ) ) === 2 );
 check( 'segments ascii 160', IRNoti_SMS_Rules::segments( str_repeat( 'a', 160 ) ) === 1 );
 check( 'segments ascii 161', IRNoti_SMS_Rules::segments( str_repeat( 'a', 161 ) ) === 2 );
+$w = IRNoti_Widget::parse_embed( '<script async src="https://cdn.irnoti.com/w.js" data-key="abc" onload="evil()" data-position="left"></script>' );
+check( 'widget src', 'https://cdn.irnoti.com/w.js' === $w['src'] );
+check( 'widget data attrs only', array( 'data-key' => 'abc', 'data-position' => 'left' ) === $w['attrs'] );
+check( 'widget bare url', 'https://x.io/a.js' === IRNoti_Widget::parse_embed( 'https://x.io/a.js' )['src'] );
+check( 'widget rejects http', '' === IRNoti_Widget::parse_embed( '<script src="http://x.io/a.js"></script>' )['src'] );
+check( 'widget rejects js url', '' === IRNoti_Widget::parse_embed( '<script src="javascript:alert(1)"></script>' )['src'] );
+check( 'widget empty', '' === IRNoti_Widget::parse_embed( '' )['src'] );
+check( 'widget default src is https', 0 === strpos( IRNoti_Widget::DEFAULT_SRC, 'https://' ) );
 exit( $fail ? 1 : 0 );

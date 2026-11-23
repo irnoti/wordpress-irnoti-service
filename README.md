@@ -12,11 +12,16 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Email | Routes every `wp_mail()` through IRNoti; falls back to the normal WordPress transport if the API fails. Test email included | `POST /email/send` |
 | VoIP | WebRTC softphone (JsSIP), click-to-call, live calls (hang up / hold / transfer), call reports with CSV export, recordings and voicemail (play / transcribe / delete), block list, SIP account management | `/voip/*` |
 | Webhooks | Receives IRNoti events at `/wp-json/irnoti/v1/webhook` with HMAC verification; exposes `irnoti_webhook_{event}` actions for developers | – |
+| Site widget | Enter the project code (`pj_…`) from the IRNoti agent studio (or paste the full embed code); the plugin injects `<script src="https://api.irnoti.com/v1/embed/widget.js" data-agent="pj_…" async>` in the footer (https + `data-*` only). Look, position, hours and mobile hiding are set in the studio; the plugin adds scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
 ## Design
 
 The admin UI follows the IRNoti platform design: RTL, Vazirmatn (bundled locally under the SIL OFL, no external font requests), brand `#FF3300`, warm `#FAF8F6` background, dark header, pill tabs, cards and status badges. Styles live in `assets/css/admin.css` (scoped to `.irn`, so they never leak into other admin pages) and `assets/css/otp.css` for the login form.
+
+### Admin dashboard
+
+**IRNoti → Overview** shows the status of every service, a setup-progress ring and a checklist. Tabs use icons, toggles are switches, and the widget tab has a live placement preview.
 
 ## Requirements
 
