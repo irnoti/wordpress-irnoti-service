@@ -29,7 +29,7 @@ class IRNoti_Settings {
 			'widget_attrs'      => array(),
 			'widget_position'   => 'right',
 			'widget_scope'      => 'all',
-			'widget_hide_admin' => 1,
+			'widget_hide_admin' => 0,
 			'widget_hide_ids'   => '',
 			'widget_delay'      => 0,
 		);
