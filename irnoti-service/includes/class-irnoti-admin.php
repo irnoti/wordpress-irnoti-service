@@ -15,7 +15,13 @@ class IRNoti_Admin {
 	}
 
 	public static function menu(): void {
-		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), IRNOTI_URL . 'assets/img/icon.png', 58 );
+		add_menu_page( 'IRNoti', 'IRNoti', 'manage_options', self::SLUG, array( __CLASS__, 'render' ), self::menu_icon(), 58 );
+	}
+
+	/** Monochrome 20x20 SVG (WordPress recolors it for every admin color scheme and hover state). */
+	private static function menu_icon(): string {
+		$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="black" fill-rule="evenodd" d="M5 1.5H15A3.5 3.5 0 0 1 18.5 5V12A3.5 3.5 0 0 1 15 15.5H6.5L1.5 18.5V5A3.5 3.5 0 0 1 5 1.5ZM8.263 14.437L14.563 7.437A1.7 1.7 0 0 0 12.037 5.163L5.737 12.163A1.7 1.7 0 0 0 8.263 14.437Z"/></svg>';
+		return 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- WordPress menu icons must be base64 SVG data URIs.
 	}
 
 	private static function tabs(): array {
