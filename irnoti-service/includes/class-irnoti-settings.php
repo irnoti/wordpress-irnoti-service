@@ -38,10 +38,7 @@ class IRNoti_Settings {
 			'seo_post_types'    => array( 'post', 'page', 'product' ),
 			'seo_meta_output'   => 1, // print <meta name="description"> ourselves when no SEO plugin does it
 			'seo_tone'          => 'professional',
-			'learn_enabled'     => 0,
-			'learn_hour'        => 3,
-			'learn_minutes'     => 60,
-			'learn_mode'        => 'suggest', // suggest = learnings wait for approval in IRNoti; auto = applied right away
+			'ai_model'          => '', // empty = first model from GET /ai/models
 		);
 	}
 

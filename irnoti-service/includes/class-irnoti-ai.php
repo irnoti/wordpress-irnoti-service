@@ -2,20 +2,19 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * IRNoti AI services: text generation, image generation, content trends. Everything goes through the site's own
- * IRNoti key (tokens are billed to the IRNoti account). The endpoint paths are collected in endpoints() — one place
- * to adjust (or filter with `irnoti_ai_endpoints`) if the server's routes differ. Response parsing is tolerant.
+ * IRNoti AI services: chat completions (text), image generation and content ideas. Everything goes through the site's
+ * own IRNoti key (credit is billed to the IRNoti account). Paths are collected in endpoints().
  */
 class IRNoti_AI {
-	const TRENDS_CACHE = 'irnoti_ai_trends';
+	const IDEAS_CACHE  = 'irnoti_ai_ideas';
+	const MODELS_CACHE = 'irnoti_ai_models';
 
-	/** Route table; `{agent}` is replaced for the learning routes. */
+	/** Route table (OpenAI-compatible routes of the IRNoti API). */
 	public static function endpoints(): array {
 		return (array) apply_filters( 'irnoti_ai_endpoints', array(
-			'text'   => 'ai/generate',
-			'image'  => 'ai/images',
-			'trends' => 'ai/trends',
-			'learn'  => 'ai/agents/{agent}/learn',
+			'text'   => 'ai/chat/completions', // scope ai.chat
+			'image'  => 'ai/images/generations', // scope ai.image
+			'models' => 'ai/models', // scope ai.read
 		) );
 	}
 
@@ -186,25 +185,63 @@ class IRNoti_AI {
 
 	/* ------------------------------------------------------------------ API calls */
 
-	/** Generates text for an editor action. Returns array(type, text, lines?) or WP_Error. */
-	public static function run( string $action, array $ctx ) {
-		list( $sys, $prompt, $type, $max ) = self::build_prompt( $action, $ctx + array( 'tone' => (string) IRNoti_Settings::get( 'seo_tone' ) ) );
-		$res = self::call( static function () use ( $action, $sys, $prompt, $max ) {
+	/** Model code for chat: the saved one, else the first of GET /ai/models (cached 12h). */
+	public static function model() {
+		$m = trim( (string) IRNoti_Settings::get( 'ai_model' ) );
+		if ( '' !== $m ) {
+			return $m;
+		}
+		$list = self::models();
+		return is_wp_error( $list ) ? $list : ( $list[0] ?? new WP_Error( 'irnoti_ai_no_model', __( 'مدل فعالی برای هوش مصنوعی پیدا نشد.', 'irnoti-service' ) ) );
+	}
+
+	/** Active model codes (ids). */
+	public static function models() {
+		$c = get_transient( self::MODELS_CACHE );
+		if ( is_array( $c ) ) {
+			return $c;
+		}
+		$res = IRNoti_API::get( self::endpoint( 'models' ) );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$ids = array();
+		foreach ( (array) ( $res['data'] ?? array() ) as $m ) {
+			if ( is_array( $m ) && ! empty( $m['id'] ) ) {
+				$ids[] = (string) $m['id'];
+			}
+		}
+		set_transient( self::MODELS_CACHE, $ids, 12 * HOUR_IN_SECONDS );
+		return $ids;
+	}
+
+	/** Raw chat call: returns the reply text or WP_Error. */
+	public static function chat( string $system, string $prompt, int $max_tokens, float $temperature = 0.6 ) {
+		$model = self::model();
+		if ( is_wp_error( $model ) ) {
+			return $model;
+		}
+		$res = self::call( static function () use ( $model, $system, $prompt, $max_tokens, $temperature ) {
 			return IRNoti_API::post( self::endpoint( 'text' ), array(
-				'task'      => $action,
-				'system'    => $sys,
-				'prompt'    => $prompt,
-				'language'  => 'fa',
-				'maxTokens' => $max,
-				'source'    => 'wordpress',
+				'model'       => $model,
+				'messages'    => array( array( 'role' => 'system', 'content' => $system ), array( 'role' => 'user', 'content' => $prompt ) ),
+				'max_tokens'  => $max_tokens,
+				'temperature' => $temperature,
 			) );
 		} );
 		if ( is_wp_error( $res ) ) {
 			return $res;
 		}
 		$text = self::extract_text( $res );
-		if ( '' === $text ) {
-			return new WP_Error( 'irnoti_ai_empty', __( 'پاسخ خالی از سرویس هوش مصنوعی دریافت شد.', 'irnoti-service' ) );
+		return '' === $text ? new WP_Error( 'irnoti_ai_empty', __( 'پاسخ خالی از سرویس هوش مصنوعی دریافت شد.', 'irnoti-service' ) ) : $text;
+	}
+
+	/** Generates text for an editor action. Returns array(type, text, lines?) or WP_Error. */
+	public static function run( string $action, array $ctx ) {
+		list( $sys, $prompt, $type, $max ) = self::build_prompt( $action, $ctx + array( 'tone' => (string) IRNoti_Settings::get( 'seo_tone' ) ) );
+		$text = self::chat( $sys, $prompt, $max );
+		if ( is_wp_error( $text ) ) {
+			return $text;
 		}
 		$out = array( 'type' => $type, 'text' => $text );
 		if ( 'lines' === $type ) {
@@ -217,14 +254,13 @@ class IRNoti_AI {
 		return $out;
 	}
 
-	/** Generates an image from a prompt. Returns array('url'|'b64' => …) or WP_Error. */
+	/** Generates an image from a prompt (the API answers with base64). Returns array('b64' => …) or WP_Error. */
 	public static function image( string $prompt ) {
 		$res = self::call( static function () use ( $prompt ) {
 			return IRNoti_API::post( self::endpoint( 'image' ), array(
-				'prompt' => $prompt,
-				'size'   => '1344x768',
-				'aspect' => '16:9',
-				'source' => 'wordpress',
+				'prompt' => mb_substr( $prompt, 0, 4000 ),
+				'n'      => 1,
+				'size'   => '1792x1024',
 			) );
 		} );
 		if ( is_wp_error( $res ) ) {
@@ -272,20 +308,49 @@ class IRNoti_AI {
 		return (int) $id;
 	}
 
-	/** Trending topics for content ideas; cached for an hour. */
-	public static function trends( bool $fresh = false ) {
-		$cached = $fresh ? false : get_transient( self::TRENDS_CACHE );
+	/** Parses the model's JSON list of ideas (tolerates code fences and chatter around it). */
+	public static function parse_ideas( string $text ): array {
+		$from = strpos( $text, '[' );
+		$to   = strrpos( $text, ']' );
+		if ( false === $from || false === $to || $to <= $from ) {
+			return array();
+		}
+		$j = json_decode( substr( $text, $from, $to - $from + 1 ), true );
+		return is_array( $j ) ? self::normalize_trends( $j ) : array();
+	}
+
+	/**
+	 * Content ideas for the site. The IRNoti API has no live-trends route, so this asks the model for topics that fit
+	 * what the site already publishes (recent titles + categories). They are suggestions, not measured search volume.
+	 */
+	public static function ideas( bool $fresh = false ) {
+		$cached = $fresh ? false : get_transient( self::IDEAS_CACHE );
 		if ( is_array( $cached ) ) {
 			return $cached;
 		}
-		$res = self::call( static function () {
-			return IRNoti_API::get( self::endpoint( 'trends' ), array( 'lang' => 'fa', 'limit' => 12 ) );
-		} );
-		if ( is_wp_error( $res ) ) {
-			return $res;
+		$titles = wp_list_pluck( get_posts( array( 'numberposts' => 25, 'post_type' => array( 'post', 'product' ), 'post_status' => 'publish', 'suppress_filters' => true ) ), 'post_title' );
+		$cats   = wp_list_pluck( get_terms( array( 'taxonomy' => array( 'category', 'product_cat' ), 'number' => 15, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) ) ?: array(), 'name' );
+		$site   = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
+		$ctx    = "نام سایت: $site
+دسته‌ها: " . implode( '، ', array_filter( (array) $cats ) ) . "
+عنوان‌های اخیر:
+- " . implode( "\n- ", array_map( 'wp_strip_all_tags', (array) $titles ) );
+		$text   = self::chat(
+			'تو استراتژیست محتوا و سئوی فارسی هستی. فقط JSON معتبر بده.',
+			"$ctx
+
+دوازده ایدهٔ مقالهٔ تازه و مرتبط با حوزهٔ این سایت پیشنهاد بده که با نیت جستجوی واقعی کاربران فارسی‌زبان بخواند و تکراری عنوان‌های بالا نباشد. خروجی فقط آرایهٔ JSON با آبجکت‌هایی به شکل {\"title\":\"...\",\"keywords\":[\"...\",\"...\"],\"summary\":\"یک جمله\"}. بدون هیچ متن دیگر.",
+			2500,
+			0.8
+		);
+		if ( is_wp_error( $text ) ) {
+			return $text;
 		}
-		$items = self::normalize_trends( $res );
-		set_transient( self::TRENDS_CACHE, $items, HOUR_IN_SECONDS );
+		$items = self::parse_ideas( $text );
+		if ( ! $items ) {
+			return new WP_Error( 'irnoti_ai_ideas', __( 'پاسخ مدل قابل‌خواندن نبود؛ دوباره تلاش کنید.', 'irnoti-service' ) );
+		}
+		set_transient( self::IDEAS_CACHE, $items, 6 * HOUR_IN_SECONDS );
 		return $items;
 	}
 

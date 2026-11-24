@@ -67,6 +67,9 @@ check( 'ai extract nested data', 'n' === IRNoti_AI::extract_text( array( 'data' 
 check( 'ai extract empty', '' === IRNoti_AI::extract_text( array( 'x' => 1 ) ) );
 check( 'ai image url', array( 'url' => 'https://a/b.png' ) === IRNoti_AI::extract_image( array( 'data' => array( array( 'url' => 'https://a/b.png' ) ) ) ) );
 check( 'ai image b64 strips prefix', array( 'b64' => 'AAA' ) === IRNoti_AI::extract_image( array( 'image' => 'data:image/png;base64,AAA' ) ) );
+check( 'ai image openai b64', array( 'b64' => 'QQ==' ) === IRNoti_AI::extract_image( array( 'data' => array( array( 'b64_json' => 'QQ==' ) ) ) ) );
+check( 'ai parse ideas from fenced json', 1 === count( IRNoti_AI::parse_ideas( "```json\n[{\"title\":\"x\",\"keywords\":[\"a\"]}]\n```" ) ) );
+check( 'ai parse ideas garbage', array() === IRNoti_AI::parse_ideas( 'نمی‌دانم' ) );
 check( 'ai split lines', array( 'a', 'b' ) === IRNoti_AI::split_lines( "1. a\n- b\n\n۲) b" ) );
 check( 'ai split title', array( 'سلام دنیا', '<p>x</p>' ) === IRNoti_AI::split_title_body( "عنوان: «سلام دنیا»\n<p>x</p>" ) );
 $t = IRNoti_AI::normalize_trends( array( 'items' => array( array( 'title' => 'الف', 'keywords' => 'a, b', 'score' => '3' ), 'ب', array( 'x' => 1 ) ) ) );

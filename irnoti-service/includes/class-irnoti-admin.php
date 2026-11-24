@@ -260,7 +260,6 @@ class IRNoti_Admin {
 		echo '<p class="description">' . esc_html__( 'برای قراردادن ویجت در محل دلخواه از شورت‌کد زیر استفاده کنید:', 'irnoti-service' ) . '</p><p><code dir="ltr">[irnoti_widget]</code></p></aside></div></form>';
 		echo '<section class="irn-live"><h2>' . esc_html__( 'تست زنده', 'irnoti-service' ) . '</h2><p class="description">' . esc_html__( 'همان درخواستی که مرورگر بازدیدکننده می‌زند از همین صفحه فرستاده می‌شود و پاسخ یا خطای سرور (مثل validation_error یا دامنهٔ غیرمجاز) همین‌جا نشان داده می‌شود. «نمایش ویجت» خود ویجت را روی همین صفحهٔ مدیریت باز می‌کند.', 'irnoti-service' ) . '</p>';
 		echo '<p><button type="button" class="button button-primary" id="irnoti-w-check">' . esc_html__( 'بررسی ویجت', 'irnoti-service' ) . '</button> <button type="button" class="button" id="irnoti-w-show">' . esc_html__( 'نمایش ویجت در همین صفحه', 'irnoti-service' ) . '</button> <a class="button" href="' . esc_url( self::url( 'health' ) ) . '">' . esc_html__( 'بررسی سلامت کامل', 'irnoti-service' ) . '</a></p><div id="irnoti-w-out"></div></section>';
-		IRNoti_Admin_SEO::render_learn_box();
 	}
 
 	public static function tab_health(): void {
@@ -313,7 +312,7 @@ class IRNoti_Admin {
 		echo '<table class="form-table">';
 		self::row( __( 'آدرس API', 'irnoti-service' ), self::input( 'base_url', (string) IRNoti_Settings::get( 'base_url' ), 'url' ), __( 'پیش‌فرض: https://api.irnoti.com/v1 (فقط https).', 'irnoti-service' ) );
 		$has = IRNoti_API::configured();
-		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read؛ برای محتوا و سئو با هوش مصنوعی: ai.read و ai.write.', 'irnoti-service' ) );
+		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read؛ برای محتوا و سئو با هوش مصنوعی: ai.read، ai.chat و ai.image.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
@@ -548,7 +547,6 @@ class IRNoti_Admin {
 				}
 				break;
 			case 'seo':
-			case 'learn':
 				IRNoti_Admin_SEO::save_settings( $tab, $p );
 				break;
 			case 'voip':
@@ -556,7 +554,7 @@ class IRNoti_Admin {
 				IRNoti_Settings::update( array( 'voip_from' => sanitize_text_field( $p['voip_from'] ?? '' ), 'jssip_url' => $url ) );
 				break;
 		}
-		self::back( array( 'seo' => 'content', 'learn' => 'widget' )[ $tab ] ?? $tab, true, __( 'ذخیره شد.', 'irnoti-service' ) );
+		self::back( 'seo' === $tab ? 'content' : $tab, true, __( 'ذخیره شد.', 'irnoti-service' ) );
 	}
 
 	public static function verify_key(): void {

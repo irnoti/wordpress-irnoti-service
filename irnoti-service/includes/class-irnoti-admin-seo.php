@@ -11,7 +11,7 @@ class IRNoti_Admin_SEO {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_box' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_box' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
-		foreach ( array( 'analyze', 'action', 'image', 'meta', 'scan', 'trends', 'draft', 'learn' ) as $a ) {
+		foreach ( array( 'analyze', 'action', 'image', 'meta', 'scan', 'trends', 'draft' ) as $a ) {
 			add_action( 'wp_ajax_irnoti_seo_' . $a, array( __CLASS__, 'ajax_' . $a ) );
 		}
 	}
@@ -21,7 +21,7 @@ class IRNoti_Admin_SEO {
 	public static function assets( string $hook ): void {
 		$tab    = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'overview'; // phpcs:ignore WordPress.Security.NonceVerification
 		$on_box = in_array( $hook, array( 'post.php', 'post-new.php' ), true ) && self::box_screen();
-		$on_tab = 'toplevel_page_' . IRNoti_Admin::SLUG === $hook && in_array( $tab, array( 'content', 'widget' ), true );
+		$on_tab = 'toplevel_page_' . IRNoti_Admin::SLUG === $hook && 'content' === $tab;
 		if ( ! $on_box && ! $on_tab ) {
 			return;
 		}
@@ -48,15 +48,8 @@ class IRNoti_Admin_SEO {
 				'seo_post_types'  => $types ?: array( 'post' ),
 				'seo_tone'        => in_array( $p['seo_tone'] ?? '', array( 'professional', 'friendly', 'sales', 'educational' ), true ) ? $p['seo_tone'] : 'professional',
 				'seo_meta_output' => empty( $p['seo_meta_output'] ) ? 0 : 1,
+				'ai_model'        => preg_replace( '/[^A-Za-z0-9._:\/\-]/', '', (string) ( $p['ai_model'] ?? '' ) ),
 			) );
-		} elseif ( 'learn' === $tab ) {
-			IRNoti_Settings::update( array(
-				'learn_enabled' => empty( $p['learn_enabled'] ) ? 0 : 1,
-				'learn_hour'    => max( 0, min( 23, (int) ( $p['learn_hour'] ?? 3 ) ) ),
-				'learn_minutes' => max( 5, min( 180, (int) ( $p['learn_minutes'] ?? 60 ) ) ),
-				'learn_mode'    => 'auto' === ( $p['learn_mode'] ?? '' ) ? 'auto' : 'suggest',
-			) );
-			IRNoti_Learn::schedule( true );
 		}
 	}
 
@@ -80,7 +73,7 @@ class IRNoti_Admin_SEO {
 	public static function render_tab(): void {
 		$connected = IRNoti_API::connected();
 		if ( ! $connected ) {
-			echo '<div class="notice notice-warning inline"><p>' . esc_html__( 'امتیاز سئو بدون اتصال هم کار می‌کند، ولی تولید و بهینه‌سازی با هوش مصنوعی، تصویر و ترندها به کلید API فعال نیاز دارد (تب «اتصال»؛ دسترسی‌های ai.read و ai.write).', 'irnoti-service' ) . '</p></div>';
+			echo '<div class="notice notice-warning inline"><p>' . esc_html__( 'امتیاز سئو بدون اتصال هم کار می‌کند، ولی تولید و بهینه‌سازی با هوش مصنوعی، تصویر و ایده‌های محتوا به کلید API فعال نیاز دارد (تب «اتصال»؛ دسترسی‌های ai.read، ai.chat و ai.image).', 'irnoti-service' ) . '</p></div>';
 		}
 		self::render_trends( $connected );
 		self::render_list();
@@ -88,10 +81,10 @@ class IRNoti_Admin_SEO {
 	}
 
 	private static function render_trends( bool $connected ): void {
-		echo '<h2>' . esc_html__( 'ترندهای محتوا', 'irnoti-service' ) . '</h2><p class="description">' . esc_html__( 'موضوع‌های داغ روز برای مقاله‌های سایت شما، از IRNoti. با یک کلیک پیش‌نویس سئوشده بسازید.', 'irnoti-service' ) . '</p>';
+		echo '<h2>' . esc_html__( 'ایده‌ها و موضوع‌های پیشنهادی', 'irnoti-service' ) . '</h2><p class="description">' . esc_html__( 'هوش مصنوعی IRNoti بر اساس دسته‌ها و نوشته‌های فعلی سایت شما موضوع‌های تازه پیشنهاد می‌دهد (پیشنهاد مدل است، نه آمار جستجو). با یک کلیک پیش‌نویس سئوشده بسازید.', 'irnoti-service' ) . '</p>';
 		echo '<div id="irnoti-trends" class="irnseo-trends" data-enabled="' . ( $connected ? '1' : '0' ) . '"><p class="irn-empty">' . esc_html( $connected ? __( 'در حال دریافت…', 'irnoti-service' ) : '—' ) . '</p></div>';
 		if ( $connected ) {
-			echo '<p><button type="button" class="button" id="irnoti-trends-refresh">' . esc_html__( 'به‌روزرسانی ترندها', 'irnoti-service' ) . '</button></p>';
+			echo '<p><button type="button" class="button" id="irnoti-trends-refresh">' . esc_html__( 'پیشنهاد دوباره', 'irnoti-service' ) . '</button></p>';
 		}
 	}
 
@@ -187,6 +180,12 @@ class IRNoti_Admin_SEO {
 			$opts .= sprintf( '<option value="%s" %s>%s</option>', esc_attr( $k ), selected( $tone, $k, false ), esc_html( $l ) );
 		}
 		echo '<tr><th>' . esc_html__( 'لحن نوشتار', 'irnoti-service' ) . '</th><td><select name="seo_tone">' . $opts . '</select></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		$models = IRNoti_API::connected() ? IRNoti_AI::models() : array();
+		$mopt   = '<option value="">' . esc_html__( 'خودکار (اولین مدل فعال)', 'irnoti-service' ) . '</option>';
+		foreach ( is_array( $models ) ? $models : array() as $m ) {
+			$mopt .= sprintf( '<option value="%s" %s>%s</option>', esc_attr( $m ), selected( (string) IRNoti_Settings::get( 'ai_model' ), $m, false ), esc_html( $m ) );
+		}
+		echo '<tr><th>' . esc_html__( 'مدل هوش مصنوعی', 'irnoti-service' ) . '</th><td><select name="ai_model">' . $mopt . '</select><p class="description">' . esc_html__( 'فهرست مدل‌ها و ضریب هزینه در پنل IRNoti ← هوش مصنوعی است.', 'irnoti-service' ) . '</p></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		$own = 'own' === IRNoti_SEO::store();
 		echo '<tr><th>' . esc_html__( 'تگ توضیحات متا', 'irnoti-service' ) . '</th><td><label class="irn-switch"><input type="checkbox" name="seo_meta_output" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'seo_meta_output' ), false ) . ( $own ? '' : ' disabled' ) . '><span class="irn-track"></span><span class="irn-switch-label">' . esc_html__( 'چاپ meta description در سایت', 'irnoti-service' ) . '</span></label><p class="description">' . esc_html( $own ? __( 'افزونهٔ سئوی دیگری فعال نیست؛ IRNoti توضیحات متا را در head چاپ می‌کند.', 'irnoti-service' ) : sprintf( /* translators: %s: plugin name */ __( 'افزونهٔ %s فعال است؛ توضیحات و کلمهٔ کلیدی در همان ذخیره می‌شود و چاپ تگ با خود آن است.', 'irnoti-service' ), 'yoast' === IRNoti_SEO::store() ? 'Yoast SEO' : 'Rank Math' ) ) . '</p></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		echo '</table>';
@@ -231,7 +230,7 @@ class IRNoti_Admin_SEO {
 				printf( '<button type="button" class="button" data-ai="%s">%s</button> ', esc_attr( $k ), esc_html( $l ) );
 			}
 			echo '</div><div id="irnoti-ai-out" class="irnseo-out" hidden></div>';
-			echo '<h4>' . esc_html__( 'ترندهای روز', 'irnoti-service' ) . '</h4><div id="irnoti-trends" class="irnseo-trends irnseo-mini" data-enabled="1" data-mini="1"></div>';
+			echo '<h4>' . esc_html__( 'ایده‌های موضوعی', 'irnoti-service' ) . '</h4><div id="irnoti-trends" class="irnseo-trends irnseo-mini" data-enabled="1" data-mini="1"></div>';
 		} else {
 			$why = IRNoti_API::connected() ? __( 'شما دسترسی استفاده از هوش مصنوعی را ندارید.', 'irnoti-service' ) : __( 'برای ابزارهای هوش مصنوعی ابتدا کلید API را در IRNoti ← اتصال وارد کنید.', 'irnoti-service' );
 			echo '<p class="description">' . esc_html( $why ) . '</p>';
@@ -382,7 +381,7 @@ class IRNoti_Admin_SEO {
 
 	public static function ajax_trends(): void {
 		self::guard();
-		$res = IRNoti_AI::trends( ! empty( $_POST['fresh'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$res = IRNoti_AI::ideas( ! empty( $_POST['fresh'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		is_wp_error( $res ) ? self::fail( $res ) : wp_send_json_success( array( 'items' => $res ) );
 	}
 
@@ -413,50 +412,5 @@ class IRNoti_Admin_SEO {
 		}
 		IRNoti_SEO::set_meta( (int) $id, 'kw', $kw ?: $topic );
 		wp_send_json_success( array( 'id' => $id, 'edit' => get_edit_post_link( (int) $id, 'raw' ) ) );
-	}
-
-	public static function ajax_learn(): void {
-		self::guard( false, true );
-		wp_send_json_success( self::learn_pack( IRNoti_Learn::run() ) );
-	}
-
-	/* ------------------------------------------------------------------ learning box (widget tab) */
-
-	private static function learn_pack( array $r ): array {
-		return array(
-			'ok'        => ! empty( $r['ok'] ),
-			'time'      => ! empty( $r['time'] ) ? wp_date( 'Y/m/d H:i', (int) $r['time'] ) : '',
-			'items'     => (array) ( $r['items'] ?? array() ),
-			'processed' => (int) ( $r['processed'] ?? 0 ),
-			'summary'   => (string) ( $r['summary'] ?? '' ),
-			'error'     => (string) ( $r['error'] ?? '' ),
-		);
-	}
-
-	public static function render_learn_box(): void {
-		$rep  = IRNoti_Learn::report();
-		$next = wp_next_scheduled( IRNoti_Learn::CRON );
-		echo '<section class="irn-live irnlearn"><h2>' . esc_html__( 'یادگیری دستیار از مکالمات', 'irnoti-service' ) . '</h2>';
-		echo '<p class="description">' . esc_html__( 'هر روز در ساعت انتخابی، دستیار هوش مصنوعی ویجت به‌مدت محدود مکالمات اخیر را مرور می‌کند، پرسش‌های بی‌پاسخ و تکراری را پیدا می‌کند و دانسته‌هایش را کامل‌تر می‌کند.', 'irnoti-service' ) . '</p>';
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( 'irnoti_save' );
-		echo '<input type="hidden" name="action" value="irnoti_save"><input type="hidden" name="tab" value="learn"><table class="form-table">';
-		echo '<tr><th>' . esc_html__( 'یادگیری روزانه', 'irnoti-service' ) . '</th><td><label class="irn-switch"><input type="checkbox" name="learn_enabled" value="1" ' . checked( 1, (int) IRNoti_Settings::get( 'learn_enabled' ), false ) . '><span class="irn-track"></span><span class="irn-switch-label">' . esc_html__( 'فعال', 'irnoti-service' ) . '</span></label>';
-		if ( '' === (string) IRNoti_Settings::get( 'widget_key' ) ) {
-			echo '<p class="description">' . esc_html__( 'ابتدا کد پروژهٔ ویجت را در بالا وارد کنید.', 'irnoti-service' ) . '</p>';
-		}
-		echo '</td></tr>';
-		echo '<tr><th>' . esc_html__( 'ساعت اجرا', 'irnoti-service' ) . '</th><td><input type="number" min="0" max="23" name="learn_hour" value="' . (int) IRNoti_Settings::get( 'learn_hour' ) . '" style="width:80px"> ' . esc_html__( 'به وقت سایت', 'irnoti-service' );
-		if ( $next ) {
-			echo '<p class="description">' . esc_html( sprintf( /* translators: %s: date/time */ __( 'اجرای بعدی: %s', 'irnoti-service' ), wp_date( 'Y/m/d H:i', $next ) ) ) . '</p>';
-		}
-		echo '</td></tr>';
-		echo '<tr><th>' . esc_html__( 'زمان یادگیری در هر روز', 'irnoti-service' ) . '</th><td><input type="number" min="5" max="180" name="learn_minutes" value="' . (int) IRNoti_Settings::get( 'learn_minutes' ) . '" style="width:80px"> ' . esc_html__( 'دقیقه', 'irnoti-service' ) . '<p class="description">' . esc_html__( 'سقف مصرف زمان (و توکن) هر نوبت؛ پیش‌فرض یک ساعت.', 'irnoti-service' ) . '</p></td></tr>';
-		$mode = (string) IRNoti_Settings::get( 'learn_mode' );
-		echo '<tr><th>' . esc_html__( 'اعمال یادگیری‌ها', 'irnoti-service' ) . '</th><td><select name="learn_mode"><option value="suggest" ' . selected( $mode, 'suggest', false ) . '>' . esc_html__( 'فقط پیشنهاد (با تأیید شما در پنل IRNoti)', 'irnoti-service' ) . '</option><option value="auto" ' . selected( $mode, 'auto', false ) . '>' . esc_html__( 'خودکار اعمال شود', 'irnoti-service' ) . '</option></select></td></tr>';
-		echo '</table>';
-		submit_button( __( 'ذخیرهٔ تنظیمات یادگیری', 'irnoti-service' ), 'primary', 'submit', false );
-		echo ' <button type="button" class="button" id="irnoti-learn-run">' . esc_html__( 'یادگیری همین حالا', 'irnoti-service' ) . '</button> <span id="irnoti-learn-status"></span></form>';
-		echo '<div id="irnoti-learn-report" class="irnlearn-report" data-init="' . esc_attr( wp_json_encode( self::learn_pack( $rep ) ) ) . '"></div></section>';
 	}
 }

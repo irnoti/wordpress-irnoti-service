@@ -1,5 +1,5 @@
-/* Editor box (outside .irn) and the content tab / learning box. */
-.irnseo,.irnlearn,.irnseo-trends,.irnseo-list{--brand:#FF3300;--ok:#1F7A44;--warn:#B45309;--bad:#C0260B;--line:#EFEAE6;font-family:Vazirmatn,system-ui,sans-serif}
+/* Editor box (outside .irn) and the content tab. */
+.irnseo,.irnseo-trends,.irnseo-list{--brand:#FF3300;--ok:#1F7A44;--warn:#B45309;--bad:#C0260B;--line:#EFEAE6;font-family:Vazirmatn,system-ui,sans-serif}
 .irnseo{direction:rtl;text-align:right}
 .irnseo-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
 .irnseo-score{width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid var(--line);flex:none}
@@ -40,10 +40,6 @@
 .irnseo-pages{margin-top:12px}.irnseo-pages .page-numbers{padding:3px 10px;border:1px solid #DDD5CF;border-radius:6px;text-decoration:none;margin-inline-end:4px}
 .irnseo-pages .current{background:#1A1614;color:#fff;border-color:#1A1614}
 
-/* learning box */
-.irnlearn-head{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;padding:8px 12px;border-radius:10px;margin-top:14px}
-.irnlearn-head.ok{background:#E8F6EE;color:#1F7A44}.irnlearn-head.bad{background:#FDECE8;color:#C0260B}
-.irnlearn-list{margin:10px 0;padding-inline-start:20px}.irnlearn-list li{margin:4px 0}
 
 /* toast on the post edit screens (admin.css is not loaded there) */
 .irn-toast{position:fixed;bottom:28px;left:28px;z-index:100000;background:#1A1614;color:#fff;border-radius:12px;padding:12px 18px;font-family:Vazirmatn,sans-serif;font-size:13px;box-shadow:0 20px 40px -12px rgba(0,0,0,.4)}

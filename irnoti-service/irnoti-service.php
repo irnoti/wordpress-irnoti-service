@@ -18,7 +18,7 @@ define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
 
-foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'health', 'seo', 'ai', 'learn', 'admin-sms', 'admin-seo', 'admin' ) as $irnoti_part ) {
+foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'health', 'seo', 'ai', 'admin-sms', 'admin-seo', 'admin' ) as $irnoti_part ) {
 	require_once IRNOTI_DIR . 'includes/class-irnoti-' . $irnoti_part . '.php';
 }
 
@@ -33,8 +33,10 @@ add_action( 'plugins_loaded', static function () {
 	IRNoti_OTP_Login::init();
 	IRNoti_Widget::init();
 	IRNoti_Account::init();
+	IRNoti_SEO::init();
 	if ( is_admin() ) {
 		IRNoti_Admin_SMS::init();
+		IRNoti_Admin_SEO::init();
 		IRNoti_Admin::init();
 	}
 } );
@@ -42,5 +44,4 @@ add_action( 'plugins_loaded', static function () {
 register_deactivation_hook( __FILE__, static function () {
 	wp_clear_scheduled_hook( 'irnoti_pull_orders' );
 	wp_clear_scheduled_hook( 'irnoti_low_balance' );
-	wp_clear_scheduled_hook( 'irnoti_ai_learn' );
 } );

@@ -199,7 +199,7 @@
     var mini = tr.getAttribute('data-mini') === '1';
     var drawTrends = function (items) {
       tr.textContent = '';
-      if (!items.length) { tr.appendChild(el('p', 'ترندی دریافت نشد.', { 'class': 'irn-empty' })); return; }
+      if (!items.length) { tr.appendChild(el('p', 'ایده‌ای دریافت نشد.', { 'class': 'irn-empty' })); return; }
       items.slice(0, mini ? 5 : 12).forEach(function (t) {
         var card = el('div', null, { 'class': 'irnseo-trend' });
         card.appendChild(el('strong', t.title, { dir: 'auto' }));
@@ -250,33 +250,4 @@
       });
     })();
   });
-
-  /* ---------------------------------------------------------------- learning report */
-  var rep = $('irnoti-learn-report');
-  if (rep) {
-    var drawLearn = function (d) {
-      rep.textContent = '';
-      if (!d.time) { rep.appendChild(el('p', 'هنوز یادگیری انجام نشده است.', { 'class': 'irn-empty' })); return; }
-      var h = el('div', null, { 'class': 'irnlearn-head ' + (d.ok ? 'ok' : 'bad') });
-      h.appendChild(el('strong', d.ok ? 'آنچه از مکالمات یاد گرفتم' : 'یادگیری ناموفق بود'));
-      h.appendChild(el('small', ' · ' + d.time + (d.ok ? ' · ' + d.processed + ' مکالمه بررسی شد' : '')));
-      rep.appendChild(h);
-      if (!d.ok) { rep.appendChild(el('p', d.error, { 'class': 'irnseo-err', dir: 'auto' })); return; }
-      if (d.summary) rep.appendChild(el('p', d.summary, { dir: 'auto' }));
-      if (!d.items.length) { rep.appendChild(el('p', 'این بار چیز تازه‌ای پیدا نشد.', { 'class': 'irn-empty' })); return; }
-      var ul = el('ul', null, { 'class': 'irnlearn-list' });
-      d.items.forEach(function (t) { ul.appendChild(el('li', t, { dir: 'auto' })); });
-      rep.appendChild(ul);
-    };
-    var init = {}; try { init = JSON.parse(rep.getAttribute('data-init') || '{}'); } catch (e) { /* ignore */ }
-    drawLearn(init);
-    var run = $('irnoti-learn-run');
-    if (run) run.addEventListener('click', function () {
-      run.disabled = true; $('irnoti-learn-status').textContent = 'در حال یادگیری… (ممکن است چند دقیقه طول بکشد)';
-      post('learn', {}).then(function (r) {
-        run.disabled = false; $('irnoti-learn-status').textContent = '';
-        if (r.success) drawLearn(r.data); else toast(msg(r), true);
-      });
-    });
-  }
 })();
