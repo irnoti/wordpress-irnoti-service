@@ -15,6 +15,8 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Account & credit | Overview shows wallet (Rial/Toman, gift part and expiry), SMS credit (nearest expiry), AI tokens, email quota and the last wallet transactions; WordPress dashboard widget; balance in the admin bar; low-balance e-mail alert (once a day) | `GET /wallet`, `/wallet/transactions`, `/ai/balance`, `/email/me` |
 | Health check | **IRNoti → System health**: PHP/WP/OpenSSL/HTTPS, API reachability and response time, key validity, each key scope, widget code format, the widget server's answer for this site's Origin (catches `validation_error` and unlisted domains), WP-Cron and jobs, speed/SMTP plugins known to interfere; copyable report for support. The widget tab also has a live in-browser test and can open the real widget on the admin page | – |
 | Site widget | Enter the project code (`pj_…`) from the IRNoti agent studio (or paste the full embed code); the plugin injects `<script src="https://api.irnoti.com/v1/embed/widget.js" data-agent="pj_…" async>` in the footer (https + `data-*` only). Look, position, hours and mobile hiding are set in the studio; the plugin adds scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
+| Content & SEO (AI) | **IRNoti → Content & SEO**: lists posts, pages and products with a local SEO score and the list of problems (title/description length, focus keyword placement and density, word count, headings, images and alt, links, slug, readability), sortable by worst score. An **editor box** on each post/page/product shows the live score and AI tools: title, meta description and keyword suggestions, SEO rewrite, expand, FAQ, excerpt and a generated featured image (saved into the media library). Works with Yoast SEO / Rank Math fields, or prints the meta description itself. A **trends box** (also in the editor) suggests hot topics and creates an SEO draft in one click | `ai/generate`, `ai/images`, `ai/trends` |
+| Assistant learning | In the widget tab: once a day (chosen hour, default budget 60 minutes) IRNoti studies the widget assistant's recent conversations; the tab shows "what I learned" and can run it on demand. Mode: suggest (approve in IRNoti) or auto-apply | `ai/agents/:key/learn` |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
 ## Design
@@ -135,6 +137,8 @@ bin/vendor-jssip.sh         # build the JsSIP browser bundle
 The admin UI strings are currently Persian (the default language of the platform); source strings are in the `irnoti-service` text domain and can be translated with the generated `.pot` file.
 
 ## Known assumptions to verify against a live server
+
+- **AI routes** (`ai/generate`, `ai/images`, `ai/trends`, `ai/agents/{key}/learn`), their request fields and response shapes are assumptions: the AI API docs were not reachable when this was written. All paths live in `IRNoti_AI::endpoints()` (also filterable with `irnoti_ai_endpoints`); response parsing is tolerant (`IRNoti_AI::extract_text/extract_image/normalize_trends`). The key needs `ai.read` and `ai.write` (names to confirm).
 
 - Response shape of `GET /botbuilder/bots` (array or `items`) and that `PUT …/shop/products` returns `id`.
 - Field names of the softphone credentials response (`sipWsUrl`/`wsUrl`, `sipDomain`/`domain`, `username`, `secret`).

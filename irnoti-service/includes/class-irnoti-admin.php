@@ -41,13 +41,14 @@ class IRNoti_Admin {
 			'bot'        => __( 'ربات و محصولات', 'irnoti-service' ),
 			'email'      => __( 'ایمیل', 'irnoti-service' ),
 			'widget'     => __( 'ویجت سایت', 'irnoti-service' ),
+			'content'    => __( 'محتوا و سئو (AI)', 'irnoti-service' ),
 			'voip'       => __( 'VoIP و سافت‌فون', 'irnoti-service' ),
 			'health'     => __( 'سلامت سیستم', 'irnoti-service' ),
 		);
 	}
 
 	private static function icons(): array {
-		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'voip' => 'phone', 'health' => 'heart' );
+		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'content' => 'chart-area', 'voip' => 'phone', 'health' => 'heart' );
 	}
 
 	private static function url( string $tab, array $extra = array() ): string {
@@ -90,6 +91,7 @@ class IRNoti_Admin {
 			'bot'        => array( __( 'ربات و محصولات', 'irnoti-service' ), __( 'همگام‌سازی محصولات و سفارش‌های ووکامرس با ربات فروشگاهی.', 'irnoti-service' ) ),
 			'email'      => array( __( 'ایمیل', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس از زیرساخت IRNoti.', 'irnoti-service' ) ),
 			'health'     => array( __( 'سلامت سیستم', 'irnoti-service' ), __( 'بررسی خودکار اتصال، دسترسی‌های کلید، ویجت، کارهای زمان‌بندی‌شده و افزونه‌های تداخلی.', 'irnoti-service' ) ),
+			'content'    => array( __( 'محتوا و سئو با هوش مصنوعی', 'irnoti-service' ), __( 'امتیاز و مشکلات سئوی نوشته‌ها، محصولات و برگه‌ها، بهینه‌سازی و تولید متن و تصویر با IRNoti، و ترندهای روز.', 'irnoti-service' ) ),
 			'voip'       => array( __( 'VoIP و سافت‌فون', 'irnoti-service' ), __( 'تماس، گزارش‌ها، ضبط‌ها و حساب‌های SIP از داخل وردپرس.', 'irnoti-service' ) ),
 		);
 	}
@@ -125,7 +127,7 @@ class IRNoti_Admin {
 		echo '</nav>';
 		if ( in_array( $st['state'], array( 'invalid', 'error' ), true ) ) {
 			printf( '<div class="notice notice-error"><p><strong>%s</strong> %s <a href="%s">%s</a></p></div>', esc_html( 'invalid' === $st['state'] ? __( 'اتصال به IRNoti برقرار نیست: کلید API نامعتبر است.', 'irnoti-service' ) : __( 'اتصال به IRNoti برقرار نیست.', 'irnoti-service' ) ), esc_html( (string) $st['msg'] ), esc_url( self::url( 'connection' ) ), esc_html__( 'بررسی تنظیمات اتصال', 'irnoti-service' ) );
-		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget', 'health' ), true ) && ! $on ) {
+		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget', 'health', 'content' ), true ) && ! $on ) {
 			echo '<div class="notice notice-warning"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
 		}
 		echo '<section class="irn-card irn-tab-' . esc_attr( $tab ) . '"><div class="irn-card-head"><span class="irn-card-ico dashicons dashicons-' . esc_attr( $icons[ $tab ] ) . '"></span><div><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div></div>';
@@ -184,6 +186,7 @@ class IRNoti_Admin {
 			array( 'bot', 'cart', __( 'ربات و محصولات', 'irnoti-service' ), '' !== (string) IRNoti_Settings::get( 'bot_id' ), $woo ? __( 'ووکامرس فعال', 'irnoti-service' ) : __( 'ووکامرس غیرفعال', 'irnoti-service' ), __( 'همگام‌سازی محصولات و سفارش‌ها', 'irnoti-service' ) ),
 			array( 'email', 'email-alt', __( 'ایمیل', 'irnoti-service' ), (bool) IRNoti_Settings::get( 'email_enabled' ), IRNoti_Settings::get( 'email_enabled' ) ? __( 'فعال', 'irnoti-service' ) : __( 'غیرفعال', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس', 'irnoti-service' ) ),
 			array( 'widget', 'format-chat', __( 'ویجت سایت', 'irnoti-service' ), IRNoti_Widget::enabled(), IRNoti_Widget::enabled() ? __( 'نمایش داده می‌شود', 'irnoti-service' ) : __( 'غیرفعال', 'irnoti-service' ), __( 'ویجت IRNoti روی سایت شما', 'irnoti-service' ) ),
+			array( 'content', 'chart-area', __( 'محتوا و سئو', 'irnoti-service' ), count( IRNoti_SEO::post_types() ) > 0 && $on, $on ? __( 'هوش مصنوعی فعال', 'irnoti-service' ) : __( 'نیازمند کلید API', 'irnoti-service' ), __( 'امتیاز سئو، بهینه‌سازی، تصویر و ترندها', 'irnoti-service' ) ),
 			array( 'voip', 'phone', __( 'VoIP و سافت‌فون', 'irnoti-service' ), '' !== (string) IRNoti_Settings::get( 'voip_from' ), '' !== (string) IRNoti_Settings::get( 'voip_from' ) ? __( 'خط تنظیم شده', 'irnoti-service' ) : __( 'تنظیم نشده', 'irnoti-service' ), __( 'تماس، گزارش و ضبط‌ها', 'irnoti-service' ) ),
 		);
 		$steps = array(
@@ -257,6 +260,7 @@ class IRNoti_Admin {
 		echo '<p class="description">' . esc_html__( 'برای قراردادن ویجت در محل دلخواه از شورت‌کد زیر استفاده کنید:', 'irnoti-service' ) . '</p><p><code dir="ltr">[irnoti_widget]</code></p></aside></div></form>';
 		echo '<section class="irn-live"><h2>' . esc_html__( 'تست زنده', 'irnoti-service' ) . '</h2><p class="description">' . esc_html__( 'همان درخواستی که مرورگر بازدیدکننده می‌زند از همین صفحه فرستاده می‌شود و پاسخ یا خطای سرور (مثل validation_error یا دامنهٔ غیرمجاز) همین‌جا نشان داده می‌شود. «نمایش ویجت» خود ویجت را روی همین صفحهٔ مدیریت باز می‌کند.', 'irnoti-service' ) . '</p>';
 		echo '<p><button type="button" class="button button-primary" id="irnoti-w-check">' . esc_html__( 'بررسی ویجت', 'irnoti-service' ) . '</button> <button type="button" class="button" id="irnoti-w-show">' . esc_html__( 'نمایش ویجت در همین صفحه', 'irnoti-service' ) . '</button> <a class="button" href="' . esc_url( self::url( 'health' ) ) . '">' . esc_html__( 'بررسی سلامت کامل', 'irnoti-service' ) . '</a></p><div id="irnoti-w-out"></div></section>';
+		IRNoti_Admin_SEO::render_learn_box();
 	}
 
 	public static function tab_health(): void {
@@ -300,12 +304,16 @@ class IRNoti_Admin {
 		echo '<textarea id="irnoti-report" class="screen-reader-text" readonly>' . esc_textarea( IRNoti_Health::report( $rows ) ) . '</textarea>';
 	}
 
+	public static function tab_content(): void {
+		IRNoti_Admin_SEO::render_tab();
+	}
+
 	public static function tab_connection(): void {
 		self::form_open( 'connection' );
 		echo '<table class="form-table">';
 		self::row( __( 'آدرس API', 'irnoti-service' ), self::input( 'base_url', (string) IRNoti_Settings::get( 'base_url' ), 'url' ), __( 'پیش‌فرض: https://api.irnoti.com/v1 (فقط https).', 'irnoti-service' ) );
 		$has = IRNoti_API::configured();
-		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read.', 'irnoti-service' ) );
+		self::row( __( 'کلید API', 'irnoti-service' ), self::input( 'api_key', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irn_…' ) . '"' ), __( 'از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read؛ برای محتوا و سئو با هوش مصنوعی: ai.read و ai.write.', 'irnoti-service' ) );
 		echo '</table>';
 		submit_button();
 		echo '</form>';
@@ -539,12 +547,16 @@ class IRNoti_Admin {
 					self::back( $tab, false, __( 'کد جاسازی معتبر نیست؛ باید آدرس https داشته باشد.', 'irnoti-service' ) );
 				}
 				break;
+			case 'seo':
+			case 'learn':
+				IRNoti_Admin_SEO::save_settings( $tab, $p );
+				break;
 			case 'voip':
 				$url = esc_url_raw( (string) ( $p['jssip_url'] ?? '' ), array( 'https' ) );
 				IRNoti_Settings::update( array( 'voip_from' => sanitize_text_field( $p['voip_from'] ?? '' ), 'jssip_url' => $url ) );
 				break;
 		}
-		self::back( $tab, true, __( 'ذخیره شد.', 'irnoti-service' ) );
+		self::back( array( 'seo' => 'content', 'learn' => 'widget' )[ $tab ] ?? $tab, true, __( 'ذخیره شد.', 'irnoti-service' ) );
 	}
 
 	public static function verify_key(): void {
