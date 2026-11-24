@@ -6,7 +6,7 @@ class IRNoti_Admin {
 
 	public static function init(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
-		add_action( 'admin_head', array( __CLASS__, 'menu_icon_css' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'menu_icon_css' ) );
 		add_action( 'admin_post_irnoti_save', array( __CLASS__, 'save' ) );
 		add_action( 'admin_post_irnoti_sms_test', array( __CLASS__, 'sms_test' ) );
 		add_action( 'admin_post_irnoti_email_test', array( __CLASS__, 'email_test' ) );
@@ -30,7 +30,9 @@ class IRNoti_Admin {
 
 	/** Fits the logo into the menu row on every admin page (WordPress shows image icons at their own size and dimmed). */
 	public static function menu_icon_css(): void {
-		echo '<style>#adminmenu .toplevel_page_irnoti .wp-menu-image img{width:20px;height:20px;padding:7px 0 0;opacity:1;box-sizing:content-box}</style>';
+		wp_register_style( 'irnoti-menu', false, array(), IRNOTI_VERSION );
+		wp_enqueue_style( 'irnoti-menu' );
+		wp_add_inline_style( 'irnoti-menu', '#adminmenu .toplevel_page_irnoti .wp-menu-image img{width:20px;height:20px;padding:7px 0 0;opacity:1;box-sizing:content-box}' );
 	}
 
 	private static function tabs(): array {
@@ -132,7 +134,29 @@ class IRNoti_Admin {
 		}
 		echo '<section class="irn-card irn-tab-' . esc_attr( $tab ) . '"><div class="irn-card-head"><span class="irn-card-ico dashicons dashicons-' . esc_attr( $icons[ $tab ] ) . '"></span><div><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div></div>';
 		call_user_func( array( __CLASS__, 'tab_' . $tab ) );
-		echo '</section><footer class="irn-foot">' . esc_html__( 'IRNoti Service', 'irnoti-service' ) . ' v' . esc_html( IRNOTI_VERSION ) . ' · <a href="https://irnoti.com" target="_blank" rel="noopener">irnoti.com</a></footer></div>';
+		if ( 'overview' === $tab ) {
+			self::promo();
+		}
+		echo '</section><footer class="irn-foot">' . esc_html__( 'IRNoti Service', 'irnoti-service' ) . ' v' . esc_html( IRNOTI_VERSION ) . ' · <a href="' . esc_url( self::site() ) . '" target="_blank" rel="noopener">irnoti.com</a> · <a href="' . esc_url( self::site( 'panel' ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'ورود به پنل', 'irnoti-service' ) . '</a></footer></div>';
+	}
+
+	/** Link to the main IRNoti site, with campaign tags. */
+	private static function site( string $path = '' ): string {
+		return add_query_arg( array( 'utm_source' => 'wp-plugin', 'utm_medium' => 'admin', 'utm_campaign' => 'irnoti-service' ), 'https://irnoti.com/' . ltrim( $path, '/' ) );
+	}
+
+	/** Overview call-to-action strip: panel, wallet and the main site. */
+	private static function promo(): void {
+		$items = array(
+			array( 'dashboard', __( 'پنل IRNoti', 'irnoti-service' ), __( 'مدیریت خطوط، الگوها، ربات‌ها و گزارش‌ها', 'irnoti-service' ), self::site( 'panel' ) ),
+			array( 'money-alt', __( 'شارژ کیف پول', 'irnoti-service' ), __( 'اعتبار پیامک، هوش مصنوعی و ایمیل', 'irnoti-service' ), (string) apply_filters( 'irnoti_topup_url', 'https://irnoti.com/panel/wallet' ) ),
+			array( 'admin-site-alt3', __( 'سایت IRNoti', 'irnoti-service' ), __( 'خدمات، تعرفه‌ها و راهنماها', 'irnoti-service' ), self::site() ),
+		);
+		echo '<h2>' . esc_html__( 'با IRNoti بیشتر رشد کنید', 'irnoti-service' ) . '</h2><div class="irn-promo">';
+		foreach ( $items as $i ) {
+			printf( '<a class="irn-promo-item" href="%s" target="_blank" rel="noopener"><span class="dashicons dashicons-%s"></span><strong>%s</strong><small>%s</small></a>', esc_url( $i[3] ), esc_attr( $i[0] ), esc_html( $i[1] ), esc_html( $i[2] ) );
+		}
+		echo '</div>';
 	}
 
 	private static function form_open( string $tab ): void {

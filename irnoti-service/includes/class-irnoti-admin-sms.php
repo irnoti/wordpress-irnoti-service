@@ -158,7 +158,7 @@ class IRNoti_Admin_SMS {
 
 		self::row( __( 'فعال', 'irnoti-service' ), '<label><input type="checkbox" name="enabled" value="1" ' . checked( 1, (int) $rule['enabled'], false ) . '> ' . esc_html__( 'این قانون اجرا شود', 'irnoti-service' ) . '</label>' );
 		echo '</table>';
-		echo '<script>window.IRNOTI_RULE=' . wp_json_encode( array( 'params' => (object) $rule['params'], 'pattern' => $rule['pattern'] ) ) . ';</script>';
+		wp_add_inline_script( 'irnoti-sms-rules', 'window.IRNOTI_RULE=' . wp_json_encode( array( 'params' => (object) $rule['params'], 'pattern' => $rule['pattern'] ) ) . ';', 'before' );
 		submit_button( __( 'ذخیرهٔ قانون', 'irnoti-service' ) );
 		echo '</form>';
 	}

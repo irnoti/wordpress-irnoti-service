@@ -237,3 +237,13 @@ a.button.is-active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .irn-live{margin-top:28px;padding-top:8px;border-top:1px solid var(--line)}
 .irn-w-line{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}
 .irn-w-line pre{margin:8px 0 0;white-space:pre-wrap;word-break:break-all;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;text-align:left}
+
+/* overview: links to the main site */
+.irn-promo{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 8px}
+.irn-promo-item{display:flex;flex-direction:column;gap:2px;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,var(--ink),#3A322E);color:#fff;text-decoration:none;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.irn-promo-item:before{content:"";position:absolute;inset:auto auto -50% -10%;width:180px;height:180px;background:radial-gradient(closest-side,rgba(255,51,0,.5),transparent);pointer-events:none}
+.irn-promo-item:hover{color:#fff;transform:translateY(-2px);box-shadow:0 14px 28px -16px rgba(26,22,20,.6)}
+.irn-promo-item .dashicons{color:var(--brand);font-size:24px;width:24px;height:24px;margin-bottom:6px;position:relative}
+.irn-promo-item strong{font-size:14px;position:relative}.irn-promo-item small{color:#B5ACA6;font-size:12px;position:relative}
+.irn-foot a{font-weight:500;text-decoration:none}.irn-foot a:hover{text-decoration:underline}
+.irn-mod{transition:transform .15s,box-shadow .15s}.irn-mod:hover{transform:translateY(-2px);box-shadow:0 12px 24px -18px rgba(26,22,20,.5)}

@@ -80,9 +80,9 @@ class IRNoti_OTP_Login {
 		$user = self::find_user( $mobile );
 		if ( $user ) {
 			$code = str_pad( (string) random_int( 0, 999999 ), 6, '0', STR_PAD_LEFT );
-			set_transient( 'irnoti_otp_' . self::mobile_key( $mobile ), array( 'h' => hash_hmac( 'sha256', $code, wp_salt( 'auth' ) ), 'u' => $user->ID, 'tries' => 0 ), self::TTL );
+			set_transient( 'irnoti_otp_' . self::mobile_key( $mobile ), array( 'h' => hash_hmac( 'sha256', $code, wp_salt( 'auth' ) ), 'u' => $user->ID, 'tries' => 0, 'exp' => time() + self::TTL ), self::TTL );
 			$pattern = (string) IRNoti_Settings::get( 'otp_pattern' );
-			$pattern ? IRNoti_SMS::pattern( $pattern, $mobile, array( 'code' => $code ) ) : IRNoti_SMS::send( $mobile, sprintf( /* translators: 1: site name, 2: one-time code */ __( 'کد ورود به %1$s: %2$s', 'irnoti-service' ), get_bloginfo( 'name' ), $code ) );
+			$pattern ? IRNoti_SMS::pattern( $pattern, $mobile, array( 'code' => $code ) ) : IRNoti_SMS::send( $mobile, sprintf( /* translators: 1: site name, 2: one-time code */ __( 'کد ورود به %1$s: %2$s', 'irnoti-service' ), get_bloginfo( 'name' ), $code ), '', true );
 		}
 		wp_send_json_success( array( 'message' => __( 'اگر این شماره ثبت شده باشد، کد ارسال شد.', 'irnoti-service' ) ) );
 	}
@@ -97,13 +97,13 @@ class IRNoti_OTP_Login {
 		$fail   = static function () {
 			wp_send_json_error( array( 'message' => __( 'کد نادرست یا منقضی است.', 'irnoti-service' ) ), 400 );
 		};
-		if ( ! is_array( $rec ) || $rec['tries'] >= 5 ) {
+		if ( ! is_array( $rec ) || $rec['tries'] >= 5 || time() > (int) ( $rec['exp'] ?? 0 ) ) {
 			delete_transient( $key );
 			$fail();
 		}
 		if ( ! hash_equals( $rec['h'], hash_hmac( 'sha256', $code, wp_salt( 'auth' ) ) ) ) {
 			$rec['tries']++;
-			set_transient( $key, $rec, self::TTL );
+			set_transient( $key, $rec, max( 1, (int) $rec['exp'] - time() ) ); // Keep the original expiry.
 			$fail();
 		}
 		delete_transient( $key );

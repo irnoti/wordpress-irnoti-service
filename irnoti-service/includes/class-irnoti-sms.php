@@ -20,7 +20,7 @@ class IRNoti_SMS {
 	}
 
 	/** @param string|string[] $to */
-	public static function send( $to, string $text, string $idempotency_key = '' ) {
+	public static function send( $to, string $text, string $idempotency_key = '', bool $redact = false ) {
 		$list = array_values( array_filter( array_map( array( __CLASS__, 'normalize' ), (array) $to ) ) );
 		if ( ! $list ) {
 			return new WP_Error( 'irnoti_no_recipient', __( 'گیرنده‌ای مشخص نشده است.', 'irnoti-service' ) );
@@ -31,7 +31,7 @@ class IRNoti_SMS {
 			$body['lineId'] = $line;
 		}
 		$res = IRNoti_API::post( 'sms/send', $body, $idempotency_key );
-		self::log( $list, $text, $res );
+		self::log( $list, $redact ? '[' . __( 'محتوا ذخیره نمی‌شود', 'irnoti-service' ) . ']' : $text, $res );
 		return $res;
 	}
 
