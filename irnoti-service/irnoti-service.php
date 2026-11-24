@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       IRNoti Service
- * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل، ویجت سایت و VoIP/سافت‌فون IRNoti روی وردپرس.
- * Version:           0.1.0
+ * Description:       پیامک، ربات (بله/تلگرام) با همگام‌سازی محصولات ووکامرس، ایمیل، ویجت سایت، سئو و محتوای هوش مصنوعی و VoIP/سافت‌فون IRNoti روی وردپرس.
+ * Version:           1.1.8
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            IRNoti
@@ -13,12 +13,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'IRNOTI_VERSION', '0.1.0' );
+define( 'IRNOTI_VERSION', '1.1.8' );
 define( 'IRNOTI_FILE', __FILE__ );
 define( 'IRNOTI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'IRNOTI_URL', plugin_dir_url( __FILE__ ) );
 
-foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'health', 'admin-sms', 'admin' ) as $irnoti_part ) {
+foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-sync', 'bot-orders', 'voip', 'webhooks', 'otp-login', 'widget', 'account', 'health', 'seo', 'ai', 'admin-sms', 'admin-seo', 'admin' ) as $irnoti_part ) {
 	require_once IRNOTI_DIR . 'includes/class-irnoti-' . $irnoti_part . '.php';
 }
 
@@ -33,8 +33,10 @@ add_action( 'plugins_loaded', static function () {
 	IRNoti_OTP_Login::init();
 	IRNoti_Widget::init();
 	IRNoti_Account::init();
+	IRNoti_SEO::init();
 	if ( is_admin() ) {
 		IRNoti_Admin_SMS::init();
+		IRNoti_Admin_SEO::init();
 		IRNoti_Admin::init();
 	}
 } );

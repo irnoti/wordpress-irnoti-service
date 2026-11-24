@@ -1,0 +1,46 @@
+/* Editor box (outside .irn) and the content tab. */
+.irnseo,.irnseo-trends,.irnseo-list{--brand:#FF3300;--ok:#1F7A44;--warn:#B45309;--bad:#C0260B;--line:#EFEAE6;font-family:Vazirmatn,system-ui,sans-serif}
+.irnseo{direction:rtl;text-align:right}
+.irnseo-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.irnseo-score{width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid var(--line);flex:none}
+.irnseo-score b{font-size:24px;line-height:1}.irnseo-score small{font-size:11px;margin-top:2px}
+.irnseo-score.ok{border-color:var(--ok);color:var(--ok)}.irnseo-score.warn{border-color:#E8A33D;color:var(--warn)}.irnseo-score.bad{border-color:var(--bad);color:var(--bad)}
+.irnseo-fields{flex:1;min-width:260px}
+.irnseo-fields label{display:block;margin-bottom:10px;font-weight:600}
+.irnseo-fields input,.irnseo-fields textarea{width:100%;margin-top:4px}
+.irnseo-fields small{font-weight:400;color:#6B625D}
+.irnseo-checks{margin:8px 0;padding:0;list-style:none}
+.irnseo-checks li{padding:5px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline}
+.irnseo-checks i{font-style:normal;width:20px;height:20px;flex:none;border-radius:50%;text-align:center;line-height:20px;font-size:12px;font-weight:700;color:#fff}
+.irnseo-checks .is-ok i{background:var(--ok)}.irnseo-checks .is-warn i{background:#E8A33D}.irnseo-checks .is-bad i{background:var(--bad)}
+.irnseo-checks .is-ok{color:#6B625D}
+.irnseo-tools .button{margin:0 0 6px 6px}
+.irnseo-out{margin-top:10px;padding:14px;border:1px dashed #DDD5CF;border-radius:10px;background:#FAF8F6}
+.irnseo-line{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.irnseo-line span{flex:1}.irnseo-line small{color:#8A817B}
+.irnseo-preview{max-height:320px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.irnseo-img{max-width:100%;height:auto;border-radius:10px;display:block;margin-bottom:8px}
+.irnseo-prompt{width:100%}
+.irnseo-err{color:var(--bad)}
+
+/* trends */
+.irnseo-trends{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0}
+.irnseo-trends.irnseo-mini{grid-template-columns:1fr}
+.irnseo-trend{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.irnseo-trend p{margin:4px 0;color:#6B625D;font-size:12px}
+.irnseo-kws{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.irnseo-kws span{background:#FFF0EB;color:#D92B00;border-radius:999px;padding:1px 9px;font-size:11px}
+.irnseo-trend-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+/* content tab */
+.irnseo-filter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.irnseo-issues summary{cursor:pointer;color:#D92B00}
+.irnseo-issues ul{margin:6px 0 0;padding-inline-start:18px}
+.irnseo-issues .is-bad b{color:var(--bad)}.irnseo-issues .is-warn b{color:var(--warn)}
+.irnseo-pages{margin-top:12px}.irnseo-pages .page-numbers{padding:3px 10px;border:1px solid #DDD5CF;border-radius:6px;text-decoration:none;margin-inline-end:4px}
+.irnseo-pages .current{background:#1A1614;color:#fff;border-color:#1A1614}
+
+
+/* toast on the post edit screens (admin.css is not loaded there) */
+.irn-toast{position:fixed;bottom:28px;left:28px;z-index:100000;background:#1A1614;color:#fff;border-radius:12px;padding:12px 18px;font-family:Vazirmatn,sans-serif;font-size:13px;box-shadow:0 20px 40px -12px rgba(0,0,0,.4)}
+.irn-toast.bad{background:#C0260B}

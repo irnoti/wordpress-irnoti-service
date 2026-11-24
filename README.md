@@ -15,6 +15,7 @@ The official plugin that connects WordPress / WooCommerce to [IRNoti](https://ir
 | Account & credit | Overview shows wallet (Rial/Toman, gift part and expiry), SMS credit (nearest expiry), AI tokens, email quota and the last wallet transactions; WordPress dashboard widget; balance in the admin bar; low-balance e-mail alert (once a day) | `GET /wallet`, `/wallet/transactions`, `/ai/balance`, `/email/me` |
 | Health check | **IRNoti → System health**: PHP/WP/OpenSSL/HTTPS, API reachability and response time, key validity, each key scope, widget code format, the widget server's answer for this site's Origin (catches `validation_error` and unlisted domains), WP-Cron and jobs, speed/SMTP plugins known to interfere; copyable report for support. The widget tab also has a live in-browser test and can open the real widget on the admin page | – |
 | Site widget | Enter the project code (`pj_…`) from the IRNoti agent studio (or paste the full embed code); the plugin injects `<script src="https://api.irnoti.com/v1/embed/widget.js" data-agent="pj_…" async>` in the footer (https + `data-*` only). Look, position, hours and mobile hiding are set in the studio; the plugin adds scope (all / home / shop), excluded page IDs, load delay, hide for admins, `[irnoti_widget]` shortcode, live preview | – |
+| Content & SEO (AI) | **IRNoti → Content & SEO**: lists posts, pages and products with a local SEO score and the list of problems (title/description length, focus keyword placement and density, word count, headings, images and alt, links, slug, readability), sortable by worst score. An **editor box** on each post/page/product shows the live score and AI tools: title, meta description and keyword suggestions, SEO rewrite, expand, FAQ, excerpt and a generated featured image (saved into the media library). Works with Yoast SEO / Rank Math fields, or prints the meta description itself. An **ideas box** (also in the editor) suggests new topics from the site's own categories and posts and creates an SEO draft in one click | `GET /ai/models`, `POST /ai/chat/completions`, `POST /ai/images/generations` |
 | SMS login | `[irnoti_login]` shortcode for passwordless login with a one-time code | `sms/send` or `sms/pattern` |
 
 ## Design
@@ -40,7 +41,7 @@ The admin UI follows the IRNoti platform design: RTL, Vazirmatn (bundled locally
 ### API key scopes
 
 Create the key in the IRNoti panel with the scopes for the features you use:
-`sms.send`, `sms.read`, `email.send`, `email.read`, `bot.read`, `bot.send`, and `wallet.read` / `ai.read` for the balances.
+`sms.send`, `sms.read`, `email.send`, `email.read`, `bot.read`, `bot.send`, and `wallet.read` / `ai.read` for the balances, and `ai.read`, `ai.chat`, `ai.image` for the content tools.
 Note: the VoIP endpoints use `sms.read` / `sms.send`.
 
 ## Configuration guide
@@ -136,6 +137,7 @@ The admin UI strings are currently Persian (the default language of the platform
 
 ## Known assumptions to verify against a live server
 
+
 - Response shape of `GET /botbuilder/bots` (array or `items`) and that `PUT …/shop/products` returns `id`.
 - Field names of the softphone credentials response (`sipWsUrl`/`wsUrl`, `sipDomain`/`domain`, `username`, `secret`).
 - Column names in the recordings and block-list tables.
@@ -144,3 +146,6 @@ The admin UI strings are currently Persian (the default language of the platform
 ## License
 
 GPL-2.0-or-later
+
+## Not available yet
+- **Live trends** and **learning from widget conversations** have no routes in the public API (OpenAPI), so they are not implemented. The ideas box is a model suggestion based on the site's own content, not search-volume data.

@@ -7,6 +7,8 @@ class IRNoti_API {
 	const STATUS = 'irnoti_key_status';
 	/** How long a successful check is trusted before the admin re-checks. */
 	const STATUS_TTL = 6 * HOUR_IN_SECONDS;
+	/** Request timeout in seconds; long-running AI calls raise it temporarily (see IRNoti_AI::call()). */
+	public static int $timeout = 20;
 
 	public static function configured(): bool {
 		return IRNoti_Settings::api_key() !== '';
@@ -72,7 +74,7 @@ class IRNoti_API {
 		}
 		$args = array(
 			'method'  => $method,
-			'timeout' => 20,
+			'timeout' => self::$timeout,
 			'headers' => array_merge(
 				array(
 					'Authorization' => 'Bearer ' . $key,
