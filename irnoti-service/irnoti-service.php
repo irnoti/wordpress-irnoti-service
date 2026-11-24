@@ -8,7 +8,6 @@
  * Author:            IRNoti
  * License:           GPL-2.0-or-later
  * Text Domain:       irnoti-service
- * Domain Path:       /languages
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -23,7 +22,6 @@ foreach ( array( 'settings', 'api-client', 'sms', 'sms-rules', 'email', 'bot-syn
 }
 
 add_action( 'plugins_loaded', static function () {
-	load_plugin_textdomain( 'irnoti-service', false, dirname( plugin_basename( IRNOTI_FILE ) ) . '/languages' );
 	IRNoti_SMS::init();
 	IRNoti_Email::init();
 	IRNoti_Bot_Sync::init();
@@ -39,6 +37,12 @@ add_action( 'plugins_loaded', static function () {
 		IRNoti_Admin_SEO::init();
 		IRNoti_Admin::init();
 	}
+} );
+
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), static function ( array $links ): array {
+	array_unshift( $links, '<a href="' . esc_url( admin_url( 'admin.php?page=irnoti' ) ) . '">' . esc_html__( 'تنظیمات', 'irnoti-service' ) . '</a>' );
+	$links[] = '<a href="' . esc_url( 'https://irnoti.com/?utm_source=wp-plugin&utm_medium=plugins-list' ) . '" target="_blank" rel="noopener">' . esc_html__( 'سایت IRNoti', 'irnoti-service' ) . '</a>';
+	return $links;
 } );
 
 register_deactivation_hook( __FILE__, static function () {

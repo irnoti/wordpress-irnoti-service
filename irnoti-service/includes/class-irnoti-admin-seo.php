@@ -207,12 +207,11 @@ class IRNoti_Admin_SEO {
 		$desc = IRNoti_SEO::get_desc( $post->ID );
 		$kw   = IRNoti_SEO::get_kw( $post->ID );
 		wp_nonce_field( 'irnoti_seo_box', 'irnoti_seo_box_nonce' );
-		printf( '<div id="irnoti-seo-box" class="irnseo" dir="rtl" data-post="%d" data-ai="%d" data-type="%s">', (int) $post->ID, $ai ? 1 : 0, esc_attr( $post->post_type ) );
+		printf( '<div id="irnoti-seo-box" class="irnseo" dir="rtl" data-post="%d" data-ai="%d" data-type="%s" data-init="%s">', (int) $post->ID, $ai ? 1 : 0, esc_attr( $post->post_type ), esc_attr( (string) wp_json_encode( self::pack( $res ) ) ) );
 		echo '<div class="irnseo-top"><div class="irnseo-score" id="irnoti-seo-score"></div><div class="irnseo-fields">';
 		echo '<label>' . esc_html__( 'کلمهٔ کلیدی اصلی', 'irnoti-service' ) . '<input type="text" id="irnoti-seo-kw" name="irnoti_seo_kw" value="' . esc_attr( $kw ) . '"></label>';
 		echo '<label>' . esc_html__( 'توضیحات متا', 'irnoti-service' ) . ' <small id="irnoti-seo-desc-count"></small><textarea id="irnoti-seo-desc" name="irnoti_seo_desc" rows="2">' . esc_textarea( $desc ) . '</textarea></label>';
 		echo '</div></div>';
-		echo '<script type="application/json" id="irnoti-seo-init">' . wp_json_encode( self::pack( $res ) ) . '</script>';
 		echo '<p><button type="button" class="button" id="irnoti-seo-recheck">' . esc_html__( 'تحلیل دوباره', 'irnoti-service' ) . '</button></p><ul class="irnseo-checks" id="irnoti-seo-checks"></ul>';
 		if ( $ai ) {
 			echo '<h4>' . esc_html__( 'ابزارهای هوش مصنوعی', 'irnoti-service' ) . '</h4><div class="irnseo-tools">';

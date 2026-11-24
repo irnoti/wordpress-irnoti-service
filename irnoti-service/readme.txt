@@ -32,7 +32,9 @@ This plugin requires an IRNoti account and API key. It sends data to the IRNoti 
 * VoIP: numbers you dial or block, and SIP account requests.
 * Widget: when enabled, visitors' browsers load `https://api.irnoti.com/v1/embed/widget.js`, which contacts IRNoti to run the chat.
 
-Service: https://irnoti.com — terms and privacy policy are published on that site.
+Service provided by IRNoti (https://irnoti.com): [Terms of service](https://irnoti.com/terms) · [Privacy policy](https://irnoti.com/privacy).
+
+The health check in **IRNoti → System health** calls `https://api.irnoti.com/v1` (and fetches the widget script URL above) to test connectivity; it sends only your API key and this site's domain. SMS login one-time codes are sent through the same SMS service and are never written to the plugin's SMS log.
 
 == Installation ==
 

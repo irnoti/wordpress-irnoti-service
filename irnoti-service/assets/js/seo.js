@@ -92,7 +92,7 @@
         ul.appendChild(li);
       });
     };
-    try { render(JSON.parse($('irnoti-seo-init').textContent)); } catch (e) { /* no initial data */ }
+    try { render(JSON.parse($('irnoti-seo-box').getAttribute('data-init') || '{}')); } catch (e) { /* no initial data */ }
 
     var state = function (extra) {
       var d = {
