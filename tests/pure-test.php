@@ -7,6 +7,7 @@ require __DIR__ . '/../irnoti-service/includes/class-irnoti-sms-rules.php';
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-widget.php';
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-seo.php';
 require __DIR__ . '/../irnoti-service/includes/class-irnoti-ai.php';
+require __DIR__ . '/../irnoti-service/includes/class-irnoti-rank.php';
 $fail = 0;
 function check( $name, $cond ) { global $fail; echo ( $cond ? 'ok   ' : 'FAIL ' ) . $name . "\n"; $fail += $cond ? 0 : 1; }
 
@@ -77,4 +78,37 @@ check( 'ai trends normalize', 2 === count( $t ) && array( 'a', 'b' ) === $t[0]['
 $p = IRNoti_AI::build_prompt( 'title', array( 'title' => 'T', 'kw' => 'K' ) );
 check( 'ai prompt has keyword and type', false !== strpos( $p[1], 'K' ) && 'lines' === $p[2] );
 check( 'ai prompt truncates text', mb_strlen( IRNoti_AI::build_prompt( 'optimize', array( 'text' => str_repeat( 'x', 20000 ) ) )[1] ) < 6600 );
+
+// Rank link: the allow-list and the output escaping (the same cases the IRNoti server checks when a change is proposed)
+check( 'rank plain strips tags and controls', 'عنوان تست' === IRNoti_Rank::plain( "  <b>عنوان</b>\x00 \n تست " ) );
+check( 'rank path ok', '/blog/a' === IRNoti_Rank::clean_path( 'blog/a' ) && '/a/b' === IRNoti_Rank::clean_path( '/a/b' ) );
+foreach ( array( '', '/', 'https://evil.com/a', '//evil.com/a', 'javascript:alert(1)', '/a/../b', '/a?x=1', '/a#x', "/a\x00b", '/a\\b' ) as $bad ) {
+	check( 'rank path refused: ' . json_encode( $bad ), '' === IRNoti_Rank::clean_path( $bad ) );
+}
+check( 'rank schema ok', IRNoti_Rank::schema_ok( '{"@context":"https://schema.org","@type":"Article"}' ) );
+check( 'rank schema needs context', ! IRNoti_Rank::schema_ok( '{"@type":"Article"}' ) );
+check( 'rank schema rejects list and junk', ! IRNoti_Rank::schema_ok( '[1]' ) && ! IRNoti_Rank::schema_ok( 'nope' ) && ! IRNoti_Rank::schema_ok( '' ) );
+check( 'rank schema rejects foreign context', ! IRNoti_Rank::schema_ok( '{"@context":"https://evil.test/x"}' ) );
+check( 'rank schema size cap', ! IRNoti_Rank::schema_ok( '{"@context":"https://schema.org","x":"' . str_repeat( 'a', 6000 ) . '"}' ) );
+$ld = IRNoti_Rank::encode_ld( array( '@context' => 'https://schema.org', 'name' => 'x</script><script>alert(1)</script> & "q"' ) );
+check( 'rank json-ld cannot close the script tag', false === stripos( $ld, '</' ) && false === strpos( $ld, '<' ) );
+check( 'rank json-ld round-trips', 'x</script><script>alert(1)</script> & "q"' === json_decode( $ld, true )['name'] );
+list( $ok, $why, $d ) = IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => '/a', 'title' => 'عنوان', 'description' => '' ) );
+check( 'rank meta ok', $ok && 'عنوان' === $d['title'] && '/a' === $d['post'] );
+check( 'rank meta needs something', 'empty' === IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => '/a' ) )[1] );
+check( 'rank meta title limit', 'too_long' === IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => '/a', 'title' => str_repeat( 'ا', 71 ) ) )[1] );
+check( 'rank meta description limit', 'too_long' === IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => '/a', 'description' => str_repeat( 'ا', 201 ) ) )[1] );
+check( 'rank meta limit counts letters not bytes', IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => '/a', 'title' => str_repeat( 'ا', 70 ) ) )[0] );
+check( 'rank jsonld ok', IRNoti_Rank::clean_command( array( 'kind' => 'jsonld', 'post' => '/a', 'json' => '{"@context":"https://schema.org"}' ) )[0] );
+check( 'rank jsonld not schema', 'not_schema' === IRNoti_Rank::clean_command( array( 'kind' => 'jsonld', 'post' => '/a', 'json' => '{"x":1}' ) )[1] );
+foreach ( array( 'run_php', 'option', 'file', 'eval', '' ) as $kind ) {
+	check( 'rank refuses kind: ' . $kind, 'unknown_kind' === IRNoti_Rank::clean_command( array( 'kind' => $kind, 'post' => '/a' ) )[1] );
+}
+check( 'rank bad path first', 'bad_path' === IRNoti_Rank::clean_command( array( 'kind' => 'post_meta', 'post' => 'https://evil.com/a', 'title' => 'x' ) )[1] );
+$src = (string) file_get_contents( __DIR__ . '/../irnoti-service/includes/class-irnoti-rank.php' );
+foreach ( array( 'register_rest_route', 'wp_ajax_nopriv', 'admin_post_nopriv', 'eval(', 'shell_exec', 'system(', 'passthru', 'file_put_contents', 'unserialize(', "'sslverify'           => false" ) as $bad ) {
+	check( 'rank source has no ' . $bad, false === strpos( $src, $bad ) );
+}
+check( 'rank source verifies certificates, no redirects, safe remote', false !== strpos( $src, "'sslverify'           => true" ) && false !== strpos( $src, "'redirection'         => 0" ) && false !== strpos( $src, 'wp_safe_remote_post' ) );
+check( 'rank source keeps php 8.0 compatibility (no array_is_list)', false === strpos( $src, 'array_is_list' ) );
 exit( $fail ? 1 : 0 );
