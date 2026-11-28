@@ -11,6 +11,7 @@ class IRNoti_Admin {
 		add_action( 'admin_post_irnoti_sms_test', array( __CLASS__, 'sms_test' ) );
 		add_action( 'admin_post_irnoti_email_test', array( __CLASS__, 'email_test' ) );
 		add_action( 'admin_post_irnoti_verify', array( __CLASS__, 'verify_key' ) );
+		add_action( 'admin_post_irnoti_rank_sync', array( __CLASS__, 'rank_sync' ) );
 		add_action( 'wp_ajax_irnoti_sync_batch', array( __CLASS__, 'ajax_sync_batch' ) );
 		add_action( 'wp_ajax_irnoti_pull_orders', array( __CLASS__, 'ajax_pull_orders' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
@@ -44,13 +45,14 @@ class IRNoti_Admin {
 			'email'      => __( 'ایمیل', 'irnoti-service' ),
 			'widget'     => __( 'ویجت سایت', 'irnoti-service' ),
 			'content'    => __( 'محتوا و سئو (AI)', 'irnoti-service' ),
+			'rank'       => __( 'رتبهٔ سایت', 'irnoti-service' ),
 			'voip'       => __( 'VoIP و سافت‌فون', 'irnoti-service' ),
 			'health'     => __( 'سلامت سیستم', 'irnoti-service' ),
 		);
 	}
 
 	private static function icons(): array {
-		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'content' => 'chart-area', 'voip' => 'phone', 'health' => 'heart' );
+		return array( 'overview' => 'dashboard', 'connection' => 'admin-network', 'sms' => 'smartphone', 'bot' => 'cart', 'email' => 'email-alt', 'widget' => 'format-chat', 'content' => 'chart-area', 'rank' => 'performance', 'voip' => 'phone', 'health' => 'heart' );
 	}
 
 	private static function url( string $tab, array $extra = array() ): string {
@@ -94,6 +96,7 @@ class IRNoti_Admin {
 			'email'      => array( __( 'ایمیل', 'irnoti-service' ), __( 'ارسال ایمیل‌های وردپرس از زیرساخت IRNoti.', 'irnoti-service' ) ),
 			'health'     => array( __( 'سلامت سیستم', 'irnoti-service' ), __( 'بررسی خودکار اتصال، دسترسی‌های کلید، ویجت، کارهای زمان‌بندی‌شده و افزونه‌های تداخلی.', 'irnoti-service' ) ),
 			'content'    => array( __( 'محتوا و سئو با هوش مصنوعی', 'irnoti-service' ), __( 'امتیاز و مشکلات سئوی نوشته‌ها، محصولات و برگه‌ها، بهینه‌سازی و تولید متن و تصویر با IRNoti، و ترندهای روز.', 'irnoti-service' ) ),
+			'rank'       => array( __( 'رتبهٔ سایت', 'irnoti-service' ), __( 'اتصال به گزارش و رتبهٔ سایت در IRNoti: سلامت وردپرس خودکار خوانده می‌شود و تغییرهای سئوی تأییدشده اعمال می‌شود.', 'irnoti-service' ) ),
 			'voip'       => array( __( 'VoIP و سافت‌فون', 'irnoti-service' ), __( 'تماس، گزارش‌ها، ضبط‌ها و حساب‌های SIP از داخل وردپرس.', 'irnoti-service' ) ),
 		);
 	}
@@ -129,7 +132,7 @@ class IRNoti_Admin {
 		echo '</nav>';
 		if ( in_array( $st['state'], array( 'invalid', 'error' ), true ) ) {
 			printf( '<div class="notice notice-error"><p><strong>%s</strong> %s <a href="%s">%s</a></p></div>', esc_html( 'invalid' === $st['state'] ? __( 'اتصال به IRNoti برقرار نیست: کلید API نامعتبر است.', 'irnoti-service' ) : __( 'اتصال به IRNoti برقرار نیست.', 'irnoti-service' ) ), esc_html( (string) $st['msg'] ), esc_url( self::url( 'connection' ) ), esc_html__( 'بررسی تنظیمات اتصال', 'irnoti-service' ) );
-		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget', 'health', 'content' ), true ) && ! $on ) {
+		} elseif ( ! in_array( $tab, array( 'connection', 'overview', 'widget', 'health', 'content', 'rank' ), true ) && ! $on ) {
 			echo '<div class="notice notice-warning"><p>' . esc_html__( 'ابتدا در تب «اتصال» کلید API را وارد کنید.', 'irnoti-service' ) . '</p></div>';
 		}
 		echo '<section class="irn-card irn-tab-' . esc_attr( $tab ) . '"><div class="irn-card-head"><span class="irn-card-ico dashicons dashicons-' . esc_attr( $icons[ $tab ] ) . '"></span><div><h2>' . esc_html( $meta[0] ) . '</h2><p>' . esc_html( $meta[1] ) . '</p></div></div>';
@@ -331,6 +334,63 @@ class IRNoti_Admin {
 		IRNoti_Admin_SEO::render_tab();
 	}
 
+	public static function tab_rank(): void {
+		$st  = IRNoti_Rank::state();
+		$has = IRNoti_Rank::configured();
+		if ( $has && $st ) {
+			$why = array(
+				'no_token'   => __( 'توکن وارد نشده است.', 'irnoti-service' ),
+				'bad_token'  => __( 'توکن نامعتبر است؛ در استودیو توکن تازه بسازید.', 'irnoti-service' ),
+				'wrong_site' => __( 'این توکن برای سایت دیگری ساخته شده است.', 'irnoti-service' ),
+				'network'    => __( 'به سرور IRNoti وصل نشد.', 'irnoti-service' ),
+			);
+			$ok  = ! empty( $st['ok'] );
+			$txt = $ok ? ( empty( $st['pro'] ) ? __( 'متصل است، ولی پلن حرفه‌ای این سایت فعال نیست؛ تغییری اعمال نمی‌شود.', 'irnoti-service' ) : __( 'متصل است.', 'irnoti-service' ) ) : ( $why[ $st['msg'] ?? '' ] ?? sprintf( /* translators: %s: error code */ __( 'خطا: %s', 'irnoti-service' ), (string) ( $st['msg'] ?? '' ) ) );
+			printf( '<p class="irn-keystate"><span class="irn-badge %s">%s</span> <small>%s</small></p>', esc_attr( $ok ? ( empty( $st['pro'] ) ? 'warn' : 'ok' ) : 'bad' ), esc_html( $txt ), esc_html( isset( $st['at'] ) ? sprintf( /* translators: %s: time */ __( 'آخرین ارتباط: %s', 'irnoti-service' ), wp_date( 'Y/m/d H:i', (int) $st['at'] ) ) : '' ) );
+			if ( $ok && ! empty( $st['pro'] ) ) {
+				printf( '<p>%s</p>', esc_html( sprintf( /* translators: 1: applied, 2: failed */ __( 'آخرین دور: %1$s تغییر اعمال شد، %2$s ناموفق.', 'irnoti-service' ), number_format_i18n( (int) ( $st['applied'] ?? 0 ) ), number_format_i18n( (int) ( $st['failed'] ?? 0 ) ) ) ) );
+			}
+		}
+		self::form_open( 'rank' );
+		echo '<table class="form-table">';
+		self::row( __( 'توکن سایت', 'irnoti-service' ), self::input( 'rank_token', '', 'password', 'autocomplete="new-password" placeholder="' . ( $has ? '•••••• (ذخیره‌شده؛ برای تغییر مقدار جدید وارد کنید)' : 'irnwp_…' ) . '"' ), __( 'در استودیو ایجنت IRNoti ← گزارش و رتبهٔ سایت ← افزونهٔ وردپرس بسازید (فقط با پلن حرفه‌ای). این توکن با کلید API جداست و فقط برای همین سایت کار می‌کند.', 'irnoti-service' ) );
+		echo '</table>';
+		submit_button( $has ? __( 'ذخیره و همگام‌سازی', 'irnoti-service' ) : __( 'اتصال', 'irnoti-service' ) );
+		if ( $has ) {
+			echo '<p><label><input type="checkbox" name="rank_remove" value="1"> ' . esc_html__( 'قطع اتصال و حذف توکن از این سایت', 'irnoti-service' ) . '</label></p>';
+		}
+		echo '</form>';
+		if ( $has ) {
+			printf( '<p><a class="button" href="%s">%s</a></p>', esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=irnoti_rank_sync' ), 'irnoti_rank_sync' ) ), esc_html__( 'همگام‌سازی همین حالا', 'irnoti-service' ) );
+		}
+		echo '<h2>' . esc_html__( 'این اتصال چه می‌کند؟', 'irnoti-service' ) . '</h2><ul class="ul-disc">';
+		foreach ( array(
+			__( 'فقط ما را صدا می‌زند: افزونه هیچ درگاه ورودی باز نمی‌کند و IRNoti نمی‌تواند وارد سایت شود؛ هر ساعت خود سایت خبر می‌دهد.', 'irnoti-service' ),
+			__( 'فقط خلاصهٔ سلامت می‌فرستد: نسخه‌ها و شمارها (وردپرس، PHP، قالب، افزونه‌ها، ایندکس‌شدن، https). هرگز محتوای نوشته‌ها، کاربران، سفارش‌ها یا رمزها.', 'irnoti-service' ),
+			__( 'فقط دو کار مجاز است و هر کدام فقط پس از تأیید شما در استودیو: عنوان/توضیح متای یک نوشته و داده ساختاریافتهٔ JSON-LD آن. هیچ فایل، کد یا تنظیم دیگری تغییر نمی‌کند.', 'irnoti-service' ),
+			__( 'با Yoast SEO و Rank Math در همان فیلدهای خودشان نوشته می‌شود. با All in One SEO تغییری اعمال نمی‌شود.', 'irnoti-service' ),
+		) as $line ) {
+			echo '<li>' . esc_html( $line ) . '</li>';
+		}
+		echo '</ul>';
+		$log = (array) get_option( IRNoti_Rank::LOG, array() );
+		if ( $log ) {
+			echo '<h2>' . esc_html__( 'تغییرهای اعمال‌شده', 'irnoti-service' ) . '</h2><table class="widefat striped"><thead><tr><th>' . esc_html__( 'زمان', 'irnoti-service' ) . '</th><th>' . esc_html__( 'نوع', 'irnoti-service' ) . '</th><th>' . esc_html__( 'نوشته', 'irnoti-service' ) . '</th><th>' . esc_html__( 'نتیجه', 'irnoti-service' ) . '</th></tr></thead><tbody>';
+			foreach ( array_slice( $log, 0, 20 ) as $l ) {
+				$pid = (int) ( $l['post'] ?? 0 );
+				printf( '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html( wp_date( 'Y/m/d H:i', (int) $l['time'] ) ), esc_html( 'jsonld' === ( $l['kind'] ?? '' ) ? 'JSON-LD' : __( 'عنوان و متا', 'irnoti-service' ) ), $pid && get_post( $pid ) ? '<a href="' . esc_url( (string) get_edit_post_link( $pid ) ) . '">' . esc_html( get_the_title( $pid ) ) . '</a>' : '—', esc_html( ! empty( $l['ok'] ) ? __( 'اعمال شد', 'irnoti-service' ) : (string) ( $l['reason'] ?? '' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
+			}
+			echo '</tbody></table>';
+		}
+	}
+
+	public static function rank_sync(): void {
+		check_admin_referer( 'irnoti_rank_sync' );
+		current_user_can( 'manage_options' ) || wp_die( 'forbidden', 403 );
+		$st = IRNoti_Rank::sync();
+		self::back( 'rank', ! empty( $st['ok'] ), ! empty( $st['ok'] ) ? __( 'همگام‌سازی انجام شد.', 'irnoti-service' ) : __( 'همگام‌سازی ناموفق بود؛ وضعیت را بالای صفحه ببینید.', 'irnoti-service' ) );
+	}
+
 	public static function tab_connection(): void {
 		self::form_open( 'connection' );
 		echo '<table class="form-table">';
@@ -518,6 +578,24 @@ class IRNoti_Admin {
 				if ( '' !== $key || isset( $p['base_url'] ) ) {
 					self::back_status( IRNoti_API::verify() );
 				}
+				break;
+			case 'rank':
+				if ( ! empty( $p['rank_remove'] ) ) {
+					IRNoti_Settings::set_rank_token( '' );
+					IRNoti_Rank::schedule();
+					delete_option( IRNoti_Rank::STATE );
+					self::back( 'rank', true, __( 'اتصال قطع شد و توکن حذف شد. توکن را در استودیوی IRNoti هم باطل کنید.', 'irnoti-service' ) );
+				}
+				$tok = trim( (string) ( $p['rank_token'] ?? '' ) );
+				if ( '' !== $tok && ! preg_match( '/^irnwp_[A-Za-z0-9_-]{20,80}$/', $tok ) ) {
+					self::back( 'rank', false, __( 'قالب توکن درست نیست؛ باید با irnwp_ شروع شود. آن را کامل از استودیو کپی کنید.', 'irnoti-service' ) );
+				}
+				if ( '' !== $tok ) {
+					IRNoti_Settings::set_rank_token( $tok );
+				}
+				IRNoti_Rank::schedule();
+				$st = IRNoti_Rank::sync();
+				self::back( 'rank', ! empty( $st['ok'] ), ! empty( $st['ok'] ) ? __( 'ذخیره شد و اتصال برقرار است.', 'irnoti-service' ) : __( 'ذخیره شد، ولی اتصال برقرار نشد؛ وضعیت را بالای صفحه ببینید.', 'irnoti-service' ) );
 				break;
 			case 'sms':
 				IRNoti_Settings::update( array(

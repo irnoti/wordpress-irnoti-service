@@ -12,6 +12,10 @@ msgstr ""
 msgid "%1$s · پاسخ در %2$s میلی‌ثانیه"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "%1$s از %2$s تصویر alt ندارد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "%1$s از %2$s مرحله انجام شده است."
 msgstr ""
@@ -20,12 +24,32 @@ msgstr ""
 msgid "%1$s سالم · %2$s هشدار · %3$s خطا"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "%1$s کلمه؛ حداقل پیشنهادی %2$s."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "%s ریال"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "%s قانون"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "%s مورد"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "%s نویسه؛ مقدار مناسب ۷۰ تا ۱۶۰."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "(بدون عنوان)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "H1 داخل متن"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -49,6 +73,10 @@ msgid "[%s] موجودی IRNoti رو به اتمام است"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "آخرین ارتباط: %s"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "آخرین بررسی: %s"
 msgstr ""
 
@@ -58,6 +86,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "آخرین تماس‌های ورودی (وب‌هوک)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "آخرین دور: %1$s تغییر اعمال شد، %2$s ناموفق."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -84,19 +116,39 @@ msgstr ""
 msgid "آدرس JsSIP (اختیاری)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "آدرس تصویر باید https باشد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "آدرس فرستنده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "آموزشی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ابتدا در تب «اتصال» کلید API را وارد کنید."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ابتدا عنوان یا متنی بنویسید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ابتدا نوشته را یک بار ذخیره کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ابتدا کد پروژه را وارد کنید."
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin.php
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ابزارهای هوش مصنوعی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
 msgid "اتصال"
 msgstr ""
 
@@ -116,6 +168,14 @@ msgstr ""
 msgid "اتصال به IRNoti برقرار نیست: کلید API نامعتبر است."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اتصال به گزارش و رتبهٔ سایت در IRNoti: سلامت وردپرس خودکار خوانده می‌شود و تغییرهای سئوی تأییدشده اعمال می‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اتصال قطع شد و توکن حذف شد. توکن را در استودیوی IRNoti هم باطل کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-email.php
 msgid "اتصال وردپرس شما به IRNoti برقرار است."
 msgstr ""
@@ -130,6 +190,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "اجرای دوباره"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "اختیاری: در تب «رتبهٔ سایت» توکن را وارد کنید تا سلامت سایت خوانده شود و تغییرهای سئوی تأییدشده اعمال شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -193,7 +257,7 @@ msgid "از"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
-msgid "از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read."
+msgid "از پنل IRNoti ← کلیدهای API بسازید. scopeهای لازم: sms.send، sms.read، email.send، email.read، bot.read، bot.send؛ برای نمایش موجودی: wallet.read و ai.read؛ برای محتوا و سئو با هوش مصنوعی: ai.read، ai.chat و ai.image."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -202,6 +266,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "اطلاع‌رسانی (سفارش، وضعیت…)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اعتبار پیامک، هوش مصنوعی و ایمیل"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
@@ -216,6 +284,10 @@ msgstr ""
 msgid "اعلان سفارش جدید به مدیر"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "اعمال شد"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "افزایش اعتبار"
 msgstr ""
@@ -225,7 +297,19 @@ msgid "افزونه را به آخرین نسخه به‌روز کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
+msgid "افزونه را یک بار غیرفعال و فعال کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "افزونهٔ %s فعال است؛ توضیحات و کلمهٔ کلیدی در همان ذخیره می‌شود و چاپ تگ با خود آن است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
 msgid "افزونهٔ تداخلی شناخته‌شده‌ای پیدا نشد"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "افزونهٔ سئوی دیگری فعال نیست؛ IRNoti توضیحات متا را در head چاپ می‌کند."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
@@ -264,6 +348,26 @@ msgstr ""
 msgid "الگوی OTP (اختیاری)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "امتیاز سئو"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "امتیاز سئو بدون اتصال هم کار می‌کند، ولی تولید و بهینه‌سازی با هوش مصنوعی، تصویر و ایده‌های محتوا به کلید API فعال نیاز دارد (تب «اتصال»؛ دسترسی‌های ai.read، ai.chat و ai.image)."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "امتیاز سئو، بهینه‌سازی، تصویر و ترندها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "امتیاز و مشکلات سئوی نوشته‌ها، محصولات و برگه‌ها، بهینه‌سازی و تولید متن و تصویر با IRNoti، و ترندهای روز."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "انواع محتوا"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "اولین قانون پیامک را بسازید"
 msgstr ""
@@ -278,6 +382,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "اگر روشن باشد، وقتی با حساب مدیر وارد شده‌اید ویجت را نمی‌بینید. برای آزمایش خاموشش کنید یا در پنجرهٔ ناشناس سایت را باز کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ایده‌ها و موضوع‌های پیشنهادی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ایده‌های موضوعی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -304,12 +416,28 @@ msgstr ""
 msgid "ایمیل هشدار"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "این اتصال چه می‌کند؟"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "این افزونه ممکن است اسکریپت‌های بیرونی را تأخیری، کپی یا مسدود کند. دامنهٔ api.irnoti.com را در «استثناها\/عدم بهینه‌سازی» آن بگذارید و اگر در فهرست «مسدود\/کند» آن آمده، حذفش کنید؛ بعد کشش را پاک کنید."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "این توکن برای سایت دیگری ساخته شده است."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "این قانون اجرا شود"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "با IRNoti بیشتر رشد کنید"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "با Yoast SEO و Rank Math در همان فیلدهای خودشان نوشته می‌شود. با All in One SEO تغییری اعمال نمی‌شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -332,6 +460,10 @@ msgstr ""
 msgid "بدون اشتراک؛ پرداخت به‌ازای ارسال از کیف پول"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "برای ابزارهای هوش مصنوعی ابتدا کلید API را در IRNoti ← اتصال وارد کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "برای رمزنگاری کلید API لازم است؛ از میزبان بخواهید افزونهٔ openssl را فعال کند."
 msgstr ""
@@ -346,6 +478,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "برای مدیران مخفی است"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "برای مرتب‌سازی «کمترین امتیاز» یک بار «تحلیل همهٔ محتوا» را بزنید؛ امتیاز با هر ذخیرهٔ نوشته به‌روز می‌شود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -384,12 +520,28 @@ msgstr ""
 msgid "به سرور IRNoti وصل نشد."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "به منبع معتبر بیرونی لینک نداده است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "بهینه‌سازی با AI"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "بهینه‌سازی متن"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "به‌روزرسانی: %s"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "بیشتر"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "بی‌مشکل"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -412,12 +564,40 @@ msgstr ""
 msgid "تاریخ سفارش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تحلیل دوباره"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تحلیل همهٔ محتوا"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "تراکم کلمهٔ کلیدی"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "تست"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "تست زنده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "تصویر در محتوا"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "تصویر دریافتی خراب است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "تصویر شاخص"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "تصویر شاخص ندارد؛ برای اشتراک‌گذاری و نتایج تصویری لازم است (می‌توانید با هوش مصنوعی بسازید)."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -434,6 +614,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
 msgid "تغییر وضعیت سفارش به «%s»"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "تغییرهای اعمال‌شده"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -460,12 +644,44 @@ msgstr ""
 msgid "تنظیم نشده"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php
+#: irnoti-service/irnoti-service.php irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php
 msgid "تنظیمات"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تنظیمات محتوا و سئو"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "توضیحات متا"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "توضیحات متا خالی است؛ گوگل خودش از متن می‌چیند و جذابیت نتیجه کم می‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تولید تصویر شاخص"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تولید پرسش‌های متداول"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "توکن (ویجت، اپراتور هوشمند)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "توکن را در استودیوی IRNoti دوباره بسازید و در تب «رتبهٔ سایت» وارد کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "توکن سایت"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "توکن نامعتبر است؛ در استودیو توکن تازه بسازید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
@@ -474,6 +690,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "توکن هوش مصنوعی:"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "توکن وارد نشده است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "تگ توضیحات متا"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -496,12 +720,32 @@ msgstr ""
 msgid "جایگاه پیش‌نمایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "جدیدترین"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "جستجوی عنوان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "جعبهٔ «دستیار سئو IRNoti» در صفحهٔ ویرایش این انواع نمایش داده می‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "حجم محتوا"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "حد هشدار (ریال)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "حداقل PHP 8.0 لازم است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "حداقل در یکی از زیرعنوان‌ها (H2\/H3) از کلمهٔ کلیدی استفاده کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -537,6 +781,10 @@ msgid "خاموش"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "خدمات، تعرفه‌ها و راهنماها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "خروجی"
 msgstr ""
 
@@ -560,16 +808,36 @@ msgstr ""
 msgid "خطا"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "خطا: %s"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "خطوط و گزارش پیامک"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "خوانایی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "خودکار (اولین مدل فعال)"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "خودکار هر ۵ ثانیه"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "داخل متن تگ H1 هست؛ قالب عنوان را خودش H1 می‌کند، در متن از H2 و H3 استفاده کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "دارد"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "در استودیو ایجنت IRNoti ← گزارش و رتبهٔ سایت ← افزونهٔ وردپرس بسازید (فقط با پلن حرفه‌ای). این توکن با کلید API جداست و فقط برای همین سایت کار می‌کند."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -578,6 +846,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "در تب «اتصال» کلید API را وارد کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "در تب «رتبهٔ سایت» دکمهٔ «همگام‌سازی همین حالا» را بزنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "در حال دریافت…"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
@@ -604,6 +880,10 @@ msgstr ""
 msgid "درج خودکار در سایت"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "درخواست‌ها زیاد است؛ یک دقیقه صبر کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "دریافت سفارش‌ها همین حالا"
 msgstr ""
@@ -616,12 +896,32 @@ msgstr ""
 msgid "دسترسی به سرور"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "دسترسی ندارید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "دسترسی‌های کلید (scope)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "دستیار سئو و هوش مصنوعی IRNoti"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "دوستانه"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیره شد و اتصال برقرار است."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ذخیره شد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیره شد، ولی اتصال برقرار نشد؛ وضعیت را بالای صفحه ببینید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -630,6 +930,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ذخیره شد؛ کلید API معتبر است و اتصال برقرار است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "ذخیره و همگام‌سازی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ذخیرهٔ تنظیمات"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -668,8 +976,16 @@ msgstr ""
 msgid "ربات و محصولات"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
+msgid "رتبهٔ سایت"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "رد شده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "رسمی و حرفه‌ای"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-sms-rules.php
@@ -680,12 +996,32 @@ msgstr ""
 msgid "رویداد"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "زمان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "زمان‌بندی نشده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "زیرعنوان‌ها"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "ساخت الگوی جدید"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ساخت توضیحات متا"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ساخت حساب SIP"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "ساخت خلاصه"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -694,6 +1030,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "سالم"
+msgstr ""
+
+#: irnoti-service/irnoti-service.php irnoti-service/includes/class-irnoti-admin.php
+msgid "سایت IRNoti"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
@@ -710,6 +1050,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "سرور وردپرس به api.irnoti.com وصل نشد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "سرویس تصویری نساخت یا پاسخ ناشناخته بود."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -732,7 +1076,7 @@ msgstr ""
 msgid "سهمیهٔ ایمیل"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-account.php
+#: irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-account.php
 msgid "شارژ کیف پول"
 msgstr ""
 
@@ -742,6 +1086,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "شرط‌ها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "شما دسترسی استفاده از هوش مصنوعی را ندارید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -784,12 +1132,36 @@ msgstr ""
 msgid "ضبط‌ها و پیام‌گیر"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "طول عنوان"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "ظاهر و رفتار"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "عنوان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "عنوان %s نویسه است؛ مقدار مناسب ۳۰ تا ۶۰."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "عنوان و متا"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
 msgid "غیرفعال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "فایل دریافتی تصویر معتبر نیست."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "فروش‌محور"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
@@ -812,6 +1184,14 @@ msgstr ""
 msgid "فقط برای پیش‌نمایش؛ جایگاه، رنگ، متن و ساعت کاری واقعی ویجت را در استودیوی IRNoti تنظیم می‌کنید."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط خلاصهٔ سلامت می‌فرستد: نسخه‌ها و شمارها (وردپرس، PHP، قالب، افزونه‌ها، ایندکس‌شدن، https). هرگز محتوای نوشته‌ها، کاربران، سفارش‌ها یا رمزها."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط دو کار مجاز است و هر کدام فقط پس از تأیید شما در استودیو: عنوان\/توضیح متای یک نوشته و داده ساختاریافتهٔ JSON-LD آن. هیچ فایل، کد یا تنظیم دیگری تغییر نمی‌کند."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "فقط ربات"
 msgstr ""
@@ -830,6 +1210,18 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "فقط فروشگاه (محصول، سبد، پرداخت)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "فقط ما را صدا می‌زند: افزونه هیچ درگاه ورودی باز نمی‌کند و IRNoti نمی‌تواند وارد سایت شود؛ هر ساعت خود سایت خبر می‌دهد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "فهرست مدل‌ها و ضریب هزینه در پنل IRNoti ← هوش مصنوعی است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "قالب توکن درست نیست؛ باید با irnwp_ شروع شود. آن را کامل از استودیو کپی کنید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
@@ -857,6 +1249,10 @@ msgid "قطع"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "قطع اتصال و حذف توکن از این سایت"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "قوانین رویداد، پترن، ورود با کد یکبارمصرف"
 msgstr ""
 
@@ -868,8 +1264,20 @@ msgstr ""
 msgid "قیمت یا واحد پول محصول قابل تبدیل به ریال نیست."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "لحن نوشتار"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "لیست مسدود"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "لینک خارجی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "لینک داخلی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-sms-rules.php
@@ -884,6 +1292,10 @@ msgstr ""
 msgid "لینک ویرایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "لینکی به صفحات دیگر سایت ندارد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "مبلغ"
 msgstr ""
@@ -896,12 +1308,24 @@ msgstr ""
 msgid "مبلغ کل"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin.php
+#: irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
 msgid "متصل"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "متصل است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "متصل است، ولی پلن حرفه‌ای این سایت فعال نیست؛ تغییری اعمال نمی‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "متصل و تأیید شده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "متصل، ولی پلن حرفه‌ای فعال نیست"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -920,8 +1344,32 @@ msgstr ""
 msgid "متن الگو"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "متن بلند بدون زیرعنوان (H2\/H3) است؛ ساختار بدهید تا خواندن و ایندکس بهتر شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "متن جایگزین تصاویر (alt)"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "متن پیامک"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-sms.php
+msgid "محتوا ذخیره نمی‌شود"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "محتوا و سئو"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "محتوا و سئو (AI)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "محتوا و سئو با هوش مصنوعی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
@@ -930,6 +1378,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "محیط سرور"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "مدل فعالی برای هوش مصنوعی پیدا نشد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "مدل هوش مصنوعی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -949,6 +1405,10 @@ msgid "مدیریت IRNoti"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "مدیریت خطوط، الگوها، ربات‌ها و گزارش‌ها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "مراحل راه‌اندازی"
 msgstr ""
 
@@ -962,6 +1422,14 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "مشتری \/ کاربر"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "مشکلات"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "مشکلی نیست."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -994,6 +1462,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
 msgid "موجودی برای ارسال پیامک از حد هشدار کمتر است؛ برای جلوگیری از توقف پیامک‌ها حساب را شارژ کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "میانگین %s کلمه در هر جمله؛ جمله‌ها را کوتاه‌تر کنید (زیر ۲۲)."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
@@ -1044,6 +1516,22 @@ msgstr ""
 msgid "ناموفق"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "نامک %s نویسه است؛ کوتاه‌ترش کنید (حداکثر ۷۵)."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "نامک باید کلمهٔ کلیدی را داشته باشد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "نامک خالی است."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نتیجه"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "ندارد"
 msgstr ""
@@ -1052,11 +1540,15 @@ msgstr ""
 msgid "نزدیک‌ترین انقضا: %s"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "نشانی (نامک)"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "نمای کلی"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin.php
+#: irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-admin-seo.php
 msgid "نمایش"
 msgstr ""
 
@@ -1084,12 +1576,24 @@ msgstr ""
 msgid "نمایش ویجت روی سایت"
 msgstr ""
 
-#: irnoti-service/includes/class-irnoti-admin-sms.php
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نوشته"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "نوشته‌ها، محصولات و برگه‌ها"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-admin-seo.php
 msgid "نوع"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "نوع ارسال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "نیازمند کلید API"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-account.php
@@ -1136,6 +1640,10 @@ msgstr ""
 msgid "همه وضعیت‌ها"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "همهٔ انواع"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "همهٔ روش‌های پرداخت"
 msgstr ""
@@ -1157,7 +1665,15 @@ msgid "همه‌چیز سالم است"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "همگام‌سازی انجام شد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "همگام‌سازی خودکار"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "همگام‌سازی ساعتی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -1169,15 +1685,39 @@ msgid "همگام‌سازی محصولات و سفارش‌های ووکامر�
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "همگام‌سازی ناموفق بود؛ وضعیت را بالای صفحه ببینید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "همگام‌سازی همهٔ محصولات"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "همگام‌سازی همین حالا"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "هنوز قانونی نساخته‌اید. مثلاً «وقتی سفارش به در حال انجام تغییر کرد، به مشتری پیامک برود»."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "هنوز همگام‌سازی نشده"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "هنوز وارد نشده"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "هوش مصنوعی IRNoti بر اساس دسته‌ها و نوشته‌های فعلی سایت شما موضوع‌های تازه پیشنهاد می‌دهد (پیشنهاد مدل است، نه آمار جستجو). با یک کلیک پیش‌نویس سئوشده بسازید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "هوش مصنوعی فعال"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "هیچ تصویری ندارد."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -1209,7 +1749,15 @@ msgid "ورود با کد پیامکی"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
+msgid "ورود به پنل"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
 msgid "ورودی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "وصل نیست"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php irnoti-service/includes/class-irnoti-sms-rules.php
@@ -1288,6 +1836,14 @@ msgstr ""
 msgid "ویرایش"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "٪%1$s (%2$s بار)؛ مقدار مناسب ۰٫۵ تا ۲٫۵ درصد."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "پاسخ خالی از سرویس هوش مصنوعی دریافت شد."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "پاسخ سرور ویجت"
 msgstr ""
@@ -1296,8 +1852,20 @@ msgstr ""
 msgid "پاسخ سرور کند است؛ اتصال اینترنت\/فایروال میزبان را بررسی کنید."
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-ai.php
+msgid "پاسخ مدل قابل‌خواندن نبود؛ دوباره تلاش کنید."
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "پترن"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-health.php
+msgid "پلن حرفه‌ای رتبهٔ این دامنه را در استودیو فعال کنید."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin.php
+msgid "پنل IRNoti"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -1320,12 +1888,28 @@ msgstr ""
 msgid "پیدا نشد برای %s (404)"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "پیشنهاد دوباره"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "پیشنهاد عنوان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "پیشنهاد کلمهٔ کلیدی"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "پیش‌فرض: https:\/\/api.irnoti.com\/v1 (فقط https)."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php
 msgid "پیش‌نمایش"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "چاپ meta description در سایت"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
@@ -1398,6 +1982,50 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php
 msgid "کرون داخلی وردپرس خاموش است؛ مطمئن شوید یک کرون واقعی روی سرور wp-cron.php را صدا می‌زند، وگرنه دریافت سفارش‌های ربات و هشدار موجودی اجرا نمی‌شوند."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "کلمهٔ کلیدی اصلی"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی اصلی تعیین نشده؛ بدون آن بقیهٔ بررسی‌های کلمهٔ کلیدی انجام نمی‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی باید در عنوان بیاید (ترجیحاً ابتدای آن)."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در ابتدای متن"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در توضیحات متا"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در زیرعنوان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در عنوان"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در نشانی (نامک)"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی در ۱۰۰ کلمهٔ اول دیده نمی‌شود."
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-seo.php
+msgid "کلمهٔ کلیدی را در توضیحات متا بیاورید."
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-health.php irnoti-service/includes/class-irnoti-admin.php
@@ -1476,6 +2104,10 @@ msgstr ""
 msgid "کمبود موجودی محصول"
 msgstr ""
 
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "کمترین امتیاز سئو"
+msgstr ""
+
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "کپی گزارش برای پشتیبانی"
 msgstr ""
@@ -1490,6 +2122,10 @@ msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin.php
 msgid "گزارش تماس"
+msgstr ""
+
+#: irnoti-service/includes/class-irnoti-admin-seo.php
+msgid "گسترش متن کوتاه"
 msgstr ""
 
 #: irnoti-service/includes/class-irnoti-admin-sms.php

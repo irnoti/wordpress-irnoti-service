@@ -37,6 +37,7 @@ class IRNoti_Health {
 			self::scopes();
 		}
 		self::widget();
+		self::rank();
 		self::jobs();
 		self::plugins();
 		return self::$rows;
@@ -144,6 +145,26 @@ class IRNoti_Health {
 		self::add( $g, __( 'محدودهٔ نمایش', 'irnoti-service' ), 'info', $scope );
 		if ( IRNoti_Settings::get( 'widget_hide_admin' ) ) {
 			self::add( $g, __( 'مدیران', 'irnoti-service' ), 'warn', __( 'برای مدیران مخفی است', 'irnoti-service' ), __( 'وقتی با حساب مدیر وارد شده‌اید ویجت را نمی‌بینید؛ برای آزمایش در پنجرهٔ ناشناس باز کنید.', 'irnoti-service' ) );
+		}
+	}
+
+	/** The link to the site's IRNoti Rank report: token, last round, and its schedule. Nothing is called here; it reads what the last round stored. */
+	private static function rank(): void {
+		$g = __( 'رتبهٔ سایت', 'irnoti-service' );
+		if ( ! IRNoti_Rank::configured() ) {
+			self::add( $g, __( 'اتصال', 'irnoti-service' ), 'info', __( 'وصل نیست', 'irnoti-service' ), __( 'اختیاری: در تب «رتبهٔ سایت» توکن را وارد کنید تا سلامت سایت خوانده شود و تغییرهای سئوی تأییدشده اعمال شود.', 'irnoti-service' ) );
+			return;
+		}
+		$st = IRNoti_Rank::state();
+		if ( empty( $st ) ) {
+			self::add( $g, __( 'اتصال', 'irnoti-service' ), 'warn', __( 'هنوز همگام‌سازی نشده', 'irnoti-service' ), __( 'در تب «رتبهٔ سایت» دکمهٔ «همگام‌سازی همین حالا» را بزنید.', 'irnoti-service' ) );
+		} elseif ( empty( $st['ok'] ) ) {
+			self::add( $g, __( 'اتصال', 'irnoti-service' ), 'bad', (string) ( $st['msg'] ?? '' ), __( 'توکن را در استودیوی IRNoti دوباره بسازید و در تب «رتبهٔ سایت» وارد کنید.', 'irnoti-service' ) );
+		} else {
+			self::add( $g, __( 'اتصال', 'irnoti-service' ), empty( $st['pro'] ) ? 'warn' : 'ok', empty( $st['pro'] ) ? __( 'متصل، ولی پلن حرفه‌ای فعال نیست', 'irnoti-service' ) : __( 'متصل', 'irnoti-service' ), empty( $st['pro'] ) ? __( 'پلن حرفه‌ای رتبهٔ این دامنه را در استودیو فعال کنید.', 'irnoti-service' ) : '' );
+		}
+		if ( ! wp_next_scheduled( IRNoti_Rank::CRON ) ) {
+			self::add( $g, __( 'همگام‌سازی ساعتی', 'irnoti-service' ), 'warn', __( 'زمان‌بندی نشده', 'irnoti-service' ), __( 'افزونه را یک بار غیرفعال و فعال کنید.', 'irnoti-service' ) );
 		}
 	}
 

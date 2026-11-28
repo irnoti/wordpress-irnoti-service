@@ -20,6 +20,7 @@ class IRNoti_Settings {
 			'voip_sip_id'    => '',
 			'jssip_url'      => '',
 			'webhook_secret_enc' => '',
+			'rank_token_enc'    => '', // IRNoti Rank site token (irnwp_…), separate from the API key
 			'bot_pull_orders' => 0,
 			'otp_login'      => 0,
 			'otp_pattern'    => '',
@@ -63,6 +64,15 @@ class IRNoti_Settings {
 	public static function webhook_secret(): string {
 		$enc = (string) self::get( 'webhook_secret_enc' );
 		return $enc === '' ? '' : self::decrypt( $enc );
+	}
+
+	public static function rank_token(): string {
+		$enc = (string) self::get( 'rank_token_enc' );
+		return $enc === '' ? '' : self::decrypt( $enc );
+	}
+
+	public static function set_rank_token( string $token ): void {
+		self::update( array( 'rank_token_enc' => $token === '' ? '' : self::encrypt( $token ) ) );
 	}
 
 	public static function set_webhook_secret( string $secret ): void {
